@@ -3,6 +3,30 @@
 
 = Useful Code =
 
+I just pasted some useful code here in order to have a starting point. Please also use the extensive JavaDoc in the download section.
+
+== Inspect All Types of an Assembly ==
+{{{
+try {
+    //specify a path, where to find the assembly
+    String assemblyName = "mscorlib.dll";
+    String assemblyLocation = "../path/to/assembly/" + assemblyName;
+
+    //reflect and load the assembly using the Facile factory
+    Assembly assembly = Facile.loadAssembly(assemblyLocation);
+		
+    //perform your custom operations on the assembly...
+    System.out.println("All defined types in " + assemblyName + ":\n");
+    for(Type type : assembly.getAllTypes()) {
+        System.out.println(type);
+    }
+} catch (Exception e) {
+    e.printStackTrace();
+}
+
+}}}
+
+== Make use of the ILDasmRenderer ==
 {{{
 
 try {
