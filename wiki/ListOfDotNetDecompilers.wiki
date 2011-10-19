@@ -1,0 +1,42 @@
+#labels Featured
+
+= List of .Net Decompilers =
+
+== dotPeek ==
+
+dotPeek is a new free .NET decompiler from JetBrains
+http://confluence.jetbrains.net/display/NETPEEK
+
+== .NET CodeReflect ==
+
+DevExtras .NET CodeReflect is a simple yet advanced free .NET assembly browser/decompiler. It is a free alternative to Red Gate's/Lutz Roeder's .NET Reflector.
+
+http://www.devextras.com/decompiler/
+
+== RedGate Reflector ==
+
+Long time ago this was known as Lutz Roeder's .Net Reflector.
+
+http://www.reflector.net/
+
+== telerik JustDecompile ==
+
+http://www.telerik.com/products/decompiler.aspx
+
+== ILSpy ==
+
+ILSpy is the open-source .NET assembly browser and decompiler.
+
+Development started after Red Gate announced that the free version of .NET Reflector would cease to exist by end of February 2011.
+
+http://wiki.sharpdevelop.net/ilspy.ashx
+
+== Dis# ==
+
+http://netdecompiler.com/index.html
+
+== ILDasm ==
+
+Microsoft's disassembler.
+
+http://msdn.microsoft.com/en-us/library/f7dy01k1(v=vs.80).aspx
