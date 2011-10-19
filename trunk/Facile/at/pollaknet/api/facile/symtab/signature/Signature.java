@@ -221,7 +221,12 @@ public abstract class Signature implements TypeKind {
 				String fullQualifiedName = readSerString();
 				setNameAndSpace(enclosingType, fullQualifiedName);
 
-				enclosingType.setElementKind(Signature.UNNAMED_CSTM_ATRB_ENUM);
+				//query the type kind (which is tricky for enums)
+				int kind = BasicTypesDirectory.getEnumTypeKind(enclosingType);
+				if(kind==0)
+					kind = Signature.UNNAMED_CSTM_ATRB_ENUM;
+				
+				enclosingType.setElementKind(kind);
 				break;
 				
 			case Signature.UNNAMED_SYSTEM_TYPE:
@@ -686,25 +691,7 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 		//perform a behavior correction in case of enums (which have a type kind of 0)
 		int kind = typeRef.getElementTypeKind();
 		if(kind==0) {
-			if(typeRef.getFullQualifiedName().equals("System.Security.SecurityRuleSet")) {
-				kind = TypeKind.ELEMENT_TYPE_U1;
-			} else {		
-				TypeRef superType = typeRef;
-				while(superType!=null) {
-					
-					if(superType.getFullQualifiedName().equals("System.Enum")) {
-						kind = Signature.UNNAMED_CSTM_ATRB_ENUM;
-						break;
-					}
-					
-					Type type = superType.getType();
-					
-					if(type!=null && type.getExtends()!=null)
-						superType = type.getExtends();
-					else
-						superType = null;
-				}	
-			}
+			kind = BasicTypesDirectory.getEnumTypeKind(typeRef);
 		}
 		
 		// handle values according to the defined kinds

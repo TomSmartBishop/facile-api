@@ -47,10 +47,6 @@ public class CustomAttributeValueSignature extends Signature {
 		//read prolog
 		prolog();
 		
-		if(binarySignature.length==28&&binarySignature[27]==1&&binarySignature[26]==110) {
-			int d=0;
-		}
-		
 		//handles the FixedArg block and eventual repetitions of it
 		fixedArgs(customAttribute);
 		

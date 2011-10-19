@@ -10,6 +10,8 @@ import at.pollaknet.api.facile.metamodel.entries.StandAloneSigEntry;
 import at.pollaknet.api.facile.metamodel.entries.TypeDefEntry;
 import at.pollaknet.api.facile.metamodel.entries.TypeRefEntry;
 import at.pollaknet.api.facile.symtab.signature.Signature;
+import at.pollaknet.api.facile.symtab.symbols.Type;
+import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.symtab.symbols.TypeSpec;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.ResolutionScope;
 
@@ -40,6 +42,13 @@ public class BasicTypesDirectory {
 	private HashMap<Integer, TypeRefEntry> typeRefs = new HashMap<Integer, TypeRefEntry>();
 
 	private BlobStream blobStream = null;
+	
+	/**
+	 * Since .Net 4 there are some enums just using 1 byte inside a signature instead of 4 bytes, the array
+	 * contains these enums.
+	 */
+	//FIXME: Think about a possibility to reolve enums of other assemblies!
+	public static String [] ENUMS_WITH_1_BYTE = { "System.Security.SecurityRuleSet", "System.Windows.Visibility" };
 
 	/**
 	 * Create a new basic data type directory. The basic types are
@@ -336,6 +345,37 @@ public class BasicTypesDirectory {
 		register(typeRef);
 		
 		return typeRef;
+	}
+	
+	/**
+	 * This method tries to figure out the size of an enum (1 VS 4 byte)
+	 * This is performed via (A) an internal dictionary of enums requireing just
+	 * 1 byte and (B) by checking if the provided type is derrived from System.Enum
+	 * @param typeRef The TypeRef which is possibly an enum.
+	 * @return The suggested type kind for the specified type
+	 * (in case it is not an enum the type kind of the passed TypeRef instance will be returned).
+	 */
+	public static int getEnumTypeKind(TypeRef typeRef)	{	
+		TypeRef superType = typeRef;
+		while(superType!=null) {
+			
+			for(String fullQualifiedEnumName : ENUMS_WITH_1_BYTE) {
+				if(typeRef.getFullQualifiedName().equals(fullQualifiedEnumName))
+					return TypeKind.ELEMENT_TYPE_U1;
+			}
+			
+			if(superType.getFullQualifiedName().equals("System.Enum")) {
+				return Signature.UNNAMED_CSTM_ATRB_ENUM;
+			}
+			
+			Type type = superType.getType();
+			
+			if(type!=null && type.getExtends()!=null)
+				superType = type.getExtends();
+			else
+				superType = null;
+		}	
+		return typeRef.getElementTypeKind();
 	}
 
 	/**
