@@ -1,10 +1,10 @@
 #labels Featured
-
 = List of .Net Decompilers =
 
 == dotPeek ==
 
 dotPeek is a new free .NET decompiler from JetBrains
+
 http://confluence.jetbrains.net/display/NETPEEK
 
 == .NET CodeReflect ==
@@ -40,3 +40,7 @@ http://netdecompiler.com/index.html
 Microsoft's disassembler.
 
 http://msdn.microsoft.com/en-us/library/f7dy01k1(v=vs.80).aspx
+
+== Spices .Net Decompiler ==
+
+http://www.9rays.net/Category/54-spicesnet-decompiler.aspx
