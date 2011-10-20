@@ -59,7 +59,7 @@ http://wiki.sharpdevelop.net/ilspy.ashx
 
 == Dis# ==
 
-The tool looks a 
+The tool looks already a bit older, but has a nice feature called 'in-place editor', where you can rename variables...
 
 http://netdecompiler.com/index.html
 
