@@ -70,6 +70,11 @@ Microsoft's disassembler.
 
 http://msdn.microsoft.com/en-us/library/f7dy01k1(v=vs.80).aspx
 
+== LSW DotNet-Reflection-Browser ==
+
+The interresting thing about this software is, that it (like facile) isn't written in a .Net language and does not rely at any point on the .Net reflection mechanism. According to their website it's written in SmallTalk.
+
+http://www.lesser-software.com/lswdnrb.htm
 
 == Spices .Net Decompiler ==
 
