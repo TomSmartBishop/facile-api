@@ -1,0 +1,6 @@
+#labels VES
+
+The idea is to execute CIL code in Java.
+
+There is an interesting Project, which doing this just the other way around... running Java bytecode in .Net:
+http://www.ikvm.net
