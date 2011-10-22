@@ -2,6 +2,7 @@ package at.pollaknet.api.facile.renderer;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,6 +14,7 @@ import at.pollaknet.api.facile.dia.DebugInformation;
 import at.pollaknet.api.facile.dia.InstructionInfo;
 import at.pollaknet.api.facile.header.cli.CliHeader;
 import at.pollaknet.api.facile.metamodel.entries.StandAloneSigEntry;
+import at.pollaknet.api.facile.symtab.TypeKind;
 import at.pollaknet.api.facile.symtab.symbols.ClassLayout;
 import at.pollaknet.api.facile.symtab.symbols.Constant;
 import at.pollaknet.api.facile.symtab.symbols.Event;
@@ -96,8 +98,14 @@ public class ILAsmRenderer implements LanguageRenderer {
 		}
 		
 		for(CustomAttribute c: assembly.getCustomAttributes()) {
-			buffer.append("\n  ");
-			buffer.append(render(c));
+			if(c.getTypeRef().getFullQualifiedName().equals("System.Diagnostics.DebuggableAttribute"))
+			{
+				buffer.append("\n  //automatically generated, do not uncomment\n  //");
+				buffer.append(render(c, new ArrayList<Integer>()));
+			} else {
+				buffer.append("\n  ");
+				buffer.append(render(c));
+			}
 		}
 		
 		buffer.append("\n}");
@@ -160,7 +168,12 @@ public class ILAsmRenderer implements LanguageRenderer {
 		buffer.append(".module ");
 		buffer.append(module.getName());
 
-		//TODO: maybe add .subsystem directive
+		//TODO: add .imagebase
+		//TODO: add .file
+		//TODO: add .stackreserve
+		//TODO: add .subsystem
+		//TODO: add .corflags
+		
 		buffer.append(String.format("\n// Generation: 0x%04x", module.getGeneration()));
 		if(module.getEncId()!=null)
 			buffer.append(String.format("\n// EncId:{%s}",ArrayUtils.formatByteArray(module.getEncId())));
@@ -168,9 +181,9 @@ public class ILAsmRenderer implements LanguageRenderer {
 			buffer.append(String.format("\n// EncBaseId:{%s}",ArrayUtils.formatByteArray(module.getEncBaseId())));
 		buffer.append(String.format("\n// MVID:{%s}", ArrayUtils.formatByteArray(module.getMvId())));
 
-		//TODO: handle custom attributes
+		//custom module attributes
 		for(CustomAttribute c: module.getCustomAttributes()) {
-			buffer.append("\n// ");
+			buffer.append("\n");
 			buffer.append(render(c));
 		}
 	
@@ -297,6 +310,10 @@ public class ILAsmRenderer implements LanguageRenderer {
 
 	@Override
 	public String render(CustomAttribute customAttribute) {
+		return render(customAttribute, null);
+	}
+	
+	public String render(CustomAttribute customAttribute, ArrayList<Integer> valueTypeIndices) {
 		if(customAttribute==null) return "";
 		
 		
@@ -320,35 +337,98 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		buffer.append(renderClassRef(type));
 		
+		//mechanism to determinate potential value types
+		boolean indicesPresent = valueTypeIndices!=null;
+		int argumentIndex = 0;
+		
+		Instance [] fixedArguments = customAttribute.getFixedArguments();
+		//this array will hold all value type candidates
+		if(!indicesPresent) valueTypeIndices = new ArrayList<Integer>(fixedArguments.length);
+		
 		buffer.append("::.ctor(");
+		
+		for(Instance instance: fixedArguments) {
+			if(hasEntries) buffer.append(", ");
 			
+			if(indicesPresent&&valueTypeIndices.contains(argumentIndex)) {
+				buffer.append("valuetype ");
+			}
+				
+			buffer.append(renderAsReference(instance.getTypeRef()));
+			hasEntries = true;
+			
+			argumentIndex++;
+		}
+		
+		buffer.append(") = { ");
+		
+		//reset param relative values
+		hasEntries = false;
+		argumentIndex = 0;
+		
+		//render fixed arguments
 		for(Instance instance: customAttribute.getFixedArguments()) {
 			if(hasEntries) buffer.append(", ");
-			buffer.append(instance);
-			hasEntries = true;
+			
+			if(indicesPresent&&valueTypeIndices.contains(argumentIndex)) {
+				buffer.append("int32("+instance.getValue()+")");
+			} else {
+				buffer.append(render(instance));
+				hasEntries = true;
+				
+				//memorize potential value types
+				if(instance.isPotentialValueType()) valueTypeIndices.add(argumentIndex);
+			}
+			argumentIndex++;
 		}
 
-	
+		//render argument fields
 		for(Pair<String, Instance> pair: customAttribute.getNamedFields()) {
 			if(hasEntries) buffer.append(", ");
-			buffer.append(pair.key);
-			buffer.append(" = ");
-			buffer.append(pair.value);
-			hasEntries = true;
+			
+			Instance instance = pair.value;
+			String typeName = render(instance.getTypeRef());
+			
+			if(indicesPresent&&valueTypeIndices.contains(argumentIndex)) {
+				buffer.append(String.format("field %s '%s' = int32(%d)", typeName, pair.key, instance.getValue()));
+			} else {
+				buffer.append(String.format("field %s '%s' = %s(%s)", typeName, pair.key, typeName, instance));
+				
+				hasEntries = true;
+				
+				//memorize potential value types
+				if(instance.isPotentialValueType()) valueTypeIndices.add(argumentIndex);
+			}
+			argumentIndex++;
 		}
 	
+		//render argument properties
 		for(Pair<String, Instance> pair: customAttribute.getNamedProperties()) {
 			if(hasEntries) buffer.append(", ");
-			buffer.append(pair.key);
-			buffer.append(" = ");
-			buffer.append(pair.value);
-			hasEntries = true;
+			
+			Instance instance = pair.value;
+			String typeName = render(instance.getTypeRef());
+			
+			if(indicesPresent&&valueTypeIndices.contains(argumentIndex)) {
+				buffer.append(String.format("property %s '%s' = int32(%d)", typeName, pair.key, instance.getValue()));
+			} else {
+				buffer.append(String.format("property %s '%s' = %s(%s)", typeName, pair.key, typeName, instance));
+				hasEntries = true;
+				
+				//memorize potential value types
+				if(instance.isPotentialValueType()) valueTypeIndices.add(argumentIndex);
+			}
+			argumentIndex++;
 		}
 			
-		buffer.append(")");
+		buffer.append(" }");
 	
-		
-		return buffer.toString();
+		//this is the normal case of no re-interpretation
+		if(indicesPresent||valueTypeIndices.isEmpty()) {
+			return buffer.toString();
+		}
+	
+		return render(customAttribute, valueTypeIndices) + "//re-interpreted, see original line below:\n//" + buffer.toString();		
 	}
 
 	private String renderClassRef(TypeRef type) {
@@ -361,6 +441,9 @@ public class ILAsmRenderer implements LanguageRenderer {
 		if(type.getShortSystemName()!=null && useShortSystemNames) return type.getShortSystemName();
 		
 		StringBuffer buffer = new StringBuffer(32);
+		if(type.getElementTypeKind()==TypeKind.ELEMENT_TYPE_VALUETYPE || 
+		   (type.getType()!=null && type.getType().isInheritedFrom("System.ValueType")))
+			buffer.append("valuetype ");
 		
 		if(type.getTypeSpec()!=null) {
 			TypeSpec spec = type.getTypeSpec();
@@ -370,6 +453,10 @@ public class ILAsmRenderer implements LanguageRenderer {
 		}
 		
 		ResolutionScope resolutionScope = type.getResolutionScope();
+		
+		while( resolutionScope.getTypeRef()!=null ) {
+			resolutionScope = resolutionScope.getTypeRef().getResolutionScope();
+		}
 		
 		if(resolutionScope!=null && !resolutionScope.isInAssembly()) {
 			if(resolutionScope.getAssemblyRef()==null && resolutionScope.getModuleRef()!=null) {
@@ -701,17 +788,30 @@ public class ILAsmRenderer implements LanguageRenderer {
 			buffer.append("rtspecialname ");
 		}
 		
+		buffer.append("instance ");
+		
+		//specify the property's type
+		for(Method m:property.getMethods()) {
+			if(m.getName().startsWith("get_")) {
+				buffer.append(renderAsReference(m.getMethodSignature().getReturnType())+" ");
+				break;
+			} else if(m.getName().startsWith("set_")) {
+				buffer.append(renderAsReference(m.getMethodSignature().getParameters()[0].getTypeRef())+" ");
+				break;
+			}
+		}
+		
 		buffer.append(property.getName());
 		
-		buffer.append("\n{");
+		buffer.append("()\n{");
 		
 		for(Method m:property.getMethods()) {
 			String methodRef = renderMethodRef(m);
 
 			if(m.getName().startsWith("get_")) {
-				buffer.append("\n  .get ");
+				buffer.append("\n  .get instance ");
 			} else if(m.getName().startsWith("set_")) {
-				buffer.append("\n  .set ");
+				buffer.append("\n  .set instance ");
 			} else {
 				buffer.append("\n  .other ");
 			}
@@ -1105,7 +1205,66 @@ public class ILAsmRenderer implements LanguageRenderer {
 	@Override
 	public String render(Instance instance) {
 		
-		return "";
+		if(instance.getTypeRef().getElementTypeKind()==TypeKind.ELEMENT_TYPE_BOOLEAN) {
+			return instance.getValue()!=0?"bool(true)":"bool(false)";
+		}
+
+		StringBuffer buffer = new StringBuffer();
+		
+		TypeRef typeRef = instance.getTypeRef();
+		
+		Instance [] array = instance.getArrayInstance();
+		
+		if(array!=null) {
+			boolean first = true;
+			//buffer.append("(");
+			buffer.append(typeRef.getFullQualifiedName());
+			
+			buffer.append("[");
+			buffer.append(array.length);
+			buffer.append("] {");
+			
+			for(Instance i: array) {
+				buffer.append(render(i));
+				if(first) {
+					first = false;
+				} else {
+					buffer.append(" "); //correctness needs to be prooven
+				}
+			}
+			
+			buffer.append("}");
+			return buffer.toString();
+		}
+				
+		if(instance.getBoxedInstance()!=null) {
+			buffer.append(render(instance));
+		} else {
+			//buffer.append("(");
+			buffer.append(renderAsReference(typeRef));
+			buffer.append("(");
+			
+			String stringValue = instance.getStringValue();
+			if(stringValue!=null) {
+				if(typeRef.getElementTypeKind()==TypeKind.ELEMENT_TYPE_STRING) {
+					buffer.append("'");
+					buffer.append(stringValue);
+					buffer.append("'");
+				} else {
+					buffer.append(stringValue);
+				}
+			} else {
+				long value = instance.getValue();
+				if(value==0 && !ArrayUtils.contains(TypeKind.NUMERIC_TYPES, typeRef.getElementTypeKind())) {
+					buffer.append("null");
+				} else {
+					buffer.append(value);
+				}
+			}
+			buffer.append(")");
+		}
+		
+		return buffer.toString();
 	}
 
 	@Override

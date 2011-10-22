@@ -73,80 +73,131 @@ public class Facile {
 	 */
 	public static void main(String [] args) {
 
-
-			 
-		//ensure the correct file type by extension
-		switch(args.length) {
-			case 2:
-				if(	!(	args[1].endsWith(".exe") ||
-						args[1].endsWith(".dll") ||
-						args[1].endsWith(".netmodule") ||
-						args[1].endsWith(".mcl") ||
-						args[1].endsWith(".pdb")
-					 )		) {
-					System.out.println("Please specify a valid program debug database!");
-					return;
-				}
-				//fall through
-			case 1:
-				if(	!(	args[0].endsWith(".exe") ||
-						args[0].endsWith(".dll") ||
-						args[0].endsWith(".netmodule") ||
-						args[0].endsWith(".mcl")
-					 )		) {
-					System.out.println("Please specify a exe, netmodule or dll file as assembly!");
-					return;
-				}
-				break;
-				
-			default:
-				System.out.println("usage:\n\tjava Facile ASSEMBLY_PATH [PDB_PATH]");
-				return;
-			
+		if(args.length<1) {
+			printUsageString();
+			return;
 		}
+		
+		boolean createIlOutput = false;
+		boolean outputMetadataStream = false;
+		boolean outputStringsStream = false;
+		boolean outputBlobStream = false;
+		boolean outputGuidStream = false;
+		boolean outputUserStringStream = false;
+		boolean verbose = false;
+		boolean log = false;
+		boolean assemblyOverview = false;
+		
+		
+		String assemblyPath = null;
+		String pdbPath = null;
+		
+		//parameter parsing
+		for(int i=0;i<args.length;i++) {
+			
+			if(args[i].equals("--il")) {
+				createIlOutput = true;
+			} else if(args[i].equals("--info")) {
+				assemblyOverview = true;
+			} else if(args[i].equals("--verbose")) {
+				verbose = true;
+			} else if(args[i].equals("--log")) {
+				log = true;
+			} else if(args[i].equals("--#~")) {
+				outputStringsStream = true;
+			} else if(args[i].equals("--#Strings")) {
+				outputStringsStream = true;
+			} else if(args[i].equals("--#Blob")) {
+				outputBlobStream = true;
+			} else if(args[i].equals("--#GUID")) {
+				outputGuidStream = true;
+			} else if(args[i].equals("--#US")) {
+				outputUserStringStream = true;
+			}
+			else if(args[i].endsWith(".exe") ||
+				    args[i].endsWith(".dll") ||
+					args[i].endsWith(".netmodule") ||
+					args[i].endsWith(".mcl") ) {
+				if(assemblyPath==null) {
+					assemblyPath = args[i];
+				} else {
+					pdbPath = args[i];
+				}
+			} else if( args[i].endsWith(".pdb") ) {
+				pdbPath = args[i];
+			}
+		}
+		
+		//we need at least the assembly
+		if(assemblyPath==null) {
+			System.out.println("Error: No assembly specified!");
+			printUsageString();
+			return;
+		}
+		
+		System.out.println("Specified Assembly: "+assemblyPath);
+		if(pdbPath!=null)				System.out.println("Specified Program Debug Database: "+pdbPath);
+		
+		System.out.println();
+		
+		//output parameter setup
+		System.out.println("Running Facile with the followin parameter setup:");
+		System.out.println("=================================================");
+		if(verbose)						System.out.println("--verbose       : Verbose output");
+		if(log)							System.out.println("--log           : Print the log file at the end (all verbose messages)");
+		if(assemblyOverview)			System.out.println("--info          : Print assembly info (overview)");
+		if(createIlOutput)				System.out.println("--il            : Generating IL code in current working directory");
+		if(outputMetadataStream)		System.out.println("--#~            : Output #~ (Metadata) Stream");
+		if(outputStringsStream) 		System.out.println("--#Strings      : Output #Strings Stream");
+		if(outputBlobStream)			System.out.println("--#Blob         : Output #Blob Stream");
+		if(outputGuidStream)			System.out.println("--#GUID         : Output #GUID Stream");
+		if(outputUserStringStream)		System.out.println("--#US           : Output #US (UserString) Stream");
+		
+		System.out.println();
+			
+		
+		if(verbose) FacileReflector.getFacileLogHandler().SetIntermediate(true);
 		
 		//create a new FacileReflector :)
 		FacileReflector facileReflector = null;
 		try {
-			if(args.length==1)
-				facileReflector = Facile.load(args[0]);
+			if(pdbPath==null)
+				facileReflector = Facile.load(assemblyPath);
 			else
-				facileReflector = Facile.load(args[0], args[1]);
+				facileReflector = Facile.load(assemblyPath, pdbPath);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
 		}		
 
-		//System.out.println(facileReflector.getStringsStream());
-		//System.out.println(facileReflector.getBlobStream());
-		//System.out.println(facileReflector.getGuidStream());
-		//System.out.println(facileReflector.getUserStringStream());
-		
-		//System.out.println(facileReflector.getMetaModel());
-		//System.out.println();
-		System.out.println(FacileReflector.getFacileLogHandler());
-		
+		if(outputMetadataStream) 		System.out.println(facileReflector.getMetadataStream());
+		if(outputStringsStream) 		System.out.println(facileReflector.getStringsStream());
+		if(outputBlobStream) 			System.out.println(facileReflector.getBlobStream());
+		if(outputGuidStream) 			System.out.println(facileReflector.getGuidStream());
+		if(outputUserStringStream) 		System.out.println(facileReflector.getUserStringStream());
 		
 		Assembly assembly = null;
 		try {
 			assembly = facileReflector.loadAssembly();
 			
 			if(assembly!=null) {
-				System.out.println(assembly.toExtendedString());
-				ILAsmRenderer renderer = new ILAsmRenderer(facileReflector);
-				renderer.renderSourceFilesToDirectory(assembly, System.getProperty("user.dir"));
-				System.out.println("Generated decompiled files in: " + System.getProperty("user.dir"));
+				
+				if(assemblyOverview) {
+					System.out.println(assembly.toExtendedString());
+				}
+				
+				if(createIlOutput) {
+				  ILAsmRenderer renderer = new ILAsmRenderer(facileReflector);
+				  renderer.renderSourceFilesToDirectory(assembly, System.getProperty("user.dir"));
+				  System.out.println("Generated decompiled files in: " + System.getProperty("user.dir"));
+				}
+				
 			} else {
-				System.out.println("File contains only resources:");
-				if(facileReflector.getStringsStream()!=null)
-					System.out.println(facileReflector.getStringsStream());
-				if(facileReflector.getBlobStream()!=null)
-					System.out.println(facileReflector.getBlobStream());
-				if(facileReflector.getGuidStream()!=null)
-					System.out.println(facileReflector.getGuidStream());
-				if(facileReflector.getUserStringStream()!=null)
-					System.out.println(facileReflector.getUserStringStream());
+				if(assemblyOverview) {
+					System.out.println("File contains only resources.");
+				}
+
 			}
 		} catch (DotNetContentNotFoundException e) {
 			e.printStackTrace();
@@ -156,6 +207,14 @@ public class Facile {
 			return;
 		}
 		
+		if(log) System.out.println(FacileReflector.getFacileLogHandler());
+		
+		System.out.println("Done.");
+	}
+
+	private static void printUsageString() {
+		//TODO: extend to match current functionality
+		System.out.println("usage:\n\tjava Facile ASSEMBLY_PATH [PDB_PATH]");
 	}
 	
 	/**

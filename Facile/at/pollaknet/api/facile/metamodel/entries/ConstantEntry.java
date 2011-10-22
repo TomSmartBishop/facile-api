@@ -8,7 +8,7 @@ import at.pollaknet.api.facile.renderer.LanguageRenderer;
 import at.pollaknet.api.facile.symtab.symbols.Constant;
 import at.pollaknet.api.facile.util.ArrayUtils;
 
-public class ConstantEntry implements RenderableCilElement, Constant {
+public class ConstantEntry extends Constant implements RenderableCilElement {
 
 	private int type;
 	private IHasConstant parent;

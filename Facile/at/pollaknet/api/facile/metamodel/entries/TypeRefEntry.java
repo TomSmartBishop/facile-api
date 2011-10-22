@@ -220,6 +220,4 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 		return true;
 	}
 
-
-
 }
