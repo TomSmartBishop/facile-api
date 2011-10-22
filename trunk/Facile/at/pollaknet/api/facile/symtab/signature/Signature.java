@@ -17,13 +17,12 @@ import at.pollaknet.api.facile.metamodel.entries.TypeSpecEntry;
 import at.pollaknet.api.facile.symtab.BasicTypesDirectory;
 import at.pollaknet.api.facile.symtab.TypeInstance;
 import at.pollaknet.api.facile.symtab.TypeKind;
-import at.pollaknet.api.facile.symtab.symbols.Type;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.symtab.symbols.TypeSpec;
 import at.pollaknet.api.facile.util.ArrayUtils;
 import at.pollaknet.api.facile.util.ByteReader;
 
-public abstract class Signature implements TypeKind {
+public abstract class Signature extends TypeKind {
 
 	public final static int ELEMENT_TYPE_MODIFIER 		= 0x40; //Or’d with following element types
 	public final static int ELEMENT_TYPE_SENTINEL 		= 0x41; //Sentinel for vararg method signature

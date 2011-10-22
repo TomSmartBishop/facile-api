@@ -3,7 +3,7 @@ package at.pollaknet.api.facile.symtab.symbols;
 import at.pollaknet.api.facile.symtab.TypeKind;
 
 
-public interface Constant extends TypeKind {
+public abstract class Constant extends TypeKind {
 
 	/**
 	 * Returns the ELEMENT_TYPE of the stored value as number.
@@ -21,6 +21,6 @@ public interface Constant extends TypeKind {
 	
 	public abstract int hashCode();
 
-	int compareTo(Constant c);
+	public abstract int compareTo(Constant c);
 	
 }

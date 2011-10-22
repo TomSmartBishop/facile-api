@@ -3,6 +3,7 @@ package at.pollaknet.api.facile.symtab;
 import java.util.Arrays;
 
 import at.pollaknet.api.facile.symtab.symbols.Instance;
+import at.pollaknet.api.facile.symtab.symbols.Type;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.util.ArrayUtils;
 
@@ -26,26 +27,7 @@ public class TypeInstance implements Instance {
 	
 	//used if it is a boxed type instance
 	private TypeInstance boxedTypeInstance;
-	
-	//These are the basic numeric value types which are getting
-	//represented as a number in the toString method.
-	private static int [] numericTypes = new int [] {
-		TypeKind.ELEMENT_TYPE_BOOLEAN,
-		TypeKind.ELEMENT_TYPE_CHAR,
-		TypeKind.ELEMENT_TYPE_I1,
-		TypeKind.ELEMENT_TYPE_U1,
-		TypeKind.ELEMENT_TYPE_I2,
-		TypeKind.ELEMENT_TYPE_U2,
-		TypeKind.ELEMENT_TYPE_I4,
-		TypeKind.ELEMENT_TYPE_U4,
-		TypeKind.ELEMENT_TYPE_I8,
-		TypeKind.ELEMENT_TYPE_U8,
-		TypeKind.ELEMENT_TYPE_R4,
-		TypeKind.ELEMENT_TYPE_R8,
-		TypeKind.ELEMENT_TYPE_I,
-		TypeKind.ELEMENT_TYPE_U
-	};
-	
+
 	//private constructor to set the type reference
 	private TypeInstance(TypeRef typeRef) {
 		this.typeRef = typeRef;
@@ -213,7 +195,7 @@ public class TypeInstance implements Instance {
 					buffer.append(getStringValue());
 				}
 			} else {
-				if(getValue()==0 && !ArrayUtils.contains(numericTypes, getTypeRef().getElementTypeKind())) {
+				if(getValue()==0 && !ArrayUtils.contains(TypeKind.NUMERIC_TYPES, getTypeRef().getElementTypeKind())) {
 					buffer.append("null");
 				} else {
 					buffer.append(getValue());
@@ -264,6 +246,18 @@ public class TypeInstance implements Instance {
 				other.typeRef.getFullQualifiedName()))
 			return false;
 		return true;
+	}
+
+	@Override
+	public boolean isPotentialValueType() {
+		Type type = typeRef.getType();
+		if(type!=null) {
+			return type.getElementTypeKind()==TypeKind.ELEMENT_TYPE_VALUETYPE || type.isInheritedFrom("System.ValueType");
+		}
+		
+		if(BasicTypesDirectory.getTypeKindByString(typeRef)!=0) return false;
+		
+		return typeRef.getTypeSpec()==null&&boxedTypeInstance==null&&array==null&&stringValue==null;
 	}
 
 	

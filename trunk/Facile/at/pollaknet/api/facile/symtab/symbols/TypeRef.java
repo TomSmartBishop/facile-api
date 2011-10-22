@@ -1,6 +1,5 @@
 package at.pollaknet.api.facile.symtab.symbols;
 
-import at.pollaknet.api.facile.symtab.TypeKind;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.ResolutionScope;
 import at.pollaknet.api.facile.symtab.symbols.meta.AttributableSymbol;
 
@@ -14,7 +13,7 @@ import at.pollaknet.api.facile.symtab.symbols.meta.AttributableSymbol;
  * @author Thomas Pollak
  * <p/>Email: <i>http://code.google.com/p/facile-api/people/detail?u=103590059941737035763</i>
  */
-public interface TypeRef extends TypeKind, AttributableSymbol,
+public interface TypeRef extends AttributableSymbol,
 		FullQualifiableSymbol, Comparable<TypeRef> {
 
 	/**

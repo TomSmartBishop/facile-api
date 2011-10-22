@@ -149,7 +149,7 @@ public class AssemblyEntry extends AbstractAttributable implements
 	public String toExtendedString() {
 		StringBuffer buffer = new StringBuffer(2048);
 				
-		buffer.append("Assembly:\n");
+//		buffer.append("Assembly:\n");
 		
 		if( getDeclarativeSecurity()!=null ) {
 			//IMPROVE: uniform string representation

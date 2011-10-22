@@ -33,6 +33,15 @@ public class FacileLogHandler extends Handler {
 		this();
 		this.intermediate = intermediate;
 	}
+	
+	/**
+	 * Enable or disable intermediate mode.
+	 * @param intermediate Set to {@code true} if the log messages
+	 * should appear on the console.
+	 */
+	public void SetIntermediate(boolean intermediate) {
+		this.intermediate = intermediate;
+	}
 
 	/*
 	 * (non-Javadoc)

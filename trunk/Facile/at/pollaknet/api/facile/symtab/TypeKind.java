@@ -3,7 +3,7 @@ package at.pollaknet.api.facile.symtab;
 /**
  * Defines all element (basic) types of .Net.
  */
-public interface TypeKind {
+public class TypeKind {
 
 	public final static int ELEMENT_TYPE_END 			= 0x00; //Marks end of a list
 	public final static int ELEMENT_TYPE_VOID 			= 0x01;
@@ -37,5 +37,25 @@ public interface TypeKind {
 	public final static int ELEMENT_TYPE_CMOD_REQD 		= 0x1f; //Required modifier : followed by a TypeDef or TypeRef token
 	public final static int ELEMENT_TYPE_CMOD_OPT 		= 0x20; //Optional modifier : followed by a TypeDef or TypeRef token
 	public final static int ELEMENT_TYPE_INTERNAL 		= 0x21; //Implemented within the CLI
+	
+	//TODO: Consider moving this to the BasicTypeDirectory
+	//These are the basic numeric value types which are getting
+	//represented as a number in the toString method.
+	public final static int [] NUMERIC_TYPES = new int [] {
+		ELEMENT_TYPE_BOOLEAN,
+		ELEMENT_TYPE_CHAR,
+		ELEMENT_TYPE_I1,
+		ELEMENT_TYPE_U1,
+		ELEMENT_TYPE_I2,
+		ELEMENT_TYPE_U2,
+		ELEMENT_TYPE_I4,
+		ELEMENT_TYPE_U4,
+		ELEMENT_TYPE_I8,
+		ELEMENT_TYPE_U8,
+		ELEMENT_TYPE_R4,
+		ELEMENT_TYPE_R8,
+		ELEMENT_TYPE_I,
+		ELEMENT_TYPE_U
+	};
 
 }

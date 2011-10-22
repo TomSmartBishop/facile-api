@@ -181,59 +181,70 @@ public class BasicTypesDirectory {
 	}
 	
 	/**
+	 * Static helper method to get the type kind of a RefType, without using the directory. 
+	 * 
+	 * @param typeDefOrRef A type definition or reference to look up in the directory.
+	 * 
+	 * @return A type kind as int, 0 in case of no match.
+	 */
+	public static int getTypeKindByString(TypeRef typeDefOrRef) {
+		
+		//compare the full qualified name in order to get sure,
+		//that it is really one of the basic data types
+		if(typeDefOrRef.getFullQualifiedName().equals("System.String")) {
+			return TypeKind.ELEMENT_TYPE_STRING;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Boolean")) {
+			return TypeKind.ELEMENT_TYPE_BOOLEAN;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Char")) {
+			return TypeKind.ELEMENT_TYPE_CHAR;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.SByte")) {
+			return TypeKind.ELEMENT_TYPE_I1;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Byte")) {
+			return TypeKind.ELEMENT_TYPE_U1;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Int16")) {
+			return TypeKind.ELEMENT_TYPE_I2;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.UInt16")) {
+			return TypeKind.ELEMENT_TYPE_U2;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Int32")) {
+			return TypeKind.ELEMENT_TYPE_I4;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.UInt32")) {
+			return TypeKind.ELEMENT_TYPE_U4;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Int64")) {
+			return TypeKind.ELEMENT_TYPE_U8;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.UInt64")) {
+			return TypeKind.ELEMENT_TYPE_U8;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.TypedReference")) {
+			return TypeKind.ELEMENT_TYPE_TYPEDBYREF;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Void")) {
+			return TypeKind.ELEMENT_TYPE_VOID;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Object")) {
+			return TypeKind.ELEMENT_TYPE_OBJECT;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Single")) {
+			return TypeKind.ELEMENT_TYPE_R4;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Double")) {
+			return TypeKind.ELEMENT_TYPE_R8;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Type")) {
+			return Signature.UNNAMED_SYSTEM_TYPE;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.IntPtr")) {
+			return TypeKind.ELEMENT_TYPE_I;
+		} else if(typeDefOrRef.getFullQualifiedName().equals("System.UIntPtr")) {
+			return TypeKind.ELEMENT_TYPE_U;
+		}
+		
+		return 0;
+	}
+	
+	/**
 	 * Returns the referenced data type of the basic type directory of the same
 	 * type as specified which has been specified. 
 	 * 
-	 * @param typeDefOrRef A type definition or reference to llok up in the directory.
+	 * @param typeDefOrRef A type definition or reference to look up in the directory.
 	 * 
 	 * @return A reference to the registered version of he specified data type.
 	 */
 	public TypeRefEntry getRegisteredType(TypeRefEntry typeDefOrRef) {
 
-		int typeIdentifier = 0;
-		
-		//compare the full qualified name in order to get sure,
-		//that it is really one of the basic data types
-		if(typeDefOrRef.getFullQualifiedName().equals("System.String")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_STRING;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Boolean")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_BOOLEAN;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Char")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_CHAR;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.SByte")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_I1;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Byte")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_U1;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Int16")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_I2;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.UInt16")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_U2;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Int32")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_I4;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.UInt32")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_U4;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Int64")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_U8;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.UInt64")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_U8;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.TypedReference")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_TYPEDBYREF;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Void")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_VOID;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Object")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_OBJECT;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Single")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_R4;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Double")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_R8;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Type")) {
-			typeIdentifier = Signature.UNNAMED_SYSTEM_TYPE;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.IntPtr")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_I;
-		} else if(typeDefOrRef.getFullQualifiedName().equals("System.UIntPtr")) {
-			typeIdentifier = TypeKind.ELEMENT_TYPE_U;
-		}
-		
+		int typeIdentifier = getTypeKindByString(typeDefOrRef);		
 		TypeRefEntry type = typeRefs.get(new Integer(typeIdentifier));
 		
 		return type==null?typeDefOrRef:type;
