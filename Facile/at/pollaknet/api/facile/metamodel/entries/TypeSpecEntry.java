@@ -70,27 +70,46 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 		return String.format("TypeSpec: %s ResoltionScope: %s",
 				getFullQualifiedName(),resolutionScope==null?"[not set]":resolutionScope.getName());
 	}
-
+	
+	@Override
+	public String getNamespace() {
+		if(namespace==null && enclosedType!=null) return enclosedType.getNamespace();
+		return namespace;
+	}
+	
 	@Override
 	public String getName() {
+		if(name==null && enclosedType!=null) return enclosedType.getName();
+		return name;
+	}
+	
+	@Override
+	public String getFullQualifiedName() {
+		return getNamespace() + "." + getName();
+	}
+
+	@Override
+	public String getExtName() {
 		StringBuffer buffer = new StringBuffer();
 		
-		if(super.getName()!=null) {
-			buffer.append(super.getName());
+		if(getName()!=null) {
+			buffer.append(getName());
 		} else if(enclosedType!=null) {
 
+			TypeSpec enclosedTypeSpec = enclosedType.getTypeSpec();
+			
 			if(isBasicType()) {
-				buffer.append(enclosedType.getName());
+				buffer.append(enclosedTypeSpec!=null?enclosedTypeSpec.getExtName():enclosedType.getName());
 			} else if(isSingleDimensionalZeroBasedArray()) {
-				buffer.append(enclosedType.getName());
+				buffer.append(enclosedTypeSpec!=null?enclosedTypeSpec.getExtName():enclosedType.getName());
 				buffer.append("[]");
 			} else if(isGeneralArray()) {
-				buffer.append(enclosedType.getName());
+				buffer.append(enclosedTypeSpec!=null?enclosedTypeSpec.getExtName():enclosedType.getName());
 				buffer.append("[");
 				for(int i=1;i<getArrayShape().getRank();i++) buffer.append(",");
 				buffer.append("]");
 			} else {
-				buffer.append(enclosedType.getName());
+				buffer.append(enclosedTypeSpec!=null?enclosedTypeSpec.getExtName():enclosedType.getName());
 				if(isTypeByRef()) buffer.append(" &");
 				if(isPointer()) buffer.append(" *");
 				
@@ -102,7 +121,7 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 							buffer.append(getResolutionScope().getName());
 							buffer.append("] ");
 						}
-						buffer.append(spec.getName());
+						buffer.append(spec.getExtName());
 						buffer.append(")");
 					}
 				}
@@ -115,7 +134,7 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 							buffer.append(getResolutionScope().getName());
 							buffer.append("] ");
 						}
-						buffer.append(spec.getName());
+						buffer.append(spec.getExtName());
 						buffer.append(")");
 					}
 				}
@@ -132,7 +151,8 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 			for(int i=0;i<genericArguments.length;i++) {
 				if(i!=0) buffer.append(", ");
 				buffer.append("<");
-				buffer.append(genericArguments[i].getName());
+				String shortName = genericArguments[i].getShortSystemName();
+				buffer.append(shortName!=null?shortName:genericArguments[i].getName());
 				buffer.append(">");
 			}
 		}
@@ -141,25 +161,27 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 	}
 	
 	@Override
-	public String getFullQualifiedName() {
+	public String getExtFullQualifiedName() {
 		StringBuffer buffer = new StringBuffer();
 		
-		if(super.getName()!=null) {
-			buffer.append(super.getFullQualifiedName());
+		if(name!=null) {
+			buffer.append(getFullQualifiedName());
 		} else if(enclosedType!=null) {
 
+			TypeSpec enclosedTypeSpec = enclosedType.getTypeSpec();
+			
 			if(isBasicType()) {
-				buffer.append(enclosedType.getFullQualifiedName());
+				buffer.append(enclosedTypeSpec!=null?enclosedTypeSpec.getExtFullQualifiedName():enclosedType.getFullQualifiedName());
 			} else if(isSingleDimensionalZeroBasedArray()) {
-				buffer.append(enclosedType.getFullQualifiedName());
+				buffer.append(enclosedTypeSpec!=null?enclosedTypeSpec.getExtFullQualifiedName():enclosedType.getFullQualifiedName());
 				buffer.append("[]");
 			} else if(isGeneralArray()) {
-				buffer.append(enclosedType.getFullQualifiedName());
+				buffer.append(enclosedTypeSpec!=null?enclosedTypeSpec.getExtFullQualifiedName():enclosedType.getFullQualifiedName());
 				buffer.append("[");
 				for(int i=1;i<getArrayShape().getRank();i++) buffer.append(",");
 				buffer.append("]");
 			} else {
-				buffer.append(enclosedType.getFullQualifiedName());
+				buffer.append(enclosedTypeSpec!=null?enclosedTypeSpec.getExtFullQualifiedName():enclosedType.getFullQualifiedName());
 				if(isTypeByRef()) buffer.append(" &");
 				if(isPointer()) buffer.append(" *");
 				
@@ -171,7 +193,7 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 							buffer.append(getResolutionScope().getName());
 							buffer.append("] ");
 						}
-						buffer.append(spec.getFullQualifiedName());
+						buffer.append(spec.getExtFullQualifiedName());
 						buffer.append(")");
 					}
 				}
@@ -184,7 +206,7 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 							buffer.append(getResolutionScope().getName());
 							buffer.append("] ");
 						}
-						buffer.append(spec.getFullQualifiedName());
+						buffer.append(spec.getExtFullQualifiedName());
 						buffer.append(")");
 					}
 				}
