@@ -122,7 +122,7 @@ public class BasicTypesDirectory {
 			return true;
 		} else if(typeDefOrRef.getFullQualifiedName().equals("System.UInt16")) {
 			typeDefOrRef.setElementKind(TypeKind.ELEMENT_TYPE_U2);
-			typeDefOrRef.setShortSystemName("uin16");
+			typeDefOrRef.setShortSystemName("uint16");
 			typeRefs.put(TypeKind.ELEMENT_TYPE_U2, typeDefOrRef);
 			return true;
 		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Int32")) {
