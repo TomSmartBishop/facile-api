@@ -54,7 +54,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 
 	private FacileReflector reflector;
 	private int programCounter;
-	
+	private String newLine;
 	
 	protected FacileReflector getReflector() {
 		return reflector;
@@ -62,6 +62,14 @@ public class ILAsmRenderer implements LanguageRenderer {
 	
 	public ILAsmRenderer(FacileReflector reflector) {
 		this.reflector = reflector;
+		newLine = System.getProperty("line.separator");
+	}
+	
+	private String addTab(String block) {
+		return block.replaceAll(newLine, newLine + "  ");
+	}
+	private String addTab(String block, String prefix) {
+		return block.replaceAll(newLine, newLine + "  " + prefix);
 	}
 	
 	@Override
@@ -71,10 +79,12 @@ public class ILAsmRenderer implements LanguageRenderer {
 		StringBuffer buffer = new StringBuffer(256);
 		buffer.append(".assembly ");
 		buffer.append(assembly.getName());
-		buffer.append("\n{");
+		buffer.append(newLine);
+		buffer.append("{");
+		buffer.append(newLine);
 		
 		//append the version string
-		buffer.append("\n  .ver ");
+		buffer.append("  .ver ");
 		buffer.append(assembly.getMajorVersion());
 		buffer.append(":");
 		buffer.append(assembly.getMinorVersion());
@@ -83,16 +93,18 @@ public class ILAsmRenderer implements LanguageRenderer {
 		buffer.append(":");
 		buffer.append(assembly.getBuildNumber());
 		
-		buffer.append(String.format("\n  .hash algorithm 0x%08x", assembly.getHasAlgorithmId()));
+		buffer.append(String.format("%s  .hash algorithm 0x%08x", newLine, assembly.getHasAlgorithmId()));
 		
 		if(assembly.getCulture()!=null && !assembly.getCulture().equals("")) {
-			buffer.append("\n  .locale \"");
+			buffer.append(newLine);
+			buffer.append("  .locale \"");
 			buffer.append(assembly.getCulture());
 			buffer.append("\"");
 		}
 		
 		if(assembly.getPublicKey()!=null) {
-			buffer.append("\n  .publickey = (");
+			buffer.append(newLine);
+			buffer.append("  .publickey = (");
 			buffer.append(ArrayUtils.formatByteArray(assembly.getPublicKey()));
 			buffer.append(")");
 		}
@@ -100,15 +112,20 @@ public class ILAsmRenderer implements LanguageRenderer {
 		for(CustomAttribute c: assembly.getCustomAttributes()) {
 			if(c.getTypeRef().getFullQualifiedName().equals("System.Diagnostics.DebuggableAttribute"))
 			{
-				buffer.append("\n  //automatically generated, do not uncomment\n  //");
-				buffer.append(render(c, new ArrayList<Integer>()));
+				buffer.append(newLine);
+				buffer.append("  //automatically generated, do not uncomment");
+				buffer.append(newLine);
+				buffer.append("  //");
+				buffer.append(addTab( render(c, new ArrayList<Integer>()), "//" ));
 			} else {
-				buffer.append("\n  ");
+				buffer.append(newLine);
+				buffer.append("  ");
 				buffer.append(render(c));
 			}
 		}
 		
-		buffer.append("\n}");
+		buffer.append(newLine);
+		buffer.append("}");
 		
 		return buffer.toString();
 	}
@@ -120,10 +137,12 @@ public class ILAsmRenderer implements LanguageRenderer {
 		StringBuffer buffer = new StringBuffer(256);
 		buffer.append(".assembly extern ");
 		buffer.append(assemblyRef.getName());
-		buffer.append("\n{");
+		buffer.append(newLine);
+		buffer.append("{");
 		
 		//append version string
-		buffer.append("\n  .ver ");
+		buffer.append(newLine);
+		buffer.append("  .ver ");
 		buffer.append(assemblyRef.getMajorVersion());
 		buffer.append(":");
 		buffer.append(assemblyRef.getMinorVersion());
@@ -133,29 +152,34 @@ public class ILAsmRenderer implements LanguageRenderer {
 		buffer.append(assemblyRef.getBuildNumber());
 		
 		if(assemblyRef.getCulture()!=null && !assemblyRef.getCulture().equals("")) {
-			buffer.append("\n  .locale \"");
+			buffer.append(newLine);
+			buffer.append("  .locale \"");
 			buffer.append(assemblyRef.getCulture());
 			buffer.append("\"");
 		}
 		
 		if(assemblyRef.getPublicKey()!=null) {
-			buffer.append("\n  .publickeytoken = (");
+			buffer.append(newLine);
+			buffer.append("  .publickeytoken = (");
 			buffer.append(ArrayUtils.formatByteArray(assemblyRef.getPublicKey()));
 			buffer.append(")");
 		}
 		
 		if(assemblyRef.getHashValue()!=null) {
-			buffer.append("\n  .hash = (");
+			buffer.append(newLine);
+			buffer.append("  .hash = (");
 			buffer.append(ArrayUtils.formatByteArray(assemblyRef.getHashValue()));
 			buffer.append(")");
 		}
 		
 		for(CustomAttribute c: assemblyRef.getCustomAttributes()) {
-			buffer.append("\n  ");
+			buffer.append(newLine);
+			buffer.append("  ");
 			buffer.append(render(c));
 		}
 		
-		buffer.append("\n}");
+		buffer.append(newLine);
+		buffer.append("}");
 		
 		return buffer.toString();
 	}
@@ -174,16 +198,16 @@ public class ILAsmRenderer implements LanguageRenderer {
 		//TODO: add .subsystem
 		//TODO: add .corflags
 		
-		buffer.append(String.format("\n// Generation: 0x%04x", module.getGeneration()));
+		buffer.append(String.format("%s// Generation: 0x%04x", newLine, module.getGeneration()));
 		if(module.getEncId()!=null)
-			buffer.append(String.format("\n// EncId:{%s}",ArrayUtils.formatByteArray(module.getEncId())));
+			buffer.append(String.format("%s// EncId:{%s}", newLine, ArrayUtils.formatByteArray(module.getEncId())));
 		if(module.getEncBaseId()!=null)
-			buffer.append(String.format("\n// EncBaseId:{%s}",ArrayUtils.formatByteArray(module.getEncBaseId())));
-		buffer.append(String.format("\n// MVID:{%s}", ArrayUtils.formatByteArray(module.getMvId())));
+			buffer.append(String.format("%s// EncBaseId:{%s}", newLine, ArrayUtils.formatByteArray(module.getEncBaseId())));
+		buffer.append(String.format("%s// MVID:{%s}", newLine, ArrayUtils.formatByteArray(module.getMvId())));
 
 		//custom module attributes
 		for(CustomAttribute c: module.getCustomAttributes()) {
-			buffer.append("\n");
+			buffer.append(newLine);
 			buffer.append(render(c));
 		}
 	
@@ -246,7 +270,9 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		Implementation impl = exportedType.getImplementation();
 		
-		buffer.append(" {\n  ");
+		buffer.append(" {");
+		buffer.append(newLine);
+		buffer.append("  ");
 		
 		if(impl.getFileRef()!=null) {
 			buffer.append(renderAsReference(impl.getFileRef()));
@@ -259,11 +285,13 @@ public class ILAsmRenderer implements LanguageRenderer {
 		} 
 		
 		for(CustomAttribute c: exportedType.getCustomAttributes()) {
-			buffer.append("\n  ");
+			buffer.append(newLine);
+			buffer.append("  ");
 			buffer.append(render(c));
 		}
 		
-		buffer.append("\n}");
+		buffer.append(newLine);
+		buffer.append("}");
 		
 		return buffer.toString();
 	}
@@ -288,7 +316,9 @@ public class ILAsmRenderer implements LanguageRenderer {
 		Implementation impl = manifestResource.getImplementation();
 		
 		if(impl!=null || manifestResource.getCustomAttributes().length>0) {
-			buffer.append(" {\n  ");
+			buffer.append(" {");
+			buffer.append(newLine);
+			buffer.append("  ");
 			
 			if(impl!=null) {
 				if(impl.getFileRef()!=null) {
@@ -298,11 +328,13 @@ public class ILAsmRenderer implements LanguageRenderer {
 				}
 			}
 			for(CustomAttribute c: manifestResource.getCustomAttributes()) {
-				buffer.append("\n  ");
+				buffer.append(newLine);
+				buffer.append("  ");
 				buffer.append(render(c));
 			}
 			
-			buffer.append("\n}");
+			buffer.append(newLine);
+			buffer.append("}");
 		}
 		
 		return buffer.toString();
@@ -352,6 +384,8 @@ public class ILAsmRenderer implements LanguageRenderer {
 			
 			if(indicesPresent&&valueTypeIndices.contains(argumentIndex)) {
 				buffer.append("valuetype ");
+			} else if(instance.getTypeRef().getShortSystemName()==null) {
+				buffer.append("class ");
 			}
 				
 			buffer.append(renderAsReference(instance.getTypeRef()));
@@ -362,14 +396,14 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		buffer.append(") = { ");
 		
-		//reset param relative values
-		hasEntries = false;
 		argumentIndex = 0;
 		
 		//render fixed arguments
-		for(Instance instance: customAttribute.getFixedArguments()) {
-			if(hasEntries) buffer.append(", ");
+		for(Instance instance: fixedArguments) {
+			if(argumentIndex>0) buffer.append(newLine);
+			buffer.append("  ");
 			
+			//TODO: check again for correctness
 			if(indicesPresent&&valueTypeIndices.contains(argumentIndex)) {
 				buffer.append("int32("+instance.getValue()+")");
 			} else {
@@ -384,7 +418,8 @@ public class ILAsmRenderer implements LanguageRenderer {
 
 		//render argument fields
 		for(Pair<String, Instance> pair: customAttribute.getNamedFields()) {
-			if(hasEntries) buffer.append(", ");
+			if(argumentIndex>0) buffer.append(newLine);
+			buffer.append("  ");
 			
 			Instance instance = pair.value;
 			String typeName = render(instance.getTypeRef());
@@ -392,7 +427,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 			if(indicesPresent&&valueTypeIndices.contains(argumentIndex)) {
 				buffer.append(String.format("field %s '%s' = int32(%d)", typeName, pair.key, instance.getValue()));
 			} else {
-				buffer.append(String.format("field %s '%s' = %s(%s)", typeName, pair.key, typeName, instance));
+				buffer.append(String.format("field %s '%s' = %s", typeName, pair.key, render(instance)));
 				
 				hasEntries = true;
 				
@@ -404,7 +439,8 @@ public class ILAsmRenderer implements LanguageRenderer {
 	
 		//render argument properties
 		for(Pair<String, Instance> pair: customAttribute.getNamedProperties()) {
-			if(hasEntries) buffer.append(", ");
+			if(argumentIndex>0) buffer.append(newLine);
+			buffer.append("  ");
 			
 			Instance instance = pair.value;
 			String typeName = render(instance.getTypeRef());
@@ -412,7 +448,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 			if(indicesPresent&&valueTypeIndices.contains(argumentIndex)) {
 				buffer.append(String.format("property %s '%s' = int32(%d)", typeName, pair.key, instance.getValue()));
 			} else {
-				buffer.append(String.format("property %s '%s' = %s(%s)", typeName, pair.key, typeName, instance));
+				buffer.append(String.format("property %s '%s' = %s", typeName, pair.key, render(instance)));
 				hasEntries = true;
 				
 				//memorize potential value types
@@ -420,15 +456,20 @@ public class ILAsmRenderer implements LanguageRenderer {
 			}
 			argumentIndex++;
 		}
-			
-		buffer.append(" }");
+		
+		if(argumentIndex>1)
+			buffer.append(newLine + "}");
+		else
+			buffer.append("  }");
 	
 		//this is the normal case of no re-interpretation
 		if(indicesPresent||valueTypeIndices.isEmpty()) {
 			return buffer.toString();
 		}
 	
-		return render(customAttribute, valueTypeIndices) + "//re-interpreted, see original line below:\n//" + buffer.toString();		
+		return render(customAttribute, valueTypeIndices) +
+				" //re-interpreted, see original lines below:" + newLine + "//" +
+				buffer.toString().replace(newLine, newLine+"//");		
 	}
 
 	private String renderClassRef(TypeRef type) {
@@ -611,16 +652,21 @@ public class ILAsmRenderer implements LanguageRenderer {
 			}
 		}
 		
-		buffer.append("\n{");
+		buffer.append(newLine);
+		buffer.append("{");
 		
 		buffer.append(render(type.getClassLayout()));
 		
 		for(CustomAttribute c:type.getCustomAttributes()) {
-			buffer.append("\n  ");
-			buffer.append(render(c).replaceAll("\n", "\n  "));
+			buffer.append(newLine);
+			buffer.append("  ");
+			buffer.append(addTab(render(c)));
 		}
-					
-		buffer.append("\n  // ...\n}");
+		
+		buffer.append(newLine);
+		buffer.append("  // ..."); //TODO: Thinks about a betters solution
+		buffer.append(newLine);
+		buffer.append("}");
 		
 		return buffer.toString();
 	}
@@ -722,38 +768,44 @@ public class ILAsmRenderer implements LanguageRenderer {
 			}
 		}
 		
-		buffer.append("\n{");
+		buffer.append(newLine);
+		buffer.append("{");
 		
 		buffer.append(render(type.getClassLayout()));
 		
 		for(CustomAttribute c:type.getCustomAttributes()) {
-			buffer.append("\n  ");
-			buffer.append(render(c).replaceAll("\n", "\n  "));
+			buffer.append(newLine);
+			buffer.append("  ");
+			buffer.append(addTab(render(c)));
 		}
 		
 		for(Property p:type.getProperties()) {
-			buffer.append("\n  ");
-			buffer.append(render(p).replaceAll("\n", "\n  "));
-			buffer.append("\n");
+			buffer.append(newLine);
+			buffer.append("  ");
+			buffer.append(addTab(render(p)));
+			buffer.append(newLine);
 		}
 		
 		for(Field f:type.getFields()) {
-			buffer.append("\n  ");
-			buffer.append(render(f).replaceAll("\n", "\n  "));
+			buffer.append(newLine);
+			buffer.append("  ");
+			buffer.append(addTab(render(f)));
 		}
 		
-		buffer.append("\n");
+		buffer.append(newLine);
 		
 		for(Method m:type.getMethods()) {
-			buffer.append("\n  ");
-			buffer.append(render(m).replaceAll("\n", "\n  "));
-			buffer.append("\n");
+			buffer.append(newLine);
+			buffer.append("  ");
+			buffer.append(addTab(render(m)));
+			buffer.append(newLine);
 		}
 		
 		for(Type t:type.getEnclosingClasses()) {
-			buffer.append("\n  ");
-			buffer.append(render(t).replaceAll("\n", "\n  "));
-			buffer.append("\n");
+			buffer.append(newLine);
+			buffer.append("  ");
+			buffer.append(addTab(render(t)));
+			buffer.append(newLine);
 		}
 		
 		
@@ -761,7 +813,8 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		//overrides
 		
-		buffer.append("\n}");
+		buffer.append(newLine);
+		buffer.append("}");
 		
 		return buffer.toString();
 	}
@@ -803,28 +856,45 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		buffer.append(property.getName());
 		
-		buffer.append("()\n{");
+		buffer.append("()");
+		buffer.append(newLine);
+		buffer.append("{");
 		
 		for(Method m:property.getMethods()) {
 			String methodRef = renderMethodRef(m);
 
 			if(m.getName().startsWith("get_")) {
-				buffer.append("\n  .get instance ");
+				buffer.append(newLine);
+				buffer.append("  .get instance ");
 			} else if(m.getName().startsWith("set_")) {
-				buffer.append("\n  .set instance ");
+				buffer.append(newLine);
+				buffer.append("  .set instance ");
 			} else {
-				buffer.append("\n  .other ");
+				buffer.append(newLine);
+				buffer.append("  .other ");
 			}
 			buffer.append(renderMethodRef(m));
 		}
 		
-		buffer.append("\n}");
+		buffer.append(newLine);
+		buffer.append("}");
 		
 		return buffer.toString();
 	}
 
+
 	@Override
-	public String render(Parameter parameter) {
+	public String render(Parameter parameter)
+	{
+		return render(parameter, false);
+	}
+	
+	public String renderAsReference(Parameter parameter)
+	{
+		return render(parameter, true);
+	}
+	
+	public String render(Parameter parameter, boolean asReference) {
 		if(parameter==null) return "";
 		
 		StringBuffer buffer = new StringBuffer();
@@ -856,7 +926,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 			buffer.append(render(parameter.getMarshalSignature()));
 		}
 		
-		if(parameter.getName()!=null) {
+		if(!asReference && parameter.getName()!=null) {
 			buffer.append(" ");
 			buffer.append(parameter.getName());
 		}
@@ -870,7 +940,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		return "";
 	}
 
-	public String renderMethodDefSig(Method method) {
+	public String renderMethodDefSig(Method method, boolean asReference) {
 		if(method==null) return "";
 		
 		StringBuffer buffer = new StringBuffer(32);
@@ -896,7 +966,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 //		buffer.append("::");
 		buffer.append(method.getName());
 		
-		buffer.append(render(method.getMethodSignature()));
+		buffer.append(render(method.getMethodSignature(), asReference));
 		
 		return buffer.toString();
 
@@ -904,6 +974,10 @@ public class ILAsmRenderer implements LanguageRenderer {
 	
 	@Override
 	public String render(MethodSignature methodSignature) {
+		return render(methodSignature, false);
+	}
+	
+	public String render(MethodSignature methodSignature, boolean asReference) {
 		if(methodSignature==null) return "";
 		
 		Parameter [] parameter = methodSignature.getParameters();
@@ -919,7 +993,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 				if(parameter[i]!=null) {
 					if(!first) buffer.append(", ");
 				
-					buffer.append(render(parameter[i]));
+					buffer.append(render(parameter[i], asReference));
 					first = false;
 				}
 			}
@@ -1000,7 +1074,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		}
 		//further flags?
 		
-		buffer.append(renderMethodDefSig(method));
+		buffer.append(renderMethodDefSig(method, true));
 		buffer.append(" ");
 		
 		if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_CODE_TYPE_BIT_MASK, Method.IMPL_FLAGS_CODE_TYPE_IL)) {
@@ -1039,41 +1113,27 @@ public class ILAsmRenderer implements LanguageRenderer {
 			buffer.append("noinlining ");
 		}
 		
-		buffer.append("\n{");	
+		buffer.append(newLine);
+		buffer.append("{");	
 		
 		for(CustomAttribute c: method.getCustomAttributes()) {
-			buffer.append("\n  ");
+			buffer.append(newLine);
+			buffer.append("  ");
 			buffer.append(render(c));
 		}
 		
-		buffer.append("\n  ");
-		buffer.append(render(method.getMethodBody(), method.getDebungInformation()).replaceAll("\n", "\n  "));
+		buffer.append(newLine);
+		buffer.append("  ");
+		buffer.append(addTab(render(method.getMethodBody(), method.getDebungInformation())));
 		
-		buffer.append("\n}");
+		buffer.append(newLine);
+		buffer.append("}");
 		
 		return buffer.toString();
 	}
 
 	private String renderMethodRef(Method method) {
-//		StringBuffer buffer = new StringBuffer(32);
-//		MethodSignature signature = method.getMethodSignature();
-//		Parameter returnParameter = signature.getReturnParameter();
-//		
-//		if(returnParameter!=null) {
-//			buffer.append(render(returnParameter));
-//		} else {
-//			buffer.append(renderClassRef(signature.getReturnType()));
-//		}
-//		
-//		buffer.append(" ");
-//		
-//		buffer.append(method.getName());
-//		
-//		buffer.append(render(signature));
-//		
-//		return buffer.toString();
-		
-		return renderMethodDefSig(method);
+		return renderMethodDefSig(method, true);
 	}
 
 	private String render(MethodBody methodBody, DebugInformation debugInformation) {
@@ -1093,28 +1153,33 @@ public class ILAsmRenderer implements LanguageRenderer {
 		if(	methodBody.getMethodToken() == reflector.getCliHeader().getEntryPointToken() &&
 			!ByteReader.testFlags(	reflector.getCliHeader().getFlags(),
 									CliHeader.FLAGS_NATIVE_ENTRY_POINT		)				) {
-			buffer.append("\n.entrypoint ");
+			buffer.append(newLine);
+			buffer.append(".entrypoint ");
 		}
 
-		buffer.append("\n.maxstack ");
+		buffer.append(newLine);
+		buffer.append(".maxstack ");
 		buffer.append(methodBody.getMaxStack());
 		
 		TypeRef[] locals = methodBody.getLocalVars();
 		if(locals!=null && locals.length>0) {
 			if(ByteReader.testFlags(methodBody.getFlags(), MethodBody.FLAGS_INIT_LOCAL)) {
-				buffer.append("\n.locals init(");
+				buffer.append(newLine);
+				buffer.append(".locals init(");
 			} else {
 				//this produces unverifiable code - however it is possible
-				buffer.append("\n.locals(");
+				buffer.append(newLine);
+				buffer.append(".locals(");
 			}
 			int counter = 0;
 			int last = methodBody.getLocalVars().length-1;
 			for(TypeRef type : methodBody.getLocalVars()) {
 				//IMPROVE: Resolve local names - maybe via PDB
-				buffer.append(String.format("\n  [%d] %s %s%s", counter, renderClassRef(type), "local" + counter, counter==last?"":","));
+				buffer.append(String.format("%s  [%d] %s %s%s", newLine, counter, renderClassRef(type), "local" + counter, counter==last?"":","));
 				counter++;
 			}
-			buffer.append("\n)");
+			buffer.append(newLine);
+			buffer.append(")");
 		}
 		
 		int debugIndex = 0;
@@ -1135,7 +1200,8 @@ public class ILAsmRenderer implements LanguageRenderer {
 					info = debugList[debugIndex];
 				}
 				if(info.getProgramCounter()==programCounter) {
-					buffer.append("\n.line ");
+					buffer.append(newLine);
+					buffer.append(".line ");
 					buffer.append(info.getLineNumber());
 					buffer.append(":");
 					buffer.append(info.getColNumber());
@@ -1151,14 +1217,14 @@ public class ILAsmRenderer implements LanguageRenderer {
 			
 			instructionStart = programCounter;
 			programCounter += i.getByteSize();
-			buffer.append(String.format("\nIL_%04x: %s", instructionStart, i.render(this)));	
+			buffer.append(String.format("%sIL_%04x: %s", newLine, instructionStart, i.render(this)));	
 		}
 
 		if(methodBody.getExceptionClauses().length>0) {
-			buffer.append("\n");
+			buffer.append(newLine);
 		}
 		for(ExceptionClause e: methodBody.getExceptionClauses()) {
-			buffer.append(String.format("\n.try IL_%04x to IL_%04x ", e.getTryOffset(), e.getTryOffset() + e.getTryLength()) );
+			buffer.append(String.format("%s.try IL_%04x to IL_%04x ", newLine, e.getTryOffset(), e.getTryOffset() + e.getTryLength()) );
 			long flags = e.getFlags();
 			if(flags == ExceptionClause.FLAGS_CATCH_TYPE) {
 				buffer.append("catch ");
@@ -1208,6 +1274,10 @@ public class ILAsmRenderer implements LanguageRenderer {
 		if(instance.getTypeRef().getElementTypeKind()==TypeKind.ELEMENT_TYPE_BOOLEAN) {
 			return instance.getValue()!=0?"bool(true)":"bool(false)";
 		}
+		
+		if(instance.getBoxedInstance()!=null) {
+			return render(instance.getBoxedInstance());
+		}
 
 		StringBuffer buffer = new StringBuffer();
 		
@@ -1237,32 +1307,35 @@ public class ILAsmRenderer implements LanguageRenderer {
 			return buffer.toString();
 		}
 				
-		if(instance.getBoxedInstance()!=null) {
-			buffer.append(render(instance));
+		//buffer.append("(");
+		boolean isSystemType = typeRef.getFullQualifiedName().equals("System.Type");
+			
+		if(isSystemType) {
+			buffer.append("type (class ");
 		} else {
-			//buffer.append("(");
 			buffer.append(renderAsReference(typeRef));
 			buffer.append("(");
-			
-			String stringValue = instance.getStringValue();
-			if(stringValue!=null) {
-				if(typeRef.getElementTypeKind()==TypeKind.ELEMENT_TYPE_STRING) {
-					buffer.append("'");
-					buffer.append(stringValue);
-					buffer.append("'");
-				} else {
-					buffer.append(stringValue);
-				}
-			} else {
-				long value = instance.getValue();
-				if(value==0 && !ArrayUtils.contains(TypeKind.NUMERIC_TYPES, typeRef.getElementTypeKind())) {
-					buffer.append("null");
-				} else {
-					buffer.append(value);
-				}
-			}
-			buffer.append(")");
 		}
+		
+		String stringValue = instance.getStringValue();
+		if(stringValue!=null) {
+			//if(typeRef.getElementTypeKind()==TypeKind.ELEMENT_TYPE_STRING) {
+				buffer.append("'");
+				buffer.append(stringValue);
+				buffer.append("'");
+			//} else {
+			//	buffer.append(stringValue);
+			//}
+		} else {
+			long value = instance.getValue();
+			if(value==0 && !ArrayUtils.contains(TypeKind.NUMERIC_TYPES, typeRef.getElementTypeKind())) {
+				buffer.append("nullptr");
+			} else {
+				buffer.append(value);
+			}
+		}
+		buffer.append(")");
+	
 		
 		return buffer.toString();
 	}
@@ -1278,29 +1351,28 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		StringBuffer buffer = new StringBuffer(64);
 		
-		buffer.append(".field ");
-
-		buffer.append(renderFieldFlags(field));
-		
-		buffer.append(" ");
-		
-		buffer.append(renderClassRef(field.getTypeRef()));
-		
-		buffer.append(" ");
-		
-		buffer.append(field.getName());
+		buffer.append(String.format(".field %s %s %s", renderFieldFlags(field), renderClassRef(field.getTypeRef()), field.getName()));
 		
 		CustomAttribute [] attributes = field.getCustomAttributes();
 		
-		if(attributes.length>0) {
-			buffer.append("\n{");	
+		//extra handling of backing fields...
+		//if(field.getName().endsWith("k__BackingField'")||field.getTypeRef().getName().contains("e__FixedBuffer")) {
+		//	assert(attributes.length<=1) : "Backing field with unexpected custom attributes";
+		if(attributes.length==1) {
+			buffer.append(newLine);
+			buffer.append(render(field.getCustomAttributes()[0]));
+		} else if(attributes.length>1) {
+			buffer.append(newLine);
+			buffer.append("{");	
 			
 			for(CustomAttribute c: field.getCustomAttributes()) {
-				buffer.append("\n  ");
+				buffer.append(newLine);
+				buffer.append("  ");
 				buffer.append(render(c));
 			}
 		
-			buffer.append("\n}");
+			buffer.append(newLine);
+			buffer.append("}");
 		}
 		
 		return buffer.toString();
@@ -1364,24 +1436,30 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		buffer.append(event.getName());
 		
-		buffer.append("\n{");
+		buffer.append(newLine);
+		buffer.append("{");
 		
 		for(Method m:event.getMethods()) {
 			String methodRef = renderMethodRef(m);
 
 			if(m.getName().startsWith("add_")) {
-				buffer.append("\n  .addon ");
+				buffer.append(newLine);
+				buffer.append("  .addon ");
 			} else if(m.getName().startsWith("remove_")) {
-				buffer.append("\n  .removeon ");
+				buffer.append(newLine);
+				buffer.append("  .removeon ");
 			} else if(m.getName().startsWith("fire_")) {
-				buffer.append("\n  .fire ");
+				buffer.append(newLine);
+				buffer.append("  .fire ");
 			} else {
-				buffer.append("\n  .other ");
+				buffer.append(newLine);
+				buffer.append("  .other ");
 			}
 			buffer.append(renderMethodRef(m));
 		}
 		
-		buffer.append("\n}");
+		buffer.append(newLine);
+		buffer.append("}");
 		
 		return buffer.toString();
 	}
@@ -1398,9 +1476,11 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		StringBuffer buffer = new StringBuffer(32);
 		
-		buffer.append("\n  .size ");
+		buffer.append(newLine);
+		buffer.append("  .size ");
 		buffer.append(classLayout.getClassSize());
-		buffer.append("\n  .pack ");
+		buffer.append(newLine);
+		buffer.append("  .pack ");
 		buffer.append(classLayout.getPackingSize());
 		
 		return buffer.toString();
@@ -1419,20 +1499,23 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		buffer.append(".namespace ");
 		buffer.append(namespace.getFullQualifiedName());
-		buffer.append("\n{");
+		buffer.append(newLine);
+		buffer.append("{");
 		
 		for(TypeRef type :namespace.getTypeRefs()) {
 			if(type.getType()!=null) {
-				buffer.append("\n  ");
+				buffer.append(newLine);
+				buffer.append("  ");
 				if(renderCompact) {
-					buffer.append(renderCompact(type.getType()).replaceAll("\n", "\n  "));
+					buffer.append(addTab(renderCompact(type.getType())));
 				} else {
-					buffer.append(render(type.getType()).replaceAll("\n", "\n  "));
+					buffer.append(addTab(render(type.getType())));
 				}
 			}
 		}
 		
-		buffer.append("\n}");
+		buffer.append(newLine);
+		buffer.append("}");
 		
 		return buffer.toString();
 	}
@@ -1462,6 +1545,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 			buffer.append("]");
 		}
 		
+		//FIXME: generic parameter should use short type names
 		buffer.append(typeSpec.getFullQualifiedName());
 		return buffer.toString();
 	}
@@ -1565,9 +1649,8 @@ public class ILAsmRenderer implements LanguageRenderer {
 		return "unimplemented local sig";
 	}
 
-	@Override
 	public String renderAsReference(MethodSignature methodSignature) {
-		return render(methodSignature);
+		return render(methodSignature, true);
 	}
 	
 	public String renderAsReference(FileRef fileRef) {
@@ -1606,9 +1689,9 @@ public class ILAsmRenderer implements LanguageRenderer {
 
 	@Override
 	public void renderSourceFilesToDirectory(Assembly assembly, String directory) throws IOException {
-		String head = "\n//Decompiled with Facile (" + assembly.getFileName() + ")";
+		String head = newLine + "//Decompiled with Facile (" + assembly.getFileName() + ")";
 		String file = assembly.getName() + ".il";
-		byte [] extraSpace = "\n\n".getBytes();
+		byte [] extraSpace = (newLine + newLine).getBytes("UTF8");
 		
 		if(!directory.endsWith(System.getProperty("file.separator"))) {
 			file = directory + System.getProperty("file.separator") + file;
@@ -1618,25 +1701,27 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		FileOutputStream fos = new FileOutputStream(file);
 		
-		fos.write(head.getBytes());
+		fos.write(head.getBytes("UTF8"));
 		fos.write(extraSpace);
 		
 		for(AssemblyRef ref :assembly.getAssemblyRefs()) {
-			fos.write(render(ref).getBytes());
+			fos.write(render(ref).getBytes("UTF8"));
 			fos.write(extraSpace);
 		}
 		
-		fos.write(render(assembly).getBytes());
+		fos.write(render(assembly).getBytes("UTF8"));
 		fos.write(extraSpace);
 		
-		fos.write(render(assembly.getModule()).getBytes());
+		fos.write(render(assembly.getModule()).getBytes("UTF8"));
 		fos.write(extraSpace);
 		
 		for(Namespace ns :assembly.getModule().getNamespaces()) {
 			if(ns.getName()==null || ns.getName().equals("")) continue;
-			fos.write(render(ns, false).getBytes());
+			fos.write(render(ns, false).getBytes("UTF8"));
 			fos.write(extraSpace);
 		}
+		
+		fos.write(extraSpace);
 		
 		fos.close();
 	}

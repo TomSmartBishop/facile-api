@@ -76,7 +76,14 @@ public class FieldTable extends AbstractTable{
 		FieldEntry e = (FieldEntry) entry[index];
 
 		e.setFlags(fieldAttributesFlags[index]);
-		e.setName(s.getString(nameStringIndex[index]));
+		
+		//do exceptional handling of compiler generated backing fields (auto generated property)
+		String fieldName = s.getString(nameStringIndex[index]);
+		if(fieldName.endsWith(">k__BackingField"))
+			e.setName("'"+fieldName+"'");
+		else
+			e.setName(fieldName);
+		
 		e.setBinarySignature(b.getBlob(signatureBlobIndex[index]));	
 	
 	}
