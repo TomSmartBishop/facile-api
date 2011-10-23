@@ -1545,8 +1545,16 @@ public class ILAsmRenderer implements LanguageRenderer {
 			buffer.append("]");
 		}
 		
-		//FIXME: generic parameter should use short type names
-		buffer.append(typeSpec.getFullQualifiedName());
+		if(typeSpec.isGenericInstance())
+		{
+			buffer.append(typeSpec.getNamespace());
+			buffer.append(".");
+			buffer.append(typeSpec.getExtName());
+			
+			return buffer.toString();
+		}
+
+		buffer.append(typeSpec.getExtFullQualifiedName());
 		return buffer.toString();
 	}
 

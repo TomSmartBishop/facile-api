@@ -111,6 +111,40 @@ public interface TypeSpec extends TypeRef, ResolutionScope {
 	 */
 	public abstract ArrayShape getArrayShape();
 	
+	/**
+	 * Returns a MethodSignature in case this type specification
+	 * contains a function pointer.
+	 * @return The signature of the function pointer or {@code null}.
+	 */
+	public abstract MethodSignature getFunctionPointer();
+
+	/**
+	 * Returns the number of present generic parameters.
+	 * @return The length of the generic parameter array.
+	 */
+	public abstract int getGenericParameterNumber();
+
+	/**
+	 * Get the generic parameters of this type.
+	 * @return An array of the generic parameters as TypeRef's.
+	 */
+	public abstract TypeRef[] getGenericArguments();
+	
+	/**
+	 * The extended name function looks into the enclosed type an involves
+	 * an array and generic attribute representation within the name.
+	 * It will use short system name for generic encapsulated types if possible.
+	 * @return The extended name without namespace.
+	 */
+	public abstract String getExtName();
+	
+	/**
+	 * Involves handling of generics and array representation as getExtName, but uses
+	 * everywhere full qualified names (e.g. generic parameters).
+	 * @return The extended representation of the full qualified type name.
+	 */
+	public abstract String getExtFullQualifiedName();
+	
 	public abstract boolean equals(Object obj);
 	
 	public abstract int hashCode();
