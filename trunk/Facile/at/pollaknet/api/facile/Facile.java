@@ -213,8 +213,30 @@ public class Facile {
 	}
 
 	private static void printUsageString() {
-		//TODO: extend to match current functionality
-		System.out.println("usage:\n\tjava Facile ASSEMBLY_PATH [PDB_PATH]");
+		System.out.println("usage:  java Facile ASSEMBLY [OPTIONAL_PDB] [OPTIONS]");
+		System.out.println("=====================================================");
+		System.out.println("The first specified file will be treated as the assembly,");
+		System.out.println("the second as the PDB (program debug database).");
+		System.out.println();
+		System.out.println("ASSEMBLY:");
+		System.out.println("  The .Net assembly to analyze.");
+		System.out.println();
+		System.out.println("OPTIONAL_PDB:");
+		System.out.println("  The program debug database, or the assembly it self");
+		System.out.println("  again, if it has embedded debug information.");
+		System.out.println();
+		System.out.println("OPTIONS:");
+		System.out.println("  --verbose   : More intermediate output");
+		System.out.println("  --log       : Print the wohle log file at the end");
+		System.out.println("                (all messages from the verbose mode)");
+		System.out.println("  --info      : Print assembly info (summary)");
+		System.out.println("  --il        : Generating IL code in current working directory");
+		//System.out.println("  --il=FILE   : Generating IL code and dump to FILE");
+		System.out.println("  --#~        : Output #~ (Metadata) Stream");
+		System.out.println("  --#Strings  : Output #Strings Stream");
+		System.out.println("  --#Blob     : Output #Blob Stream");
+		System.out.println("  --#GUID     : Output #GUID Stream");
+		System.out.println("  --#US       : Output #US (UserString) Stream");
 	}
 	
 	/**
