@@ -155,6 +155,11 @@ public class ParamOrFieldMarshalSignature extends Signature implements MarshalSi
 				nextToken();
 				break;
 				
+			case MarshalSignature.NATIVE_UNKNOWN_0x2E_NI_V404:
+			case MarshalSignature.NATIVE_UNKNOWN_0x2F_V404:
+				nextToken();
+				break;
+				
 			case MarshalSignature.NATIVE_TYPE_SAFE_ARRAY:
 				nextToken();
 				break;

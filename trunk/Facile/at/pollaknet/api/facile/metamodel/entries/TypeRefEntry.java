@@ -9,6 +9,7 @@ import at.pollaknet.api.facile.metamodel.entries.aggregation.INamespaceOwner;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.ITypeDefOrRef;
 import at.pollaknet.api.facile.renderer.LanguageRenderer;
 import at.pollaknet.api.facile.symtab.NamespaceContainer;
+import at.pollaknet.api.facile.symtab.TypeKind;
 import at.pollaknet.api.facile.symtab.symbols.Type;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.symtab.symbols.TypeSpec;
@@ -218,6 +219,16 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 			return resolutionScope.getName().equals(other.resolutionScope.getName());
 		
 		return true;
+	}
+
+	@Override
+	public boolean isClass() {
+		return !ArrayUtils.contains(TypeKind.NUMERIC_TYPES, kind) && !isValueType();
+	}
+
+	@Override
+	public boolean isValueType() {
+		return kind==TypeKind.ELEMENT_TYPE_VALUETYPE || (getType()!=null && getType().isInheritedFrom("System.ValueType"));
 	}
 
 }

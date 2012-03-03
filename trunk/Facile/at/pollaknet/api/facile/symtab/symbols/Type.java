@@ -50,18 +50,12 @@ public interface Type extends TypeRef {
 	
 	public static final int FLAGS_RT_SPECIAL_NAME 						= 0x00000800;
 	public static final int FLAGS_HAS_SECURITY 							= 0x00040000;
-
-	/**
-	 * Check if the type is a class or not.
-	 * @return {@code true} if the type represents a class, otherwise {@code false}.
-	 */
-	public abstract boolean isAClass();
-
+	
 	/**
 	 * Check if the type is an interface or not.
 	 * @return {@code true} if the type represents an interface, otherwise {@code false}.
 	 */
-	public abstract boolean isAnInterface();
+	public abstract boolean isInterface();
 
 	/**
 	 * Get the type's flags.

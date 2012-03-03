@@ -586,7 +586,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 			buffer.append("enum ");
 		}
 
-		if(type.isAnInterface()) {
+		if(type.isInterface()) {
 			buffer.append("interface ");
 		}
 		
@@ -699,7 +699,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 			buffer.append("enum ");
 		}
 
-		if(type.isAnInterface()) {
+		if(type.isInterface()) {
 			buffer.append("interface ");
 		}
 		
@@ -917,6 +917,20 @@ public class ILAsmRenderer implements LanguageRenderer {
 			buffer.append("[defval] ");
 		}
 		
+//		TypeRef typeRef = parameter.getTypeRef();
+//		
+//		if(typeRef.getType()!=null) {
+//			Type type = typeRef.getType();
+//			if(type.isAClass()) {
+//			  buffer.append("class ");
+//			} else if(type.isInheritedFrom("System.ValueType")) {
+//				buffer.append("valuetype ");
+//			}
+//		}
+//		} else if(parameter.getTypeRef().getShortSystemName()==null){
+//			buffer.append("class ");
+//		}
+//		
 
 		buffer.append(renderClassRef(parameter.getTypeRef()));
 		//buffer.append(parameter.getTypeRef().getFullQualifiedName());
@@ -926,9 +940,16 @@ public class ILAsmRenderer implements LanguageRenderer {
 			buffer.append(render(parameter.getMarshalSignature()));
 		}
 		
-		if(!asReference && parameter.getName()!=null) {
-			buffer.append(" ");
+		if(parameter.getName()!=null) {
+			if(asReference)
+				buffer.append(" /* ");
+			else
+				buffer.append(" ");
+			
 			buffer.append(parameter.getName());
+			
+			if(asReference)
+				buffer.append(" */");
 		}
 		
 		return buffer.toString();
@@ -1597,7 +1618,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		buffer.append("::");
 		buffer.append(method.getName());
 		
-		buffer.append(render(method.getMethodSignature()));
+		buffer.append(renderAsReference(method.getMethodSignature()));
 		
 		return buffer.toString();
 
@@ -1634,7 +1655,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 			buffer.append("::");
 			buffer.append(memberRef.getName());
 			
-			buffer.append(render(signature));
+			buffer.append(renderAsReference(signature));
 			
 			return buffer.toString();
 		}
