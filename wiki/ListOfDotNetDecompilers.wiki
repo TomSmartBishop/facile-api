@@ -1,4 +1,6 @@
 #labels Featured
+#sidebar sidebar
+
 = List of .Net Decompilers =
 
 
