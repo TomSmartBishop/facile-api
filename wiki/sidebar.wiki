@@ -2,4 +2,5 @@ http://facile-api.googlecode.com/files/facile_logo.jpg
 
   * [FacileReader Facile Reader Preview]
   * [ACodeSample Facile API Code Sample]
+  * [FacileDevelopmentSetup Facile Development Howto]
   * [ListOfDotNetDecompilers .Net Decompilers]
