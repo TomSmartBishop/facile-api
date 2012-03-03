@@ -1,5 +1,5 @@
 #summary Basic setup when devloping the Facile API
-#sidebar TableOfContents
+#sidebar sidebar
 
 = Basics =
 
