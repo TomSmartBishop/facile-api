@@ -79,10 +79,13 @@ public class FieldTable extends AbstractTable{
 		
 		//do exceptional handling of compiler generated backing fields (auto generated property)
 		String fieldName = s.getString(nameStringIndex[index]);
-		if(fieldName.endsWith(">k__BackingField"))
-			e.setName("'"+fieldName+"'");
-		else
-			e.setName(fieldName);
+		if(fieldName!=null)
+		{
+			if(fieldName.endsWith(">k__BackingField"))
+				e.setName("'"+fieldName+"'");
+			else
+				e.setName(fieldName);
+		}
 		
 		e.setBinarySignature(b.getBlob(signatureBlobIndex[index]));	
 	

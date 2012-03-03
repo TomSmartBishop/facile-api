@@ -118,10 +118,14 @@ public class TypeDefTable extends AbstractTable{
 		
 		//extra handling for fixed buffers
 		String className = s.getString(typeNameStringIndex[index]);
-		if(className.contains(">e__FixedBuffer"))
-			e.setName("'"+className+"'");
-		else
-			e.setName(className);
+		
+		if(className!=null)
+		{
+			if(className.contains(">e__FixedBuffer"))
+				e.setName("'"+className+"'");
+			else
+				e.setName(className);
+		}
 		
 		e.setNamespace(s.getString(typeNamespaceStringIndex[index]));
 		e.setExtends(EntryDecoder.getTypeDefOrRefEntry(model, extendsCodedIndex[index]));

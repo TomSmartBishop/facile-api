@@ -20,5 +20,5 @@
 <stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit4"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="at.pollaknet.api.facile.tests.TestGACSuite"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Facile"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xms256m -Xmx1024m"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-ea -Xms512m -Xmx2048m"/>
 </launchConfiguration>

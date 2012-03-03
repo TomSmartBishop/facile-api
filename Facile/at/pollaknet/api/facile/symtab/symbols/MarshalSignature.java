@@ -46,6 +46,9 @@ public interface MarshalSignature {
 	public static final int NATIVE_TYPE_CUSTOM_MARSHALER = 0x2c;
 	public static final int NATIVE_TYPE_ERROR = 0x2d;
 	
+	public static final int NATIVE_UNKNOWN_0x2E_NI_V404 = 0x2e; //just detected in native images (NI) so far
+	public static final int NATIVE_UNKNOWN_0x2F_V404 = 0x2f;
+	
 	/**
 	 * Returns the native type number (NATIVE_TYPE_*).
 	 * @return The numeric representation of the native type.

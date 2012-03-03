@@ -51,14 +51,14 @@ public class TypeDefEntry extends TypeRefEntry implements ITypeDefOrRef, IHasCus
 	/* (non-Javadoc)
 	 * @see facile.metamodel.entries.Type#isAClass()
 	 */
-	public boolean isAClass() {
+	public boolean isClass() {
 		return ByteReader.testFlags(flags,FLAGS_SEMANTICS_BIT_MASK, FLAGS_SEMANTICS_IS_A_CLASS);
 	}
 	
 	/* (non-Javadoc)
 	 * @see facile.metamodel.entries.Type#isAnInterface()
 	 */
-	public boolean isAnInterface() {
+	public boolean isInterface() {
 		return ByteReader.testFlags(flags,FLAGS_SEMANTICS_BIT_MASK, FLAGS_SEMANTICS_IS_AN_INTERFACE);
 	}
 

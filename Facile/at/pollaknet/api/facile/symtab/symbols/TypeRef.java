@@ -17,6 +17,18 @@ public interface TypeRef extends AttributableSymbol,
 		FullQualifiableSymbol, Comparable<TypeRef> {
 
 	/**
+	 * Check if the type ref is a class or not.
+	 * @return {@code true} if the type represents a class, otherwise {@code false}.
+	 */
+	public abstract boolean isClass();
+
+	/**
+	 * Check if the type ref is a value type.
+	 * @return {@code true} if the type represents a class, otherwise {@code false}.
+	 */
+	public abstract boolean isValueType();
+	
+	/**
 	 * Returns the ELEMENT_TYPE of the stored value as number.
 	 * @return Type kind value.
 	 */
