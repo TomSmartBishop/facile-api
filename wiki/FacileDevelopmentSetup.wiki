@@ -1,4 +1,4 @@
-#Basic setup to do development on the Facile API:
+#summary Basic setup when devloping the Facile API
 
 = Basics =
 
