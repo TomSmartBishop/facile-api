@@ -5,7 +5,7 @@
 
 http://facile-api.googlecode.com/files/facile_reader_logo.jpg
 
-This is a early screenshot:
+This is an early screenshot:
 
 http://facile-api.googlecode.com/files/facile_reader_screenshot.gif
 
