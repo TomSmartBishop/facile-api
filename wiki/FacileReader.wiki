@@ -8,3 +8,6 @@ http://facile-api.googlecode.com/files/facile_reader_logo.jpg
 This is a early screenshot:
 
 http://facile-api.googlecode.com/files/facile_reader_screenshot.gif
+
+There is an alpha version of Facile Reader:
+http://facile-api.googlecode.com/files/FacileReader.zip
