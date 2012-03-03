@@ -1,5 +1,5 @@
 #summary A short code sample
-
+#sidebar sidebar
 
 = Useful Code =
 
