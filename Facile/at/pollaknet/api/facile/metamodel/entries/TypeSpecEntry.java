@@ -377,10 +377,17 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 	}
 	
 	/* (non-Javadoc)
+	 * @see facile.metamodel.entries.TypeSpec#isGeneric()
+	 */
+	public boolean isGeneric() {
+		return ByteReader.testFlags(flags, FLAGS_IS_GENERIC_INSTANCE);
+	}
+	
+	/* (non-Javadoc)
 	 * @see facile.metamodel.entries.TypeSpec#isGenericInstance()
 	 */
 	public boolean isGenericInstance() {
-		return ByteReader.testFlags(flags, FLAGS_IS_GENERIC_INSTANCE);
+		return genericNumber>=0;
 	}
 	
 	public void setAsPinned(boolean pinned) {

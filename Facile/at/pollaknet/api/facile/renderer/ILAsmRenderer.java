@@ -472,7 +472,15 @@ public class ILAsmRenderer implements LanguageRenderer {
 				buffer.toString().replace(newLine, newLine+"//");		
 	}
 
+//	private String renderClassRef(TypeSpec type) {
+//		return "!" + type.getName();
+//	}
+	
 	private String renderClassRef(TypeRef type) {
+		TypeSpec typeSpec = type.getTypeSpec();
+		if(typeSpec!=null && typeSpec.isGenericInstance())
+		  return "!" + typeSpec.getName();
+		
 		return renderClassRef(type, true);
 	}
 
@@ -944,12 +952,14 @@ public class ILAsmRenderer implements LanguageRenderer {
 			if(asReference)
 				buffer.append(" /* ");
 			else
-				buffer.append(" ");
+				buffer.append(" '");
 			
 			buffer.append(parameter.getName());
 			
 			if(asReference)
 				buffer.append(" */");
+			else
+				buffer.append("'");
 		}
 		
 		return buffer.toString();
@@ -1095,7 +1105,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		}
 		//further flags?
 		
-		buffer.append(renderMethodDefSig(method, true));
+		buffer.append(renderMethodDefSig(method, false));
 		buffer.append(" ");
 		
 		if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_CODE_TYPE_BIT_MASK, Method.IMPL_FLAGS_CODE_TYPE_IL)) {
@@ -1372,7 +1382,13 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		StringBuffer buffer = new StringBuffer(64);
 		
-		buffer.append(String.format(".field %s %s %s", renderFieldFlags(field), renderClassRef(field.getTypeRef()), field.getName()));
+		TypeRef typeRef = field.getTypeRef();
+		TypeSpec typeSpec = typeRef.getTypeSpec();
+		
+		if(typeSpec!=null && typeSpec.isGenericInstance())
+			buffer.append(String.format(".field %s !%s %s", renderFieldFlags(field), typeSpec.getName(), field.getName()));
+		else
+		   buffer.append(String.format(".field %s %s %s", renderFieldFlags(field), renderClassRef(typeRef), field.getName()));
 		
 		CustomAttribute [] attributes = field.getCustomAttributes();
 		
@@ -1543,6 +1559,9 @@ public class ILAsmRenderer implements LanguageRenderer {
 
 	@Override
 	public String renderAsReference(TypeSpec typeSpec) {
+		if(typeSpec.isGenericInstance())
+			return "!" + typeSpec.getName();
+			
 		StringBuffer buffer = new StringBuffer(32);
 		ResolutionScope resolutionScope = typeSpec.getResolutionScope();
 		TypeRef spec = typeSpec;
@@ -1566,14 +1585,14 @@ public class ILAsmRenderer implements LanguageRenderer {
 			buffer.append("]");
 		}
 		
-		if(typeSpec.isGenericInstance())
-		{
-			buffer.append(typeSpec.getNamespace());
-			buffer.append(".");
-			buffer.append(typeSpec.getExtName());
-			
-			return buffer.toString();
-		}
+//		if(typeSpec.isGenericInstance())
+//		{
+//			buffer.append(typeSpec.getNamespace());
+//			buffer.append(".");
+//			buffer.append(typeSpec.getExtName());
+//			
+//			return buffer.toString();
+//		}
 
 		buffer.append(typeSpec.getExtFullQualifiedName());
 		return buffer.toString();
