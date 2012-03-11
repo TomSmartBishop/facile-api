@@ -12,6 +12,7 @@ import at.pollaknet.api.facile.symtab.symbols.MethodSignature;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.symtab.symbols.TypeSpec;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.MethodAndFieldParent;
+import at.pollaknet.api.facile.symtab.symbols.aggregation.ResolutionScope;
 import at.pollaknet.api.facile.util.ArrayUtils;
 import at.pollaknet.api.facile.util.ByteReader;
 
@@ -98,27 +99,36 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 
 			TypeSpec enclosedTypeSpec = enclosedType.getTypeSpec();
 			
-			if(isBasicType()) {
-				buffer.append(enclosedTypeSpec!=null?enclosedTypeSpec.getExtName():enclosedType.getName());
-			} else if(isSingleDimensionalZeroBasedArray()) {
-				buffer.append(enclosedTypeSpec!=null?enclosedTypeSpec.getExtName():enclosedType.getName());
+			if(enclosedTypeSpec!=null) { 
+				buffer.append(enclosedTypeSpec.getExtName());
+			} else {
+				String shortName = enclosedType.getShortSystemName();
+				
+				buffer.append(shortName!=null?shortName:enclosedType.getName());
+			}
+			
+			if(isSingleDimensionalZeroBasedArray()) {
 				buffer.append("[]");
 			} else if(isGeneralArray()) {
-				buffer.append(enclosedTypeSpec!=null?enclosedTypeSpec.getExtName():enclosedType.getName());
 				buffer.append("[");
 				for(int i=1;i<getArrayShape().getRank();i++) buffer.append(",");
 				buffer.append("]");
-			} else {
-				buffer.append(enclosedTypeSpec!=null?enclosedTypeSpec.getExtName():enclosedType.getName());
+			} else if(!isBasicType) {
 				if(isTypeByRef()) buffer.append(" &");
 				if(isPointer()) buffer.append(" *");
 				
 				if(requiredModifiers!=null) {
 					for(TypeSpec spec: requiredModifiers) {
+						ResolutionScope resolutionScope = spec.getResolutionScope();
+						TypeRef typeRef = spec;
+						while((resolutionScope==null || resolutionScope.isInAssembly()) && typeRef.getTypeSpec()!=null && typeRef.getTypeSpec().getEnclosedTypeRef()!=null) {
+							typeRef = typeRef.getTypeSpec().getEnclosedTypeRef();
+							resolutionScope = typeRef.getResolutionScope();
+						}
 						buffer.append(" modreq(");
-						if(getResolutionScope()!=null && !getResolutionScope().isInAssembly()) {
+						if(resolutionScope!=null && !resolutionScope.isInAssembly()) {
 							buffer.append("[");
-							buffer.append(getResolutionScope().getName());
+							buffer.append(resolutionScope.getName());
 							buffer.append("] ");
 						}
 						buffer.append(spec.getExtName());
@@ -128,10 +138,16 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 
 				if(optionalModifiers!=null) {
 					for(TypeSpec spec: optionalModifiers) {
+						ResolutionScope resolutionScope = spec.getResolutionScope();
+						TypeRef typeRef = spec;
+						while((resolutionScope==null || resolutionScope.isInAssembly()) && typeRef.getTypeSpec()!=null && typeRef.getTypeSpec().getEnclosedTypeRef()!=null) {
+							typeRef = typeRef.getTypeSpec().getEnclosedTypeRef();
+							resolutionScope = typeRef.getResolutionScope();
+						}
 						buffer.append(" modopt(");
-						if(getResolutionScope()!=null && !getResolutionScope().isInAssembly()) {
+						if(resolutionScope!=null && !resolutionScope.isInAssembly()) {
 							buffer.append("[");
-							buffer.append(getResolutionScope().getName());
+							buffer.append(resolutionScope.getName());
 							buffer.append("] ");
 						}
 						buffer.append(spec.getExtName());
@@ -152,7 +168,7 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 				if(i!=0) buffer.append(", ");
 				buffer.append("<");
 				String shortName = genericArguments[i].getShortSystemName();
-				buffer.append(shortName!=null?shortName:genericArguments[i].getName());
+				buffer.append(shortName!=null?shortName:genericArguments[i].getFullQualifiedName());
 				buffer.append(">");
 			}
 		}
@@ -170,27 +186,36 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 
 			TypeSpec enclosedTypeSpec = enclosedType.getTypeSpec();
 			
-			if(isBasicType()) {
-				buffer.append(enclosedTypeSpec!=null?enclosedTypeSpec.getExtFullQualifiedName():enclosedType.getFullQualifiedName());
-			} else if(isSingleDimensionalZeroBasedArray()) {
-				buffer.append(enclosedTypeSpec!=null?enclosedTypeSpec.getExtFullQualifiedName():enclosedType.getFullQualifiedName());
+			if(enclosedTypeSpec!=null) { 
+				buffer.append(enclosedTypeSpec.getExtFullQualifiedName());
+			} else {
+				String shortName = enclosedType.getShortSystemName();
+				
+				buffer.append(shortName!=null?shortName:enclosedType.getFullQualifiedName());
+			}
+			
+			if(isSingleDimensionalZeroBasedArray()) {
 				buffer.append("[]");
 			} else if(isGeneralArray()) {
-				buffer.append(enclosedTypeSpec!=null?enclosedTypeSpec.getExtFullQualifiedName():enclosedType.getFullQualifiedName());
 				buffer.append("[");
 				for(int i=1;i<getArrayShape().getRank();i++) buffer.append(",");
 				buffer.append("]");
-			} else {
-				buffer.append(enclosedTypeSpec!=null?enclosedTypeSpec.getExtFullQualifiedName():enclosedType.getFullQualifiedName());
+			} else if (!isBasicType()) {
 				if(isTypeByRef()) buffer.append(" &");
 				if(isPointer()) buffer.append(" *");
 				
 				if(requiredModifiers!=null) {
 					for(TypeSpec spec: requiredModifiers) {
+						ResolutionScope resolutionScope = spec.getResolutionScope();
+						TypeRef typeRef = spec;
+						while((resolutionScope==null || resolutionScope.isInAssembly()) && typeRef.getTypeSpec()!=null && typeRef.getTypeSpec().getEnclosedTypeRef()!=null) {
+							typeRef = typeRef.getTypeSpec().getEnclosedTypeRef();
+							resolutionScope = typeRef.getResolutionScope();
+						}
 						buffer.append(" modreq(");
-						if(getResolutionScope()!=null && !getResolutionScope().isInAssembly()) {
+						if(resolutionScope!=null && !resolutionScope.isInAssembly()) {
 							buffer.append("[");
-							buffer.append(getResolutionScope().getName());
+							buffer.append(resolutionScope.getName());
 							buffer.append("] ");
 						}
 						buffer.append(spec.getExtFullQualifiedName());
@@ -200,10 +225,16 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 
 				if(optionalModifiers!=null) {
 					for(TypeSpec spec: optionalModifiers) {
+						ResolutionScope resolutionScope = spec.getResolutionScope();
+						TypeRef typeRef = spec;
+						while((resolutionScope==null || resolutionScope.isInAssembly()) && typeRef.getTypeSpec()!=null && typeRef.getTypeSpec().getEnclosedTypeRef()!=null) {
+							typeRef = typeRef.getTypeSpec().getEnclosedTypeRef();
+							resolutionScope = typeRef.getResolutionScope();
+						}
 						buffer.append(" modopt(");
-						if(getResolutionScope()!=null && !getResolutionScope().isInAssembly()) {
+						if(resolutionScope!=null && !resolutionScope.isInAssembly()) {
 							buffer.append("[");
-							buffer.append(getResolutionScope().getName());
+							buffer.append(resolutionScope.getName());
 							buffer.append("] ");
 						}
 						buffer.append(spec.getExtFullQualifiedName());
@@ -223,7 +254,8 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 			for(int i=0;i<genericArguments.length;i++) {
 				if(i!=0) buffer.append(", ");
 				buffer.append("<");
-				buffer.append(genericArguments[i].getFullQualifiedName());
+				String shortName = genericArguments[i].getShortSystemName();
+				buffer.append(shortName!=null?shortName:genericArguments[i].getFullQualifiedName());
 				buffer.append(">");
 			}
 		}
