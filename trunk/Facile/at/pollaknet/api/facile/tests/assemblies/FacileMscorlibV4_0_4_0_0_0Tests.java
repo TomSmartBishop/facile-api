@@ -1,9 +1,8 @@
 package at.pollaknet.api.facile.tests.assemblies;
 
+import junit.framework.TestCase;
 import at.pollaknet.api.facile.Facile;
 import at.pollaknet.api.facile.FacileReflector;
-import at.pollaknet.api.facile.util.ArrayUtils;
-import junit.framework.TestCase;
 
 public class FacileMscorlibV4_0_4_0_0_0Tests extends TestCase {
 

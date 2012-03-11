@@ -7,7 +7,8 @@ import junit.framework.TestCase;
 
 public class FacileMscorlibV4_0_30319Tests extends TestCase {
 
-	private final static String PATH_MSCORLIBV4_0_30319 = "assemblies/v4.0.30319/mscorlib.dll";
+	private final static String PATH_MSCORLIBV4_0_30319_32 = "assemblies/v4.0.30319_32/mscorlib.dll";
+	//private final static String PATH_MSCORLIBV4_0_30319_64 = "assemblies/v4.0.30319_64/mscorlib.dll";
 	private final static int NUM_OF_TEST_CASES = 5;
 	private static FacileReflector reflector = null;
 	private static int testCounter = 0;
@@ -23,7 +24,7 @@ public class FacileMscorlibV4_0_30319Tests extends TestCase {
    protected void setUp() { 
 	   if(testCounter==0) {
 			try {
-				reflector = Facile.load(PATH_MSCORLIBV4_0_30319);
+				reflector = Facile.load(PATH_MSCORLIBV4_0_30319_32);
 			} catch (Exception e) {
 				fail();
 			}

@@ -112,7 +112,7 @@ public class BasicTypesDirectory {
 			return true;
 		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Byte")) {
 			typeDefOrRef.setElementKind(TypeKind.ELEMENT_TYPE_U1);
-			typeDefOrRef.setShortSystemName("uint8");
+			typeDefOrRef.setShortSystemName("unsigned int8");
 			typeRefs.put(TypeKind.ELEMENT_TYPE_U1, typeDefOrRef);
 			return true;
 		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Int16")) {
@@ -122,7 +122,7 @@ public class BasicTypesDirectory {
 			return true;
 		} else if(typeDefOrRef.getFullQualifiedName().equals("System.UInt16")) {
 			typeDefOrRef.setElementKind(TypeKind.ELEMENT_TYPE_U2);
-			typeDefOrRef.setShortSystemName("uint16");
+			typeDefOrRef.setShortSystemName("unsigned int16");
 			typeRefs.put(TypeKind.ELEMENT_TYPE_U2, typeDefOrRef);
 			return true;
 		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Int32")) {
@@ -132,7 +132,7 @@ public class BasicTypesDirectory {
 			return true;
 		} else if(typeDefOrRef.getFullQualifiedName().equals("System.UInt32")) {
 			typeDefOrRef.setElementKind(TypeKind.ELEMENT_TYPE_U4);
-			typeDefOrRef.setShortSystemName("uint32");
+			typeDefOrRef.setShortSystemName("unsigned int32");
 			typeRefs.put(TypeKind.ELEMENT_TYPE_U4, typeDefOrRef);
 			return true;
 		} else if(typeDefOrRef.getFullQualifiedName().equals("System.Int64")) {
@@ -142,7 +142,7 @@ public class BasicTypesDirectory {
 			return true;
 		} else if(typeDefOrRef.getFullQualifiedName().equals("System.UInt64")) {
 			typeDefOrRef.setElementKind(TypeKind.ELEMENT_TYPE_U8);
-			typeDefOrRef.setShortSystemName("uint64");
+			typeDefOrRef.setShortSystemName("unsigned int64");
 			typeRefs.put(TypeKind.ELEMENT_TYPE_U8, typeDefOrRef);
 			return true;
 		} else if(typeDefOrRef.getFullQualifiedName().equals("System.TypedReference")) {
@@ -170,11 +170,24 @@ public class BasicTypesDirectory {
 			typeRefs.put(TypeKind.ELEMENT_TYPE_R8, typeDefOrRef);
 			return true;
 		}
+		else if(typeDefOrRef.getFullQualifiedName().equals("System.IntPtr")) {
+			typeDefOrRef.setElementKind(Signature.ELEMENT_TYPE_PTR);
+			typeDefOrRef.setShortSystemName("native int");
+			typeRefs.put(Signature.ELEMENT_TYPE_I, typeDefOrRef);
+			return true;
+		}
+		else if(typeDefOrRef.getFullQualifiedName().equals("System.UIntPtr")) {
+			typeDefOrRef.setElementKind(Signature.ELEMENT_TYPE_PTR);
+			typeDefOrRef.setShortSystemName("native unsigned int");
+			typeRefs.put(Signature.ELEMENT_TYPE_I, typeDefOrRef);
+			return true;
+		}
 		else if(typeDefOrRef.getFullQualifiedName().equals("System.Type")) {
 			typeDefOrRef.setElementKind(Signature.UNNAMED_SYSTEM_TYPE);
 			typeRefs.put(Signature.UNNAMED_SYSTEM_TYPE, typeDefOrRef);
 			return true;
 		}
+
 		
 		//no basic type
 		return false;

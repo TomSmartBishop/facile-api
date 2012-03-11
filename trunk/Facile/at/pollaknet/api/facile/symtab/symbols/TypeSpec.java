@@ -71,7 +71,14 @@ public interface TypeSpec extends TypeRef, ResolutionScope {
 
 
 	/**
-	 * Informs you, if the specified type is a generic instance or not.
+	 * Informs you, if the specified type has the 'generic' flag set.
+	 * @see TypeSpec#isGenericInstance()
+	 * @return {@code true} if the specified type is a generic instance, otherwise {@code false}.
+	 */
+	public abstract boolean isGeneric();
+	
+	/**
+	 * Informs you, if the specified type looks like a generic instance (generic number &gt;=0): &lt;T1&gt;
 	 * @return {@code true} if the specified type is a generic instance, otherwise {@code false}.
 	 */
 	public abstract boolean isGenericInstance();
