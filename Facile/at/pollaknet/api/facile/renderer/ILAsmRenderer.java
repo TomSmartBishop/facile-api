@@ -479,7 +479,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 	private String renderClassRef(TypeRef type) {
 		TypeSpec typeSpec = type.getTypeSpec();
 		if(typeSpec!=null && typeSpec.isGenericInstance())
-		  return "!" + typeSpec.getName();
+		  return "!" + typeSpec.getGenericParameterNumber(); //typeSpec.getName();
 		
 		return renderClassRef(type, true);
 	}
@@ -646,7 +646,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		buffer.append(type.getName());
 		buffer.append(" ");
 		
-		if(type.getExtends()!=null) {
+		if(type.getExtends()!=null && type.getExtends().getShortSystemName()!="object") {
 			buffer.append("extends ");
 			buffer.append(renderClassRef(type.getExtends(), false));
 		}
@@ -758,18 +758,33 @@ public class ILAsmRenderer implements LanguageRenderer {
 		if(ByteReader.testFlags(flags, Type.FLAGS_RT_SPECIAL_NAME)) {
 			buffer.append("rtspecialname ");
 		}
-
-		buffer.append(type.getName());
-		buffer.append(" ");
 		
-		if(type.getExtends()!=null) {
-			buffer.append("extends ");
+		buffer.append(type.getName());
+		
+		Parameter [] genericParams = type.getGenericParameters();
+		
+		if(genericParams!=null &&genericParams.length>0) {
+			boolean firstParam = true;
+			buffer.append("<");
+			for(Parameter p : genericParams) {
+				if(!firstParam)
+					buffer.append(",");
+				else
+					firstParam = false;
+				buffer.append(p.getName());
+				
+			}
+			buffer.append(">");
+		}
+		
+		if(type.getExtends()!=null  && type.getExtends().getShortSystemName()!="object") {
+			buffer.append(" extends ");
 			buffer.append(renderClassRef(type.getExtends(), false));
 		}
 		
 		TypeRef[] interfaces = type.getInterfaces();
 		if(interfaces.length!=0) {
-			buffer.append("implements ");
+			buffer.append(" implements ");
 			for(int i=0;i<interfaces.length;i++) {
 				if(i!=0) buffer.append(", ");
 				buffer.append(renderClassRef(interfaces[i], false));
@@ -1564,25 +1579,36 @@ public class ILAsmRenderer implements LanguageRenderer {
 			
 		StringBuffer buffer = new StringBuffer(32);
 		ResolutionScope resolutionScope = typeSpec.getResolutionScope();
-		TypeRef spec = typeSpec;
+		TypeRef typeRef = typeSpec;
 		
-		if(typeSpec.isValueType()) buffer.append("valuetype ");
-		else if(!typeSpec.isBasicType()){
+		boolean addResolutionScope = false;
+		if(typeSpec.isValueType()) {
+			buffer.append("valuetype ");
+			addResolutionScope = true;
+			
+		}
+//		else if(!typeSpec.isBasicType()){
+//			buffer.append("class ");
+//		}
+		else if(typeSpec.isClass() || (typeSpec.getEnclosedTypeRef()!=null&&typeSpec.getEnclosedTypeRef().isClass()) ) {
 			buffer.append("class ");
+			addResolutionScope = true;
 		}
 		
-		while((resolutionScope==null || resolutionScope.isInAssembly()) && spec.getTypeSpec()!=null && spec.getTypeSpec().getEnclosedTypeRef()!=null) {
-			spec = spec.getTypeSpec().getEnclosedTypeRef();
-			resolutionScope = spec.getResolutionScope();
-		}
-		if(resolutionScope!=null && !resolutionScope.isInAssembly()) {
-			if(resolutionScope.getAssemblyRef()==null && resolutionScope.getModuleRef()!=null) {
-				buffer.append("[module: ");
-			} else {
-				buffer.append("[");
+		if(addResolutionScope){	
+			while((resolutionScope==null || resolutionScope.isInAssembly()) && typeRef.getTypeSpec()!=null && typeRef.getTypeSpec().getEnclosedTypeRef()!=null) {
+				typeRef = typeRef.getTypeSpec().getEnclosedTypeRef();
+				resolutionScope = typeRef.getResolutionScope();
 			}
-			buffer.append(resolutionScope.getName());
-			buffer.append("]");
+			if(resolutionScope!=null && !resolutionScope.isInAssembly()) {
+				if(resolutionScope.getAssemblyRef()==null && resolutionScope.getModuleRef()!=null) {
+					buffer.append("[module: ");
+				} else {
+					buffer.append("[");
+				}
+				buffer.append(resolutionScope.getName());
+				buffer.append("]");
+			}
 		}
 		
 //		if(typeSpec.isGenericInstance())
