@@ -87,8 +87,67 @@ public class NamespaceContainer implements Namespace {
 		
 		if(subLength <= supLength) return false;
 		
+		String [] superAddress = namespace.getAddress();
 		for(int level=0;level<supLength;level++) {
-			if(!namespace.getAddress()[level].equals(address[level])) {
+			if(!address[level].equals(superAddress[level])) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see at.pollaknet.api.facile.symtab.symbols.aggregation.Namespace#isSubNamespace(java.lang.String)
+	 */
+	@Override
+	public boolean isSubNamespace(String namespace) {
+		String [] superAddress = namespace.split("\\.");
+		
+		if(superAddress==null||superAddress.length==0)
+			return false;
+		
+		int supLength = superAddress.length;
+		int subLength = address.length;
+		
+		if(subLength <= supLength) return false;
+		
+		for(int level=0;level<supLength;level++) {
+			if(!address[level].equals(superAddress[level])) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see at.pollaknet.api.facile.symtab.symbols.aggregation.Namespace#isSuperNamespace(at.pollaknet.api.facile.symtab.symbols.aggregation.Namespace)
+	 */
+	@Override
+	public boolean isSuperNamespace(Namespace namespace) {
+		return namespace.isSubNamespace(this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see at.pollaknet.api.facile.symtab.symbols.aggregation.Namespace#isSuperNamespace(java.lang.String)
+	 */
+	@Override
+	public boolean isSuperNamespace(String namespace) {
+		String [] subAddress = namespace.split("\\.");
+		
+		if(subAddress==null||subAddress.length==0)
+			return false;
+		
+		int subLength = subAddress.length;
+		int supLength = address.length;
+		
+		if(supLength >= subLength) return false;
+		
+		for(int level=0;level<supLength;level++) {
+			if(!address[level].equals(subAddress[level])) {
 				return false;
 			}
 		}
@@ -179,6 +238,5 @@ public class NamespaceContainer implements Namespace {
 		}
 		return true;
 	}
-
 
 }

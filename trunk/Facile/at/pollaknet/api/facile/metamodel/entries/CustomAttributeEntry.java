@@ -171,12 +171,13 @@ public class CustomAttributeEntry implements RenderableCilElement, CustomAttribu
 		
 		return buffer.toString();
 	}
-	private void formatFixedAttribute(StringBuffer buffer, Instance instance, boolean hasEntries) {
+	
+	private static void formatFixedAttribute(StringBuffer buffer, Instance instance, boolean hasEntries) {
 		if(hasEntries) buffer.append(", ");
 		buffer.append(instance);
 	}
 	
-	private void formatNamedProperty(StringBuffer buffer, Pair<String, Instance> pair, boolean hasEntries) {
+	private static void formatNamedProperty(StringBuffer buffer, Pair<String, Instance> pair, boolean hasEntries) {
 		if(hasEntries) buffer.append(", ");
 		buffer.append(pair.key);
 		buffer.append(" = ");
