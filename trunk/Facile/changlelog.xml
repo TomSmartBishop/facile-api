@@ -1,0 +1,9 @@
+<?xml version="1.0" ?><!DOCTYPE changelog SYSTEM "changelog.dtd">
+
+<changelog name="Facile API">
+  <version major="1" minor="0" fix="3">
+    <added>Added new method to get the implicitly used type specs embedded inside the binary signatures</added>
+    <added>New methods for the Field interface: getFullQualifiedName and getParent (on trial)</added>
+    <added>New methods for the Property interface: getFullQualifiedName and getParent (on trial)</added>
+  </version>
+</changelog>

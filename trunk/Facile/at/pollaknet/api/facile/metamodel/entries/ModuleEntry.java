@@ -148,7 +148,7 @@ public class ModuleEntry extends AbstractAttributable
 
 	@Override
 	public ModuleRef getModuleRef() {
-		return null;
+		return this;
 	}
 
 	@Override
