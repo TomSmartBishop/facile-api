@@ -188,14 +188,25 @@ public class SymbolTable {
 		
 		connectExportedType();
 		
+		connectSignatureEmbeddedTypes(metaModel.typeDef);
+		connectSignatureEmbeddedTypes(metaModel.typeRef);
+		connectSignatureEmbeddedTypes(metaModel.typeSpec);
+		
+		//get the type specs collected during signature parsing
+		TypeSpecEntry [] signatureEmbeddedTypeSpecs = directory.getEmbeddedTypeSpecs().toArray(new TypeSpecEntry [] {});
+		
+		connectSignatureEmbeddedTypes(signatureEmbeddedTypeSpecs);
+				
 		Arrays.sort(metaModel.typeDef);
 		Arrays.sort(metaModel.typeRef);
 		Arrays.sort(metaModel.typeSpec);
+		Arrays.sort(signatureEmbeddedTypeSpecs);
 		
 		//assign all types to the assembly
 		assembly.setTypes(metaModel.typeDef);
 		assembly.setTypeRefs(metaModel.typeRef);
 		assembly.setTypeSpecs(metaModel.typeSpec);
+		assembly.setEmbeddedTypeSpecs(signatureEmbeddedTypeSpecs);
 		
 		//IMPROVE: remove unused data structures (initial byte buffer - depends on lazy loading)
 	}
@@ -692,7 +703,7 @@ public class SymbolTable {
 			}
 		}
 		
-		//type specs are built from types or type refs - no namespace handling required
+		//type contain type def's and type ref's, so they have no own name space
 		for(TypeSpecEntry typeSpec: metaModel.typeSpec) {
 			try {
 				TypeSpecSignature.decodeAndAttach(directory, typeSpec);
@@ -702,11 +713,20 @@ public class SymbolTable {
 							Level.SEVERE, "Faild to decode signature: " + typeSpec.toString());
 			}
 			
+			//will re-evaluate the name space of the enclosed type as well
 			typeSpec.setResolutionScope(assembly.getModule());
 		}
-		
-	
+
 	}
+	
+	private void connectSignatureEmbeddedTypes(TypeRefEntry [] typeRefs) {
+		if(typeRefs!=null && typeRefs.length>0)
+			for(TypeRefEntry type: typeRefs) {
+				//will re-evaluate the name space of the enclosed type as well
+				type.adjustNamespace(assembly.getModule());
+			}
+	}
+	
 
 	private void connectCustomAttribute() {
 		//add the custom attributes

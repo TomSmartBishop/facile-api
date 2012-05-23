@@ -12,6 +12,7 @@ import at.pollaknet.api.facile.code.MethodBody;
 import at.pollaknet.api.facile.code.instruction.CilInstruction;
 import at.pollaknet.api.facile.dia.DebugInformation;
 import at.pollaknet.api.facile.dia.InstructionInfo;
+import at.pollaknet.api.facile.exception.SizeExceededException;
 import at.pollaknet.api.facile.header.cli.CliHeader;
 import at.pollaknet.api.facile.metamodel.entries.StandAloneSigEntry;
 import at.pollaknet.api.facile.symtab.TypeKind;
@@ -55,13 +56,19 @@ public class ILAsmRenderer implements LanguageRenderer {
 	private FacileReflector reflector;
 	private int programCounter;
 	private String newLine;
+	private boolean useBinaryCustomAttributes;
 	
 	protected FacileReflector getReflector() {
 		return reflector;
 	}
 	
 	public ILAsmRenderer(FacileReflector reflector) {
+		this(reflector, false);
+	}
+	
+	public ILAsmRenderer(FacileReflector reflector, boolean useBinaryCustomAttributes) {
 		this.reflector = reflector;
+		this.useBinaryCustomAttributes = useBinaryCustomAttributes;
 		newLine = System.getProperty("line.separator");
 	}
 	
@@ -190,13 +197,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		StringBuffer buffer = new StringBuffer(256);
 		buffer.append(".module ");
-		buffer.append(module.getName());
-
-		//TODO: add .imagebase
-		//TODO: add .file
-		//TODO: add .stackreserve
-		//TODO: add .subsystem
-		//TODO: add .corflags
+		buffer.append(module.getName());		
 		
 		buffer.append(String.format("%s// Generation: 0x%04x", newLine, module.getGeneration()));
 		if(module.getEncId()!=null)
@@ -210,7 +211,18 @@ public class ILAsmRenderer implements LanguageRenderer {
 			buffer.append(newLine);
 			buffer.append(render(c));
 		}
-	
+		
+		buffer.append(newLine);
+		
+		buffer.append(String.format("%s.imagebase 0x%08x // PE optional header: image base", newLine, reflector.getPeOptionalHeader().getImageBase()));
+		buffer.append(String.format("%s.file alignment 0x%08x // PE optional header: file alignment", newLine, reflector.getPeOptionalHeader().getFileAlignment()));
+		try {
+			buffer.append(String.format("%s.stackreserve 0x%08x // PE optional header: stack reserve", newLine, reflector.getPeOptionalHeader().getSizeOfStackReserve()));
+		} catch (SizeExceededException e) {
+			buffer.append(String.format("%s//.stackreserve size of long data type exceeded!", newLine));
+		}
+		buffer.append(String.format("%s.subsystem 0x%04x // PE optional header: sub system", newLine, reflector.getPeOptionalHeader().getSubsystem()));
+		buffer.append(String.format("%s.corflags 0x%08x // Cli header: flags", newLine, reflector.getCliHeader().getFlags()));
 		
 		return buffer.toString();
 	}
@@ -382,7 +394,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		for(Instance instance: fixedArguments) {
 			if(hasEntries) buffer.append(", ");
 			
-			if(indicesPresent&&valueTypeIndices.contains(argumentIndex)) {
+			if(indicesPresent && valueTypeIndices.contains(argumentIndex)) {
 				buffer.append("valuetype ");
 			} else if(instance.getTypeRef().getShortSystemName()==null) {
 				buffer.append("class ");
@@ -392,10 +404,35 @@ public class ILAsmRenderer implements LanguageRenderer {
 			hasEntries = true;
 			
 			argumentIndex++;
+		} 
+		
+		//consider binary representation of custom attributes
+		if(useBinaryCustomAttributes)
+		{
+			buffer.append(") = (");
+
+			byte [] value = customAttribute.getValue();
+			if(value!=null) {
+				buffer.append(ArrayUtils.formatByteArray(value));
+				
+				String safeString = new String(value).replaceAll("\\p{Cntrl}",".");
+				String emptyCheck = new String(value).replaceAll("\\p{Cntrl}","");
+				if(!emptyCheck.isEmpty()) {
+					buffer.append(") //");
+					buffer.append(safeString);
+				} else {
+					buffer.append(")");
+				}
+			} else {
+				buffer.append(")");
+			}
+			
+			return buffer.toString();
 		}
 		
-		buffer.append(") = { ");
+		//try to setup custom attributes by type
 		
+		buffer.append(") = {");
 		argumentIndex = 0;
 		
 		//render fixed arguments
@@ -471,22 +508,32 @@ public class ILAsmRenderer implements LanguageRenderer {
 				" //re-interpreted, see original lines below:" + newLine + "//" +
 				buffer.toString().replace(newLine, newLine+"//");		
 	}
-
-//	private String renderClassRef(TypeSpec type) {
-//		return "!" + type.getName();
-//	}
 	
 	private String renderClassRef(TypeRef type) {
 		TypeSpec typeSpec = type.getTypeSpec();
-		if(typeSpec!=null && typeSpec.isGenericInstance())
-		  return "!" + typeSpec.getGenericParameterNumber(); //typeSpec.getName();
-		
+		if(typeSpec!=null) {
+			//get the most inner type spec
+			TypeRef encolsedTypeRef = typeSpec.getEnclosedTypeRef();
+			while(encolsedTypeRef!=null) {
+				if(encolsedTypeRef.getTypeSpec()!=null) {
+					typeSpec = encolsedTypeRef.getTypeSpec();
+					encolsedTypeRef = typeSpec.getEnclosedTypeRef();
+				} else {
+					encolsedTypeRef = null;
+				}
+			}
+			if(typeSpec.isGenericInstance())
+				return "!" + typeSpec.getGenericParameterNumber(); //typeSpec.getName();
+//			else if(typeSpec.isGeneric())
+//				return "!" + renderClassRef(type, true);
+		}
 		return renderClassRef(type, true);
 	}
 
 	private String renderClassRef(TypeRef type, boolean useShortSystemNames) {
 		if(type==null) return "";
 		
+			
 		if(type.getShortSystemName()!=null && useShortSystemNames) return type.getShortSystemName();
 		
 		StringBuffer buffer = new StringBuffer(32);
@@ -606,25 +653,23 @@ public class ILAsmRenderer implements LanguageRenderer {
 		}
 		if(ByteReader.testFlags(flags, Type.FLAGS_LAYOUT_BIT_MASK, Type.FLAGS_LAYOUT_AUTO_FIELDS)) {
 			buffer.append("auto ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_LAYOUT_BIT_MASK, Type.FLAGS_LAYOUT_SEQUENTIAL_FIELDS)) {
-			buffer.append("sequential ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_LAYOUT_BIT_MASK, Type.FLAGS_LAYOUT_EXPLICIT)) {
-			buffer.append("explicit ");
+		} else {
+			if(ByteReader.testFlags(flags, Type.FLAGS_LAYOUT_SEQUENTIAL_FIELDS)) {
+				buffer.append("sequential ");
+			}
+			if(ByteReader.testFlags(flags, Type.FLAGS_LAYOUT_EXPLICIT)) {
+				buffer.append("explicit ");
+			}
 		}
 		
 		if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_ANSI)) {
 			buffer.append("ansi ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_UNICODE)) {
+		} else if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_UNICODE)) {
 			buffer.append("unicode ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_AUTO)) {
+		} else if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_AUTO)) {
 			buffer.append("autochar ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_CUSTOM)) {
-			//????
+		} else if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_CUSTOM)) {
+			//FIXME: custom string format
 		}
 
 		if(ByteReader.testFlags(flags, Type.FLAGS_IMPLEMENTATION_IS_IMPORTED)) {
@@ -719,24 +764,22 @@ public class ILAsmRenderer implements LanguageRenderer {
 		}
 		if(ByteReader.testFlags(flags, Type.FLAGS_LAYOUT_BIT_MASK, Type.FLAGS_LAYOUT_AUTO_FIELDS)) {
 			buffer.append("auto ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_LAYOUT_BIT_MASK, Type.FLAGS_LAYOUT_SEQUENTIAL_FIELDS)) {
-			buffer.append("sequential ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_LAYOUT_BIT_MASK, Type.FLAGS_LAYOUT_EXPLICIT)) {
-			buffer.append("explicit ");
+		} else {
+			if(ByteReader.testFlags(flags, Type.FLAGS_LAYOUT_SEQUENTIAL_FIELDS)) {
+				buffer.append("sequential ");
+			}
+			if(ByteReader.testFlags(flags, Type.FLAGS_LAYOUT_EXPLICIT)) {
+				buffer.append("explicit ");
+			}
 		}
 		
 		if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_ANSI)) {
 			buffer.append("ansi ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_UNICODE)) {
+		} else if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_UNICODE)) {
 			buffer.append("unicode ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_AUTO)) {
+		} else if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_AUTO)) {
 			buffer.append("autochar ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_CUSTOM)) {
+		}  else if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_CUSTOM)) {
 			//FIXME: handle this case proper
 			String name = type.getFullQualifiedName();
 			if(name==null || name.equals("")) name = "[Unknown Type]";
@@ -884,8 +927,6 @@ public class ILAsmRenderer implements LanguageRenderer {
 		buffer.append("{");
 		
 		for(Method m:property.getMethods()) {
-			String methodRef = renderMethodRef(m);
-
 			if(m.getName().startsWith("get_")) {
 				buffer.append(newLine);
 				buffer.append("  .get instance ");
@@ -896,7 +937,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 				buffer.append(newLine);
 				buffer.append("  .other ");
 			}
-			buffer.append(renderMethodRef(m));
+			buffer.append(renderMethodRef(m, true));
 		}
 		
 		buffer.append(newLine);
@@ -939,24 +980,8 @@ public class ILAsmRenderer implements LanguageRenderer {
 		if(ByteReader.testFlags(flags, Parameter.FLAGS_HAS_DEFAULT_VALUE)) {
 			buffer.append("[defval] ");
 		}
-		
-//		TypeRef typeRef = parameter.getTypeRef();
-//		
-//		if(typeRef.getType()!=null) {
-//			Type type = typeRef.getType();
-//			if(type.isAClass()) {
-//			  buffer.append("class ");
-//			} else if(type.isInheritedFrom("System.ValueType")) {
-//				buffer.append("valuetype ");
-//			}
-//		}
-//		} else if(parameter.getTypeRef().getShortSystemName()==null){
-//			buffer.append("class ");
-//		}
-//		
 
 		buffer.append(renderClassRef(parameter.getTypeRef()));
-		//buffer.append(parameter.getTypeRef().getFullQualifiedName());
 		
 		if(parameter.getMarshalSignature()!=null) {
 			buffer.append(" ");
@@ -998,18 +1023,13 @@ public class ILAsmRenderer implements LanguageRenderer {
 		}
 		buffer.append(" ");
 		
-//		MethodAndFieldParent parent = method.getOwnerClass();
-//		
-//		if(parent.getTypeRef()!=null) {
-//			buffer.append(renderClassRef(parent.getTypeRef()));
-//		} else if (parent.getModuleRef()!=null) {
-//			buffer.append("[module: ");
-//			buffer.append(parent.getModuleRef().getFullQualifiedName());
-//			buffer.append("]");
-//		} else if(parent.getMethod()!=method){
-//			buffer.append(renderMethodDefSig(parent.getMethod()));
-//		}
-//		buffer.append("::");
+		MethodAndFieldParent parent = method.getOwner();
+		
+		if(asReference && parent.getTypeRef()!=null) {
+			buffer.append(renderClassRef(parent.getTypeRef()));
+			buffer.append("::");
+		}
+
 		buffer.append(method.getName());
 		
 		buffer.append(render(method.getMethodSignature(), asReference));
@@ -1125,21 +1145,17 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_CODE_TYPE_BIT_MASK, Method.IMPL_FLAGS_CODE_TYPE_IL)) {
 			buffer.append("cil ");
-		}
-		if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_CODE_TYPE_BIT_MASK, Method.IMPL_FLAGS_CODE_TYPE_NATIVE)) {
+		} else if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_CODE_TYPE_BIT_MASK, Method.IMPL_FLAGS_CODE_TYPE_NATIVE)) {
 			buffer.append("native ");
-		}
-		if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_CODE_TYPE_BIT_MASK, Method.IMPL_FLAGS_CODE_TYPE_OPTIL)) {
+		} else if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_CODE_TYPE_BIT_MASK, Method.IMPL_FLAGS_CODE_TYPE_OPTIL)) {
 			buffer.append("optil ");
-		}
-		if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_CODE_TYPE_BIT_MASK, Method.IMPL_FLAGS_CODE_TYPE_RUNTIME)) {
+		} else if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_CODE_TYPE_BIT_MASK, Method.IMPL_FLAGS_CODE_TYPE_RUNTIME)) {
 			buffer.append("runtime ");
 		}
 		
 		if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_ORGANISATION_BIT_MASK, Method.IMPL_FLAGS_ORGANISATION_MANAGED)) {
 			buffer.append("managed ");
-		}
-		if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_ORGANISATION_BIT_MASK, Method.IMPL_FLAGS_ORGANISATION_UNMANAGED)) {
+		} else if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_ORGANISATION_BIT_MASK, Method.IMPL_FLAGS_ORGANISATION_UNMANAGED)) {
 			buffer.append("unmanaged ");
 		}
 		
@@ -1178,8 +1194,8 @@ public class ILAsmRenderer implements LanguageRenderer {
 		return buffer.toString();
 	}
 
-	private String renderMethodRef(Method method) {
-		return renderMethodDefSig(method, true);
+	private String renderMethodRef(Method method, boolean asReference) {
+		return renderMethodDefSig(method, asReference);
 	}
 
 	private String render(MethodBody methodBody, DebugInformation debugInformation) {
@@ -1492,7 +1508,6 @@ public class ILAsmRenderer implements LanguageRenderer {
 		buffer.append("{");
 		
 		for(Method m:event.getMethods()) {
-			String methodRef = renderMethodRef(m);
 
 			if(m.getName().startsWith("add_")) {
 				buffer.append(newLine);
@@ -1507,7 +1522,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 				buffer.append(newLine);
 				buffer.append("  .other ");
 			}
-			buffer.append(renderMethodRef(m));
+			buffer.append(renderMethodRef(m, false));
 		}
 		
 		buffer.append(newLine);
@@ -1685,32 +1700,57 @@ public class ILAsmRenderer implements LanguageRenderer {
 				buffer.append(renderClassRef(signature.getReturnType()));
 			}
 			buffer.append(" ");
-			
-			MethodAndFieldParent parent = memberRef.getOwner();
-			
-			if(parent.getTypeRef()!=null) {
-				buffer.append(renderClassRef(parent.getTypeRef()));
-			} else if (parent.getModuleRef()!=null) {
-				buffer.append("[module: ");
-				buffer.append(parent.getModuleRef().getFullQualifiedName());
-				buffer.append("]");
-			} else if(parent.getMethod()!=memberRef){
-				buffer.append(renderAsReference(parent.getMethod()));
-			}
-			buffer.append("::");
-			buffer.append(memberRef.getName());
-			
-			buffer.append(renderAsReference(signature));
-			
-			return buffer.toString();
 		}
 		
-		return renderAsReference(memberRef.getTypeRef()) + " " + memberRef.getName();
+		MethodAndFieldParent parent = memberRef.getOwner();
+		
+		if(parent.getTypeRef()!=null) {
+			if(memberRef.getTypeRef()!=null) {
+				TypeSpec typeSpec = memberRef.getTypeRef().getTypeSpec();
+				
+				if(typeSpec!=null) {
+					TypeRef encolsedTypeRef = typeSpec.getEnclosedTypeRef();
+					while(encolsedTypeRef!=null) {
+						if(encolsedTypeRef.getTypeSpec()!=null) {
+							typeSpec = encolsedTypeRef.getTypeSpec();
+							encolsedTypeRef = typeSpec.getEnclosedTypeRef();
+						} else {
+							encolsedTypeRef = null;
+						}
+					}
+					if(typeSpec.isGenericInstance()) {
+						buffer.append("!");
+						buffer.append(typeSpec.getGenericParameterNumber());
+						buffer.append(" ");
+					}
+				}
+			}
+			
+			buffer.append(renderClassRef(parent.getTypeRef()));
+		} else if (parent.getModuleRef()!=null) {
+			buffer.append("[module: ");
+			buffer.append(parent.getModuleRef().getFullQualifiedName());
+			buffer.append("]");
+		} else if(parent.getMethod()!=memberRef){
+			buffer.append(renderAsReference(parent.getMethod()));
+		}
+		buffer.append("::");
+		buffer.append(memberRef.getName());
+			
+		if(signature!=null) {
+			buffer.append(renderAsReference(signature));
+		}			
+		
+		return buffer.toString();
 	}
 
-	@Override
 	public String renderAsReference(Field field) {
-		return renderAsReference(field.getTypeRef()) + " " + field.getName();
+		String type = renderAsReference(field.getTypeRef());
+		
+		if(field.getParent()==null)
+			return type + field.getName();
+		
+		return  type + " " + field.getParent().getFullQualifiedName() + "::" + field.getName();
 	}
 
 	@Override

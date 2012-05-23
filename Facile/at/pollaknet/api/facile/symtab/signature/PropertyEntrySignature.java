@@ -22,9 +22,9 @@ public class PropertyEntrySignature extends Signature implements PropertySignatu
 
 	private int parameterCount;
 	
-	public static void decodeAndAttach(BasicTypesDirectory directory, PropertyEntry property)
+	public static PropertyEntrySignature decodeAndAttach(BasicTypesDirectory directory, PropertyEntry property)
 			throws InvalidSignatureException {
-		new PropertyEntrySignature(directory, property);
+		return new PropertyEntrySignature(directory, property);
 	}
 	
 	public PropertyEntrySignature(BasicTypesDirectory directory, PropertyEntry property)
@@ -51,6 +51,7 @@ public class PropertyEntrySignature extends Signature implements PropertySignatu
 		
 		if(typeRef==null) {
 			type(typeSpec);
+			directory.registerEmbeddedTypeSpec(typeSpec);
 			typeRef = typeSpec;
 		}
 		

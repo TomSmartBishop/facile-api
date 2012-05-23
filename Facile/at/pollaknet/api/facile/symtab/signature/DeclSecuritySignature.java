@@ -10,9 +10,9 @@ import at.pollaknet.api.facile.util.Pair;
 
 public class DeclSecuritySignature extends Signature {
 
-	public static void decodeAndAttach(BasicTypesDirectory directory, DeclSecurityEntry security)
+	public static DeclSecuritySignature decodeAndAttach(BasicTypesDirectory directory, DeclSecurityEntry security)
 			throws InvalidSignatureException {
-		new DeclSecuritySignature(directory, security);
+		return new DeclSecuritySignature(directory, security);
 	}
 	
 	private DeclSecuritySignature(BasicTypesDirectory directory, DeclSecurityEntry security) 

@@ -99,7 +99,13 @@ public class TypeDefEntry extends TypeRefEntry implements ITypeDefOrRef, IHasCus
 	}
 
 	public void setFields(FieldEntry[] fields) {
-		this.fields = fields;
+		if(fields!=null) {
+			for(FieldEntry field: fields) {
+				field.setParent(this);
+			}
+				
+			this.fields = fields;	
+		}
 	}
 
 	public boolean addMethod(MethodDefEntry method) {
@@ -179,10 +185,17 @@ public class TypeDefEntry extends TypeRefEntry implements ITypeDefOrRef, IHasCus
 		return properties;
 	}
 	
-	public void setProperties(Property [] properties) {
+	public void setProperties(PropertyEntry [] properties) {
 		this.properties = properties;
+		if(fields!=null) {
+			for(PropertyEntry property: properties) {
+				property.setParent(this);
+			}
+				
+			this.properties = properties;	
+		}
 	}
-
+	
 	@Override
 	public Event[] getEvents() {
 		if(events==null) return new Event[0];

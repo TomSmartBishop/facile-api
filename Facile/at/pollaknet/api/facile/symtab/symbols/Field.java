@@ -96,7 +96,16 @@ public interface Field extends AttributableSymbol, Comparable<Field> {
 	
 	//public abstract String toExtendedString();
 	
+	/**
+	 * Get the owner type definition of this field.
+	 * Exceptional method since it's a backward-reference (to the parent).
+	 * @return The parent as {@link at.pollaknet.api.facile.symtab.symbols.Type}.
+	 */
+	public abstract Type getParent();
+	
 	public abstract boolean equals(Object obj);
 	
 	public abstract int hashCode();
+
+	public abstract String getFullQualifiedName();
 }

@@ -8,9 +8,9 @@ import at.pollaknet.api.facile.symtab.BasicTypesDirectory;
 
 public class MethodSpecSignature extends Signature {
 
-	public static void decodeAndAttach(BasicTypesDirectory directory, MethodSpecEntry methodSpec)
+	public static MethodSpecSignature decodeAndAttach(BasicTypesDirectory directory, MethodSpecEntry methodSpec)
 			throws InvalidSignatureException {
-		new MethodSpecSignature(directory, methodSpec);
+		return new MethodSpecSignature(directory, methodSpec);
 	}
 
 	public MethodSpecSignature(BasicTypesDirectory directory, MethodSpecEntry methodSpec)
@@ -29,6 +29,7 @@ public class MethodSpecSignature extends Signature {
 		typeSpec.setAsGenericInstance(true);
 		typeSpec.setGenericArguments(typeArray());
 		
+		directory.registerEmbeddedTypeSpec(typeSpec);
 		methodSpec.getMethod().addGenericInstance(typeSpec);
 	}
 }

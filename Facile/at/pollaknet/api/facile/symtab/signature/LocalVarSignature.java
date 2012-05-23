@@ -15,6 +15,11 @@ public class LocalVarSignature extends Signature {
 	//See ECMA 335 revision 4 - Partition II, 23.2.6 LocalVarSig
 	//http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-335.pdf#page=284&view=FitH
 
+
+	public static LocalVarSignature decodeAndAttach(BasicTypesDirectory directory, MethodBody methodBody) throws InvalidSignatureException {
+		return new LocalVarSignature(directory, methodBody);
+	}
+
 	private LocalVarSignature(BasicTypesDirectory directory, MethodBody methodBody) throws InvalidSignatureException {
 		long token = methodBody.getLocalVarSignatureToken();
 		
@@ -77,6 +82,7 @@ public class LocalVarSignature extends Signature {
 		if(plainType!=null) return plainType;
 		
 		type(typeSpec);
+		directory.registerEmbeddedTypeSpec(typeSpec);
 		return typeSpec;
 	}
 
@@ -100,10 +106,6 @@ public class LocalVarSignature extends Signature {
 			}
 		}	
 		return hasModiferOrConstraint;
-	}
-
-	public static void decodeAndAttach(BasicTypesDirectory directory, MethodBody methodBody) throws InvalidSignatureException {
-		new LocalVarSignature(directory, methodBody);
 	}
 
 }

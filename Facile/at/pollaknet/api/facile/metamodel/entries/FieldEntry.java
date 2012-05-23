@@ -31,6 +31,7 @@ public class FieldEntry extends AbstractAttributable implements IHasCustomAttrib
 	private long relativeVirtualAddress = -1;
 	private NativeImplementation nativeImpl;
 	private TypeRefEntry typeRef;
+	private TypeDefEntry parent;
 	private ParamOrFieldMarshalSignature fieldMarshalSignature;
 
 	/* (non-Javadoc)
@@ -248,6 +249,22 @@ public class FieldEntry extends AbstractAttributable implements IHasCustomAttrib
 		} else if (!typeRef.getFullQualifiedName().equals(other.typeRef.getFullQualifiedName()))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String getFullQualifiedName() {
+		if(parent!=null)
+			return parent.getFullQualifiedName() + "." +  name;
+		
+		return name;
+	}
+
+	public void setParent(TypeDefEntry typeDefEntry) {
+		this.parent = typeDefEntry;
+	}
+	
+	public TypeDefEntry getParent() {
+		return this.parent;
 	}
 
 }

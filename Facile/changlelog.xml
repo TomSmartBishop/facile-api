@@ -5,5 +5,8 @@
     <added>Added new method to get the implicitly used type specs embedded inside the binary signatures</added>
     <added>New methods for the Field interface: getFullQualifiedName and getParent (on trial)</added>
     <added>New methods for the Property interface: getFullQualifiedName and getParent (on trial)</added>
+    <added>"--bca" option for Facile to dump custom attributes in binary format when outputing to ILAsm</added>
+    <fixed>Problem when testing flags for isInterface and isClass methods (and some internal methods)</fixed>
+    <fixed>ILAsmRenderer output is basically ILAsm conform</fixed>
   </version>
 </changelog>
