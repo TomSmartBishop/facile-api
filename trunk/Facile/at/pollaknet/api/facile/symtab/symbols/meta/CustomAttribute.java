@@ -49,6 +49,14 @@ public interface CustomAttribute {
 	 */
 	public abstract TypeRef getTypeRef();
 	
+	/**
+	 * Returns the binary signature of the custom attribute as stored in the assembly.
+	 * This is sometimes required since the type of the custom attribute is defined
+	 * in another assembly.
+	 * @return The raw {@code byte} buffer with the custom attribute signature.
+	 */
+	public abstract byte[] getValue();
+	
 //	/**
 //	 * Returns the {@link at.pollaknet.api.facile.symtab.symbols.TypeRef} or
 //	 * {@link at.pollaknet.api.facile.symtab.symbols.Type} of the custom attribute.

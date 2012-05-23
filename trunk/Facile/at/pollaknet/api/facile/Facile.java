@@ -79,6 +79,7 @@ public class Facile {
 		}
 		
 		boolean createIlOutput = false;
+		boolean binaryCustomAttributes = false;
 		boolean outputMetadataStream = false;
 		boolean outputStringsStream = false;
 		boolean outputBlobStream = false;
@@ -97,6 +98,8 @@ public class Facile {
 			
 			if(args[i].equals("--il")) {
 				createIlOutput = true;
+			} else if(args[i].equals("--bca")) {
+				binaryCustomAttributes = true;
 			} else if(args[i].equals("--info")) {
 				assemblyOverview = true;
 			} else if(args[i].equals("--verbose")) {
@@ -147,6 +150,7 @@ public class Facile {
 		if(log)							System.out.println("--log           : Print the log file at the end (all verbose messages)");
 		if(assemblyOverview)			System.out.println("--info          : Print assembly info (overview)");
 		if(createIlOutput)				System.out.println("--il            : Generating IL code in current working directory");
+		if(binaryCustomAttributes)		System.out.println("--bca           : Generating binary custom attributes in IL code");
 		if(outputMetadataStream)		System.out.println("--#~            : Output #~ (Metadata) Stream");
 		if(outputStringsStream) 		System.out.println("--#Strings      : Output #Strings Stream");
 		if(outputBlobStream)			System.out.println("--#Blob         : Output #Blob Stream");
@@ -188,7 +192,7 @@ public class Facile {
 				}
 				
 				if(createIlOutput) {
-				  ILAsmRenderer renderer = new ILAsmRenderer(facileReflector);
+				  ILAsmRenderer renderer = new ILAsmRenderer(facileReflector, binaryCustomAttributes);
 				  renderer.renderSourceFilesToDirectory(assembly, System.getProperty("user.dir"));
 				  System.out.println("Generated decompiled files in: " + System.getProperty("user.dir"));
 				}
@@ -230,7 +234,8 @@ public class Facile {
 		System.out.println("  --log       : Print the wohle log file at the end");
 		System.out.println("                (all messages from the verbose mode)");
 		System.out.println("  --info      : Print assembly info (summary)");
-		System.out.println("  --il        : Generating IL code in current working directory");
+		System.out.println("  --il        : Generate IL code in current working directory");
+		System.out.println("  --bca       : Generate binary custom attributes in IL code");
 		//System.out.println("  --il=FILE   : Generating IL code and dump to FILE");
 		System.out.println("  --#~        : Output #~ (Metadata) Stream");
 		System.out.println("  --#Strings  : Output #Strings Stream");

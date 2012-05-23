@@ -70,8 +70,8 @@ public class MethodDefOrRefSignature extends Signature implements MethodSignatur
 		return sentinelPosition;
 	}
 	
-	public static void decodeAndAttach(BasicTypesDirectory directory, MethodDefEntry methodDef) throws InvalidSignatureException {
-		new MethodDefOrRefSignature(directory, methodDef);
+	public static MethodDefOrRefSignature decodeAndAttach(BasicTypesDirectory directory, MethodDefEntry methodDef) throws InvalidSignatureException {
+		return new MethodDefOrRefSignature(directory, methodDef);
 	}
 	
 	private MethodDefOrRefSignature(BasicTypesDirectory directory, MethodDefEntry methodDef) throws InvalidSignatureException {
@@ -84,7 +84,7 @@ public class MethodDefOrRefSignature extends Signature implements MethodSignatur
 		
 		nextToken();
 		
-		if(ByteReader.testFlags(flags, CALL_CONV_BITMASK, CALL_CONV_GENERIC)) {
+		if(ByteReader.testFlags(flags, CALL_CONV_GENERIC)) {
 			genericParameterCount  = decodeIntegerInSignature();
 			
 			assert(methodDef.getGenericParameters()!=null);
@@ -200,8 +200,8 @@ public class MethodDefOrRefSignature extends Signature implements MethodSignatur
 		return new MethodDefOrRefSignature(directory, binarySignature, currentIndex);
 	}
 
-	public static void decodeAndAttach(BasicTypesDirectory directory, MemberRefEntry memberRef) throws InvalidSignatureException {
-		new MethodDefOrRefSignature(directory, memberRef);
+	public static MethodDefOrRefSignature decodeAndAttach(BasicTypesDirectory directory, MemberRefEntry memberRef) throws InvalidSignatureException {
+		return new MethodDefOrRefSignature(directory, memberRef);
 	}
 	
 	private MethodDefOrRefSignature(BasicTypesDirectory directory, MemberRefEntry memberRef) throws InvalidSignatureException {
@@ -230,7 +230,7 @@ public class MethodDefOrRefSignature extends Signature implements MethodSignatur
 		
 		nextToken();
 		
-		if(ByteReader.testFlags(flags, CALL_CONV_BITMASK, CALL_CONV_GENERIC)) {
+		if(ByteReader.testFlags(flags, CALL_CONV_GENERIC)) {
 			genericParameterCount = decodeIntegerInSignature();
 		}
 				
@@ -297,9 +297,9 @@ public class MethodDefOrRefSignature extends Signature implements MethodSignatur
 		setBinarySignature(ByteReader.getBytes(binarySignature, currentIndex, this.currentIndex-currentIndex));
 	}
 
-	public static void decodeAndAttach(BasicTypesDirectory directory,
+	public static MethodDefOrRefSignature decodeAndAttach(BasicTypesDirectory directory,
 			StandAloneSigEntry standAlone) throws InvalidSignatureException {
-		new MethodDefOrRefSignature(directory, standAlone);
+		return new MethodDefOrRefSignature(directory, standAlone);
 	}
 	
 	class FixupElement {

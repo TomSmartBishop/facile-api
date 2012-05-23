@@ -43,6 +43,7 @@ public class AssemblyEntry extends AbstractAttributable implements
 	private TypeDefEntry [] types;
 	private TypeRefEntry [] typeRefs;
 	private TypeSpecEntry [] typeSpecs;
+	private TypeSpecEntry [] embeddedTypeSpecs;
 	private FileEntry[] fileRefs;
 	//private boolean loaded;
 	private String filename;
@@ -243,6 +244,18 @@ public class AssemblyEntry extends AbstractAttributable implements
 			buffer.append(t.toString().replaceAll("\n","\n\t\t"));
 		}
 		
+		buffer.append("\n\tTypeSpecs (embedded in signatures):");
+		for(TypeSpecEntry t: embeddedTypeSpecs) {		
+			if(t.getCustomAttributes()!=null) {
+				for(CustomAttributeEntry c: t.getCustomAttributes()) {
+					buffer.append(c.toExtendedString());
+					buffer.append("\n\t\t");
+				}
+			}
+			buffer.append("\n\t\t");
+			buffer.append(t.toString().replaceAll("\n","\n\t\t"));
+		}
+		
 		buffer.append("\n\tAssemblyRefs:");
 		for(AssemblyRefEntry ref: assemblyRefs) {
 			if(ref.getCustomAttributes()!=null) {
@@ -313,6 +326,13 @@ public class AssemblyEntry extends AbstractAttributable implements
 	 */
 	public TypeSpec[] getAllTypeSpecs() {
 		return typeSpecs;
+	}
+	
+	/* (non-Javadoc)
+	 * @see facile.Assembly#getEmbeddedTypeSpecs()
+	 */
+	public TypeSpec[] getEmbeddedTypeSpecs() {
+		return embeddedTypeSpecs;
 	}
 	
 	/* (non-Javadoc)
@@ -506,6 +526,10 @@ public class AssemblyEntry extends AbstractAttributable implements
 			return false;
 
 		return true;
+	}
+
+	public void setEmbeddedTypeSpecs(TypeSpecEntry[] signatureEmbeddedTypeSpecs) {
+		embeddedTypeSpecs = signatureEmbeddedTypeSpecs;
 	}
 
 }

@@ -8,9 +8,9 @@ import at.pollaknet.api.facile.symtab.BasicTypesDirectory;
 
 public class FieldSignature extends Signature {
 
-	public static void decodeAndAttach(BasicTypesDirectory directory, ITypeSpecInstances owner)
+	public static FieldSignature decodeAndAttach(BasicTypesDirectory directory, ITypeSpecInstances owner)
 			throws InvalidSignatureException {
-		new FieldSignature(directory, owner);
+		return new FieldSignature(directory, owner);
 	}
 	
 	private FieldSignature(BasicTypesDirectory directory, ITypeSpecInstances owner) 
@@ -39,7 +39,8 @@ public class FieldSignature extends Signature {
 			return plainType;
 		}
 		
-		type(typeSpec);		
+		type(typeSpec);
+		directory.registerEmbeddedTypeSpec(typeSpec);
 		return typeSpec;
 	}
 }

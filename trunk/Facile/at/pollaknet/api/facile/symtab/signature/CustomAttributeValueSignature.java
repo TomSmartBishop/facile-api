@@ -24,9 +24,9 @@ public class CustomAttributeValueSignature extends Signature {
 	private List<Pair<String, Instance>> namedFields = new ArrayList<Pair<String, Instance>>();
 	private List<Pair<String, Instance>> namedProperties = new ArrayList<Pair<String, Instance>>();
 	
-	public static void decodeAndAttach(BasicTypesDirectory directory, CustomAttributeEntry customAttribute)
+	public static CustomAttributeValueSignature decodeAndAttach(BasicTypesDirectory directory, CustomAttributeEntry customAttribute)
 			throws InvalidSignatureException {
-		new CustomAttributeValueSignature(directory, customAttribute);
+		return new CustomAttributeValueSignature(directory, customAttribute);
 	}
 
 	@SuppressWarnings("unchecked")

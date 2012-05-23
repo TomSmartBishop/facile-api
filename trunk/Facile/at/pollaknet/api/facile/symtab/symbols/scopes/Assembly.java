@@ -102,14 +102,14 @@ public interface Assembly extends AttributableSymbol {
 	public abstract String getFileName();
 
 	/**
-	 * Returns a list of all defines types inside the assembly as
+	 * Returns an array of all defines types inside the assembly as
 	 * array of {@link at.pollaknet.api.facile.symtab.symbols.Type} objects.
 	 * @return A array of all defined types.
 	 */
 	public abstract Type[] getAllTypes();
 
 	/**
-	 * Returns a list of all defines type references inside the assembly as
+	 * Returns an array of all defines type references inside the assembly as
 	 * array of {@link at.pollaknet.api.facile.symtab.symbols.TypeRef} objects. This array also
 	 * contains {@link at.pollaknet.api.facile.symtab.symbols.TypeSpec} objects (which are derived
 	 * from {@link at.pollaknet.api.facile.symtab.symbols.TypeRef})
@@ -118,11 +118,21 @@ public interface Assembly extends AttributableSymbol {
 	public abstract TypeRef[] getAllTypeRefs();
 	
 	/**
-	 * Returns a list of all type specifications (compound types) inside the assembly as
+	 * Returns an array of all explicit type specifications (compound types) inside the assembly as
 	 * array of {@link at.pollaknet.api.facile.symtab.symbols.TypeSpec} objects (e.g. Arrays).
-	 * @return A array of all defined types.
+	 * Implicit type specifications are found inside function-, field-, ... signatures. Accessible via
+	 *  the getEmbeddedTypeSpecs method.
+	 *  @see Assembly#getEmbeddedTypeSpecs()
+	 * @return A array of all explicit defined types.
 	 */
 	public abstract TypeSpec[] getAllTypeSpecs();
+	
+	/**
+	 * Returns an array of all implicitly used type specifications found inside the signatures of the assembly as
+	 * array of {@link at.pollaknet.api.facile.symtab.symbols.TypeSpec} objects (e.g. Arrays).
+	 * @return A array of implicit defined types.
+	 */
+	public abstract TypeSpec[] getEmbeddedTypeSpecs();
 
 	/**
 	 * Returns the module which is defined in the assembly. The module is the owner

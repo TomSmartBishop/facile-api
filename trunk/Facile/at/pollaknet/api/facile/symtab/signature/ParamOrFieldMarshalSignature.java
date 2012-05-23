@@ -13,10 +13,12 @@ public class ParamOrFieldMarshalSignature extends Signature implements MarshalSi
 	private String marshalerCookie = null;
 	private int sizeParameterNumber = -1;
 		
-	public static void decodeAndAttach(BasicTypesDirectory directory, ParamEntry param)
+	public static ParamOrFieldMarshalSignature decodeAndAttach(BasicTypesDirectory directory, ParamEntry param)
 			throws InvalidSignatureException {
 		if(param.getBinaryMarshalTypeSignature()!=null)
-			new ParamOrFieldMarshalSignature(directory, param);
+			return new ParamOrFieldMarshalSignature(directory, param);
+		
+		return null;
 	}
 	
 	private ParamOrFieldMarshalSignature(BasicTypesDirectory directory, ParamEntry param)
@@ -27,10 +29,12 @@ public class ParamOrFieldMarshalSignature extends Signature implements MarshalSi
 		param.setMarshalSignature(this);
 	}
 	
-	public static void decodeAndAttach(BasicTypesDirectory directory, FieldEntry field)
+	public static ParamOrFieldMarshalSignature decodeAndAttach(BasicTypesDirectory directory, FieldEntry field)
 			throws InvalidSignatureException {
 		if(field.getBinaryMarshalTypeSignature()!=null)
-			new ParamOrFieldMarshalSignature(directory, field);
+			return new ParamOrFieldMarshalSignature(directory, field);
+		
+		return null;
 	}
 	
 	private ParamOrFieldMarshalSignature(BasicTypesDirectory directory, FieldEntry field)

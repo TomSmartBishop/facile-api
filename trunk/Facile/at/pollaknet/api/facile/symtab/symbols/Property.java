@@ -40,7 +40,16 @@ public interface Property extends AttributableSymbol, Comparable<Property> {
 	 */
 	public abstract PropertySignature getPropertySignature();
 	
+	/**
+	 * Get the owner type definition of this property.
+	 * Exceptional method since it's a backward-reference (to the parent).
+	 * @return The parent as {@link at.pollaknet.api.facile.symtab.symbols.Type}.
+	 */
+	public Type getParent();
+		
 	public abstract boolean equals(Object obj);
 	
 	public abstract int hashCode();
+
+	public abstract String getFullQualifiedName();
 }

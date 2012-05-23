@@ -12,8 +12,8 @@ import at.pollaknet.api.facile.symtab.NamespaceContainer;
 import at.pollaknet.api.facile.symtab.TypeKind;
 import at.pollaknet.api.facile.symtab.symbols.Type;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
-import at.pollaknet.api.facile.symtab.symbols.TypeSpec;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.MethodAndFieldParent;
+import at.pollaknet.api.facile.symtab.symbols.aggregation.Namespace;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.ResolutionScope;
 import at.pollaknet.api.facile.symtab.symbols.meta.AttributableSymbol;
 import at.pollaknet.api.facile.symtab.symbols.scopes.AssemblyRef;
@@ -32,6 +32,7 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 	protected String shortName = null;
 
 	private int kind;
+	protected char namespaceSeperator = '.';
 
 	private NamespaceContainer[] namespaces = new NamespaceContainer [0];
 
@@ -78,7 +79,7 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 	public String getFullQualifiedName() {
 		if(namespace==null || namespace.equals("")) return name;
 		
-		return namespace + "." + name;
+		return namespace + namespaceSeperator + name;
 	}
 
 	@Override
@@ -123,7 +124,7 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 	}
 
 	@Override
-	public TypeSpec getTypeSpec() {
+	public TypeSpecEntry getTypeSpec() {
 		return null;
 	}
 
@@ -229,6 +230,61 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 	@Override
 	public boolean isValueType() {
 		return kind==TypeKind.ELEMENT_TYPE_VALUETYPE || (getType()!=null && getType().isInheritedFrom("System.ValueType"));
+	}
+	
+	public void adjustNamespace(ModuleRef moduleRef) {
+		adjustNamespace(this, moduleRef);
+	}
+	
+	protected void adjustNamespace(TypeRefEntry typeRef, ModuleRef moduleRef) {
+			
+		if(	typeRef.getResolutionScope()==null)
+			return;
+		
+		ModuleRef parentModule = typeRef.getResolutionScope().getModule();
+		
+		if(parentModule==null || parentModule.getFullQualifiedName()!=moduleRef.getFullQualifiedName() )
+			return;
+		
+		//check all name spaces to determinate where to replace '.' with '/'
+		String enclosedFullQualifiedName = typeRef.getFullQualifiedName();
+		String enclosedNamespace = typeRef.getNamespace();
+
+		Namespace [] definedNamespaces = parentModule.getNamespaces();
+		if(enclosedNamespace!=null && definedNamespaces!=null && definedNamespaces.length>0) {
+			int longestMatch = -1;
+			for(int i=0;i<definedNamespaces.length;i++) {
+				//perfect match
+				if( definedNamespaces[i].getNamespace()==enclosedNamespace) {
+					return;
+				} else if( definedNamespaces[i].isSuperNamespace(enclosedNamespace) &&
+					( longestMatch<0 || definedNamespaces[longestMatch].getAddress().length<definedNamespaces[i].getAddress().length) ) {
+						longestMatch = i;
+				}
+			}
+			
+			if(longestMatch>0) {
+				
+				int lengthWithDot = definedNamespaces[longestMatch].getNamespace().length()+1;
+				if(enclosedFullQualifiedName.length()>lengthWithDot) {
+					String [] nameParts = enclosedFullQualifiedName.split("\\.|\\/");
+					
+					String [] currentAddress = definedNamespaces[longestMatch].getAddress();
+					
+					String modifiedNamespace = definedNamespaces[longestMatch].getNamespace();
+					
+					for(int i=currentAddress.length;i<nameParts.length-1;i++)
+						if(i==currentAddress.length)
+							modifiedNamespace += '.' + nameParts[i];
+						else
+							modifiedNamespace += '/' + nameParts[i];
+					
+					typeRef.setNamespace(modifiedNamespace);
+				}
+				namespaceSeperator = '/';
+				
+			}
+		}
 	}
 
 }

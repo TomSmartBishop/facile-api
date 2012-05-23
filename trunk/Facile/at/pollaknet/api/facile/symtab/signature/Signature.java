@@ -240,6 +240,8 @@ public abstract class Signature extends TypeKind {
 				enclosingType.setElementKind(TypeKind.ELEMENT_TYPE_OBJECT);
 								
 				type(typeSpec);
+				//TODO: check if this is correct:
+				directory.registerEmbeddedTypeSpec(typeSpec);
 				enclosingType.setEnclosedTypeRef(typeSpec);
 				break;
 			}
@@ -297,7 +299,7 @@ public abstract class Signature extends TypeKind {
 
 	}
 
-	private AssemblyRefEntry setExtractedAssemblyData(String fullQualifiedName,
+	private static AssemblyRefEntry setExtractedAssemblyData(String fullQualifiedName,
 			String assembly, String version, String culture, String publicKey) {
 		//create a dummy assembly with the collected data
 		AssemblyRefEntry dummyAssembly = new AssemblyRefEntry();
@@ -437,6 +439,7 @@ public abstract class Signature extends TypeKind {
 		if(plainType!=null) return plainType;
 
 		type(returnType);
+		directory.registerEmbeddedTypeSpec(returnType);
 		return returnType;
 	}
 
@@ -452,6 +455,7 @@ public abstract class Signature extends TypeKind {
 			paramEntry.setTypeRef(plainType);
 		} else {
 			type(returnType);
+			directory.registerEmbeddedTypeSpec(returnType);
 			paramEntry.setTypeRef(returnType);
 		}
 	}
@@ -475,10 +479,14 @@ public abstract class Signature extends TypeKind {
 				nextToken();
 				typeDefOrRefEncoded(optionalOrReqType);
 				typeSpec.addOptionalModifier(optionalOrReqType);
+				//TODO:check if this is correct:
+				directory.registerEmbeddedTypeSpec(optionalOrReqType);
 			} else {
 				nextToken();
 				typeDefOrRefEncoded(optionalOrReqType);
 				typeSpec.addRequiredModifier(optionalOrReqType);
+				//TODO:check if this is correct:
+				directory.registerEmbeddedTypeSpec(optionalOrReqType);
 			}
 		}
 
@@ -506,6 +514,10 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 				enclosingType.setGeneralArray(true);
 				TypeSpecEntry typeSpec = new TypeSpecEntry();
 				type(typeSpec);
+				
+				//TODO:check if this is correct:
+				directory.registerEmbeddedTypeSpec(typeSpec);
+				
 				enclosingType.setEnclosedTypeRef(typeSpec);
 				arrayShape(enclosingType);
 				break;
@@ -517,6 +529,10 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 				customModifiers(enclosingType);
 				TypeSpecEntry typeSpec = new TypeSpecEntry();
 				type(typeSpec);
+				
+				//TODO:check if this is correct:
+				directory.registerEmbeddedTypeSpec(typeSpec);
+				
 				enclosingType.setEnclosedTypeRef(typeSpec);
 				break;
 			}
@@ -582,6 +598,9 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 
 				type(typeSpec);
 				genericTypes[i] = typeSpec;
+				
+				//TODO:check if this is correct:
+				directory.registerEmbeddedTypeSpec(typeSpec);
 			}
 		}
 		return genericTypes;
@@ -650,6 +669,9 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 			type(enclosingType);
 			assert (enclosingType != null);
 			paramEntry.setTypeRef(enclosingType);
+			
+			//TODO:check if this is correct:
+			directory.registerEmbeddedTypeSpec(enclosingType);
 		}
 	}
 
@@ -951,6 +973,9 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 		TypeSpecEntry typeSpec = new TypeSpecEntry();
 
 		type(typeSpec);
+		
+		//TODO:check if this is correct:
+		directory.registerEmbeddedTypeSpec(typeSpec);
 		return typeSpec;
 	}
 

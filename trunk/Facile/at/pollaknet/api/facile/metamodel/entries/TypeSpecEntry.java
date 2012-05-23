@@ -13,6 +13,7 @@ import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.symtab.symbols.TypeSpec;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.MethodAndFieldParent;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.ResolutionScope;
+import at.pollaknet.api.facile.symtab.symbols.scopes.ModuleRef;
 import at.pollaknet.api.facile.util.ArrayUtils;
 import at.pollaknet.api.facile.util.ByteReader;
 
@@ -44,7 +45,7 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 	private static final int FLAGS_IS_BOXED			 	= 0x0200;
 	
 	private byte [] binarySignature;
-	private TypeRef enclosedType = null;
+	private TypeRefEntry enclosedType = null;
 
 	private ArrayList<TypeSpec> optionalModifiers = null;
 	private ArrayList<TypeSpec> requiredModifiers = null;
@@ -86,9 +87,22 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 	
 	@Override
 	public String getFullQualifiedName() {
-		return getNamespace() + "." + getName();
+		String namespace = getNamespace();
+		if(namespace==null)
+			return getName();
+		return getNamespace() + namespaceSeperator + getName();
 	}
 
+	public void adjustNamespace(ModuleRef moduleRef) {
+		
+		TypeRefEntry enclosedTypeRef = this;
+		while(enclosedTypeRef.getTypeSpec()!=null && enclosedTypeRef.getTypeSpec().getEnclosedTypeRef()!=null) {
+			enclosedTypeRef = enclosedTypeRef.getTypeSpec().getEnclosedTypeRef();
+		}
+		
+		adjustNamespace(enclosedTypeRef, moduleRef);
+	}
+	
 	@Override
 	public String getExtName() {
 		StringBuffer buffer = new StringBuffer();
@@ -166,7 +180,12 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 		if(genericArguments!=null){
 			for(int i=0;i<genericArguments.length;i++) {
 				if(i!=0) buffer.append(", ");
-				buffer.append("<");
+				
+				if(genericArguments[i].getTypeSpec()!=null && genericArguments[i].getTypeSpec().getGenericParameterNumber()>=0)
+					buffer.append("<!");
+				else
+					buffer.append("<");
+				
 				String shortName = genericArguments[i].getShortSystemName();
 				buffer.append(shortName!=null?shortName:genericArguments[i].getFullQualifiedName());
 				buffer.append(">");
@@ -253,7 +272,12 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 		if(genericArguments!=null){
 			for(int i=0;i<genericArguments.length;i++) {
 				if(i!=0) buffer.append(", ");
-				buffer.append("<");
+				
+				if(genericArguments[i].getTypeSpec()!=null && genericArguments[i].getTypeSpec().getGenericParameterNumber()>=0)
+					buffer.append("<!");
+				else
+					buffer.append("<");
+				
 				String shortName = genericArguments[i].getShortSystemName();
 				buffer.append(shortName!=null?shortName:genericArguments[i].getFullQualifiedName());
 				buffer.append(">");
@@ -296,11 +320,11 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 		return this;
 	}
 	
-	public TypeRef getEnclosedTypeRef() {
+	public TypeRefEntry getEnclosedTypeRef() {
 		return enclosedType;
 	}
 	
-	public void setEnclosedTypeRef(TypeRef type) {
+	public void setEnclosedTypeRef(TypeRefEntry type) {
 		this.enclosedType = type;
 	}
 	
@@ -485,7 +509,7 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 	}
 
 	@Override
-	public TypeSpec getTypeSpec() {
+	public TypeSpecEntry getTypeSpec() {
 		return this;
 	}
 
@@ -544,7 +568,6 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 		
 		return true;
 	}
-	
 	
 }
 

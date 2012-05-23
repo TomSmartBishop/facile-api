@@ -30,6 +30,8 @@ public class PropertyEntry extends AbstractAttributable implements IHasConstant,
 	private PropertyEntrySignature propertySignature;
 	private ArrayList<MethodDefEntry> methods;
 	
+	private TypeDefEntry parent;
+	
 	public int getFlags() {
 		return flags;
 	}
@@ -170,5 +172,20 @@ public class PropertyEntry extends AbstractAttributable implements IHasConstant,
 		return true;
 	}
 	
+	@Override
+	public String getFullQualifiedName() {
+		if(parent!=null)
+			return parent.getFullQualifiedName() + "." +  name;
+		
+		return name;
+	}
+
+	public void setParent(TypeDefEntry typeDefEntry) {
+		this.parent = typeDefEntry;
+	}
+	
+	public TypeDefEntry getParent() {
+		return this.parent;
+	}
 	
 }

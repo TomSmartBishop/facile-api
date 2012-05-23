@@ -1,5 +1,6 @@
 package at.pollaknet.api.facile.symtab;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import at.pollaknet.api.facile.header.cli.stream.BlobStream;
@@ -9,10 +10,10 @@ import at.pollaknet.api.facile.metamodel.entries.GenericParamEntry;
 import at.pollaknet.api.facile.metamodel.entries.StandAloneSigEntry;
 import at.pollaknet.api.facile.metamodel.entries.TypeDefEntry;
 import at.pollaknet.api.facile.metamodel.entries.TypeRefEntry;
+import at.pollaknet.api.facile.metamodel.entries.TypeSpecEntry;
 import at.pollaknet.api.facile.symtab.signature.Signature;
 import at.pollaknet.api.facile.symtab.symbols.Type;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
-import at.pollaknet.api.facile.symtab.symbols.TypeSpec;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.ResolutionScope;
 
 
@@ -40,6 +41,8 @@ public class BasicTypesDirectory {
 	//See ECMA 335 revision 4 - Partition II, 23.1.16 Element types used in signatures
 	//http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-335.pdf#page=276&view=FitH
 	private HashMap<Integer, TypeRefEntry> typeRefs = new HashMap<Integer, TypeRefEntry>();
+	
+	private ArrayList<TypeSpecEntry> signatureEmbeddedTypeSpecs = new ArrayList<TypeSpecEntry>();
 
 	private BlobStream blobStream = null;
 	
@@ -171,15 +174,15 @@ public class BasicTypesDirectory {
 			return true;
 		}
 		else if(typeDefOrRef.getFullQualifiedName().equals("System.IntPtr")) {
-			typeDefOrRef.setElementKind(Signature.ELEMENT_TYPE_PTR);
+			typeDefOrRef.setElementKind(TypeKind.ELEMENT_TYPE_PTR);
 			typeDefOrRef.setShortSystemName("native int");
-			typeRefs.put(Signature.ELEMENT_TYPE_I, typeDefOrRef);
+			typeRefs.put(TypeKind.ELEMENT_TYPE_I, typeDefOrRef);
 			return true;
 		}
 		else if(typeDefOrRef.getFullQualifiedName().equals("System.UIntPtr")) {
-			typeDefOrRef.setElementKind(Signature.ELEMENT_TYPE_PTR);
+			typeDefOrRef.setElementKind(TypeKind.ELEMENT_TYPE_PTR);
 			typeDefOrRef.setShortSystemName("native unsigned int");
-			typeRefs.put(Signature.ELEMENT_TYPE_I, typeDefOrRef);
+			typeRefs.put(TypeKind.ELEMENT_TYPE_I, typeDefOrRef);
 			return true;
 		}
 		else if(typeDefOrRef.getFullQualifiedName().equals("System.Type")) {
@@ -420,7 +423,7 @@ public class BasicTypesDirectory {
 	 * @return A {@link at.pollaknet.api.facile.metamodel.entries.TypeSpecEntry}[] from
 	 * the meta model.
 	 */
-	public TypeSpec[] getTypeSpecs() {
+	public TypeSpecEntry[] getTypeSpecs() {
 		return metaModel.typeSpec;
 	}
 	
@@ -463,6 +466,15 @@ public class BasicTypesDirectory {
 	 */
 	public BlobStream getBlobStream() {
 		return blobStream;
+	}
+
+	public void registerEmbeddedTypeSpec(TypeSpecEntry embeddedTypeSpec) {
+		if(!signatureEmbeddedTypeSpecs.contains(embeddedTypeSpec))
+			signatureEmbeddedTypeSpecs.add(embeddedTypeSpec);
+	}
+
+	public ArrayList<TypeSpecEntry> getEmbeddedTypeSpecs() {
+		return signatureEmbeddedTypeSpecs;
 	}
 
 }
