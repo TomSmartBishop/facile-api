@@ -725,6 +725,9 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 	    		
 	    		return new TypeInstance(typeRef, readNumericValue(backupIndex, Signature.UNNAMED_CSTM_ATRB_ENUM));
 			}
+			
+			case TypeKind.ELEMENT_TYPE_VOID:
+				return new TypeInstance(typeRef, (TypeInstance)null);
 	
 			case Signature.UNNAMED_SYSTEM_TYPE:
 			case TypeKind.ELEMENT_TYPE_STRING: {

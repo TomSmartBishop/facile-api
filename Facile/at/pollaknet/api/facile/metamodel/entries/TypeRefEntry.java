@@ -100,17 +100,17 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 
 	@Override
 	public AssemblyRef getAssemblyRef() {
-		return resolutionScope.getAssemblyRef();
+		return getResolutionScope()==null?null:getResolutionScope().getAssemblyRef();
 	}
 
 	@Override
 	public Module getModule() {
-		return resolutionScope.getModule();
+		return getResolutionScope()==null?null:getResolutionScope().getModule();
 	}
 
 	@Override
 	public ModuleRef getModuleRef() {
-		return resolutionScope.getModuleRef();
+		return getResolutionScope()==null?null:getResolutionScope().getModuleRef();
 	}
 
 	@Override
