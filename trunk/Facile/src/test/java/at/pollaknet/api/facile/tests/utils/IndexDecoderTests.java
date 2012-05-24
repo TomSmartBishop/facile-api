@@ -1,9 +1,9 @@
 package at.pollaknet.api.facile.tests.utils;
 
-import junit.framework.TestCase;
 import at.pollaknet.api.facile.header.cli.util.CodedIndex;
 import at.pollaknet.api.facile.header.cli.util.IndexDecoder;
 import at.pollaknet.api.facile.util.ByteReader;
+import junit.framework.TestCase;
 
 public class IndexDecoderTests extends TestCase {
 

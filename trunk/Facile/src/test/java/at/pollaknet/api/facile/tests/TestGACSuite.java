@@ -1,9 +1,9 @@
 package at.pollaknet.api.facile.tests;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
 import at.pollaknet.api.facile.tests.gac.TestGAC;
 import at.pollaknet.api.facile.tests.gac.TestGACFusion;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 public class TestGACSuite {
 
