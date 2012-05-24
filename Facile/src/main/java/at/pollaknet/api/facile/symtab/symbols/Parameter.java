@@ -1,5 +1,7 @@
 package at.pollaknet.api.facile.symtab.symbols;
 
+import java.util.List;
+
 import at.pollaknet.api.facile.symtab.symbols.meta.AttributableSymbol;
 
 public interface Parameter extends AttributableSymbol {
@@ -44,11 +46,18 @@ public interface Parameter extends AttributableSymbol {
 	/**
 	 * Returns the type reference of the parameter. In case of a
 	 * generic parameter ({@code isGeneric()==true}) this method
-	 * return the generic type constraint!
+	 * returns null!
 	 * @return The {@link at.pollaknet.api.facile.symtab.symbols.TypeRef}
 	 * (or constraint) of the parameter.
 	 */
 	public abstract TypeRef getTypeRef();
+
+    /**
+     * Returns the list of type constraints for a generic parameter
+     *
+     * @return A potentially empty list of constraints
+     */
+    public abstract List<TypeRef> getConstraints();
 
 	/**
 	 * <p/>Tells you if the parameter is generic or not.
