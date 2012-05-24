@@ -178,18 +178,17 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 		}
 
 		if(genericArguments!=null){
+			buffer.append("<");
 			for(int i=0;i<genericArguments.length;i++) {
 				if(i!=0) buffer.append(", ");
 				
 				if(genericArguments[i].getTypeSpec()!=null && genericArguments[i].getTypeSpec().getGenericParameterNumber()>=0)
-					buffer.append("<!");
-				else
-					buffer.append("<");
+					buffer.append("!");
 				
 				String shortName = genericArguments[i].getShortSystemName();
 				buffer.append(shortName!=null?shortName:genericArguments[i].getFullQualifiedName());
-				buffer.append(">");
 			}
+			buffer.append(">");
 		}
 		
 		return buffer.toString();
@@ -270,18 +269,18 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 		}
 
 		if(genericArguments!=null){
+			buffer.append("<");
 			for(int i=0;i<genericArguments.length;i++) {
 				if(i!=0) buffer.append(", ");
 				
 				if(genericArguments[i].getTypeSpec()!=null && genericArguments[i].getTypeSpec().getGenericParameterNumber()>=0)
-					buffer.append("<!");
-				else
-					buffer.append("<");
+					buffer.append("!");
 				
 				String shortName = genericArguments[i].getShortSystemName();
 				buffer.append(shortName!=null?shortName:genericArguments[i].getFullQualifiedName());
-				buffer.append(">");
+				
 			}
+			buffer.append(">");
 		}
 		
 		return buffer.toString();

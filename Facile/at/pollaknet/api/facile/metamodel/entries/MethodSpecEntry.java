@@ -42,6 +42,8 @@ public class MethodSpecEntry extends AbstractAttributable
 	}
 	@Override
 	public String renderAsReference(LanguageRenderer renderer) {
+		//TODO: Implement method spec rendering!
+		//return renderer.renderAsReference(this);
 		return null;
 	}
 

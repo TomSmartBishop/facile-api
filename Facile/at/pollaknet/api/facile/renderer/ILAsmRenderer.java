@@ -1422,10 +1422,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		   buffer.append(String.format(".field %s %s %s", renderFieldFlags(field), renderClassRef(typeRef), field.getName()));
 		
 		CustomAttribute [] attributes = field.getCustomAttributes();
-		
-		//extra handling of backing fields...
-		//if(field.getName().endsWith("k__BackingField'")||field.getTypeRef().getName().contains("e__FixedBuffer")) {
-		//	assert(attributes.length<=1) : "Backing field with unexpected custom attributes";
+
 		if(attributes.length==1) {
 			buffer.append(newLine);
 			buffer.append(render(field.getCustomAttributes()[0]));
