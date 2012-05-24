@@ -206,9 +206,11 @@ public abstract class Signature extends TypeKind {
 				
 				genericNumber = decodeIntegerInSignature();
 
+				//FIXME: This is wrong because the generic param number are not unique... (start over in each class)
 				for(GenericParamEntry  g: directory.getGenericParams()) {
 					if(g.getNumber()==genericNumber){
 						enclosingType.setName(g.getName());
+						break;
 					}
 				}
 				
