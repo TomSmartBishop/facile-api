@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import at.pollaknet.api.facile.Facile;
 import at.pollaknet.api.facile.exception.DotNetContentNotFoundException;
 import at.pollaknet.api.facile.symtab.symbols.scopes.Assembly;
-
 import junit.framework.TestCase;
 
 public class TestGAC extends TestCase {

@@ -1,8 +1,8 @@
 package at.pollaknet.api.facile.tests.assemblies;
 
-import junit.framework.TestCase;
 import at.pollaknet.api.facile.Facile;
 import at.pollaknet.api.facile.symtab.symbols.scopes.Assembly;
+import junit.framework.TestCase;
 
 public class FacileMscorlibGeneralAPITests extends TestCase {
 

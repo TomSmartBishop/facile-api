@@ -2,8 +2,6 @@ package at.pollaknet.api.facile.tests.assemblies;
 
 import at.pollaknet.api.facile.Facile;
 import at.pollaknet.api.facile.exception.DotNetContentNotFoundException;
-
-
 import junit.framework.TestCase;
 
 public class FacileNativeTests extends TestCase {

@@ -11,7 +11,6 @@ import at.pollaknet.api.facile.Facile;
 import at.pollaknet.api.facile.exception.CoffPeDataNotFoundException;
 import at.pollaknet.api.facile.symtab.symbols.scopes.Assembly;
 import at.pollaknet.api.facile.util.ByteReader;
-
 import junit.framework.TestCase;
 
 public class TestGACFusion extends TestCase {

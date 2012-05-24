@@ -24,7 +24,7 @@ import at.pollaknet.api.facile.util.ByteReader;
 
 public abstract class Signature extends TypeKind {
 
-	public final static int ELEMENT_TYPE_MODIFIER 		= 0x40; //Or’d with following element types
+	public final static int ELEMENT_TYPE_MODIFIER 		= 0x40; //Or d with following element types
 	public final static int ELEMENT_TYPE_SENTINEL 		= 0x41; //Sentinel for vararg method signature
 	public final static int ELEMENT_TYPE_PINNED 		= 0x45; //Denotes a local variable that points at a pinned object
 	
@@ -137,7 +137,7 @@ public abstract class Signature extends TypeKind {
 		
 		//Type ::=
 		//x		BOOLEAN | CHAR | I1 | U1 | I2 | U2 | I4 | U4 | I8 | U8 | R4 | R8 | I | U
-		//x		| ARRAY Type ArrayShape (general array, see §23.2.13)
+		//x		| ARRAY Type ArrayShape (general array, see 23.2.13)
 		//x		| CLASS TypeDefOrRefEncoded
 		//x		| FNPTR MethodDefSig
 		//x		| FNPTR MethodRefSig
