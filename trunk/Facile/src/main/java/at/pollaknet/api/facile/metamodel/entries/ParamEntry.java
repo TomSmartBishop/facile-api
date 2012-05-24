@@ -1,6 +1,9 @@
 package at.pollaknet.api.facile.metamodel.entries;
 
 
+import java.util.Collections;
+import java.util.List;
+
 import at.pollaknet.api.facile.metamodel.AbstractAttributable;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasConstant;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasCustomAttribute;
@@ -69,8 +72,13 @@ public class ParamEntry extends AbstractAttributable implements IHasCustomAttrib
 	public Constant getConstant() {
 		return constantEntry;
 	}
-	
-	@Override
+
+    @Override
+    public List<TypeRef> getConstraints() {
+        return Collections.emptyList();
+    }
+
+    @Override
 	public byte[] getBinaryMarshalTypeSignature() {
 		return marshaledType;
 	}

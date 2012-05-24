@@ -1,5 +1,8 @@
 package at.pollaknet.api.facile.metamodel.entries;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import at.pollaknet.api.facile.metamodel.AbstractAttributable;
 import at.pollaknet.api.facile.metamodel.RenderableCilElement;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasCustomAttribute;
@@ -22,7 +25,7 @@ public class GenericParamEntry extends AbstractAttributable
 	private ITypeOrMethodDef owner;
 	private String name;
 	
-	private ITypeDefOrRef typeConstraint;
+	private List<ITypeDefOrRef> typeConstraints = new ArrayList<ITypeDefOrRef>();
 	private ITypeOrMethodDef deprecatedMethodOrTypeConstraint = null;
 
 	public int getNumber() {
@@ -57,16 +60,25 @@ public class GenericParamEntry extends AbstractAttributable
 	}
 	
 	public void setConstraint(ITypeDefOrRef constraint) {
-		this.typeConstraint = constraint;
+		this.typeConstraints.add(constraint);
 	}
 
 	@Override
 	public TypeRef getTypeRef() {
-		if(typeConstraint == null) return null;
-			
-		return typeConstraint.getTypeRef();
+		return null;
 	}
-	@Override
+
+    @Override
+    public List<TypeRef> getConstraints() {
+        List<TypeRef> result = new ArrayList<TypeRef>(typeConstraints.size());
+
+        for (ITypeDefOrRef ref : typeConstraints) {
+            result.add(ref.getTypeRef());
+        }
+        return result;
+    }
+
+    @Override
 	public boolean isGeneric() {
 		return true;
 	}
@@ -149,11 +161,10 @@ public class GenericParamEntry extends AbstractAttributable
 //				return false;
 //		} else if (!owner.equals(other.owner))
 //			return false;
-		if (typeConstraint == null) {
-			if (other.typeConstraint != null)
-				return false;
-		} else if (!typeConstraint.getFullQualifiedName().equals(other.typeConstraint.getFullQualifiedName()))
-			return false;
+        if (typeConstraints.size() != other.typeConstraints.size())
+            return false;
+		if (!typeConstraints.equals(other.typeConstraints))
+		    return false;
 		return true;
 	}
 	
