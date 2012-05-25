@@ -69,11 +69,16 @@ public class GenericParamEntry extends AbstractAttributable
 	}
 
     @Override
-    public List<TypeRef> getConstraints() {
-        List<TypeRef> result = new ArrayList<TypeRef>(typeConstraints.size());
+    public TypeRef[] getConstraints() {
+        if (typeConstraints.size() == 0)
+            return EMPTY;
+
+        TypeRef[] result = new TypeRef[typeConstraints.size()];
+
+        int i = 0;
 
         for (ITypeDefOrRef ref : typeConstraints) {
-            result.add(ref.getTypeRef());
+            result[i++] = ref.getTypeRef();
         }
         return result;
     }
