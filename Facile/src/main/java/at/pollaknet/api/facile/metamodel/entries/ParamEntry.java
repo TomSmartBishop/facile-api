@@ -1,9 +1,6 @@
 package at.pollaknet.api.facile.metamodel.entries;
 
 
-import java.util.Collections;
-import java.util.List;
-
 import at.pollaknet.api.facile.metamodel.AbstractAttributable;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasConstant;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasCustomAttribute;
@@ -74,8 +71,8 @@ public class ParamEntry extends AbstractAttributable implements IHasCustomAttrib
 	}
 
     @Override
-    public List<TypeRef> getConstraints() {
-        return Collections.emptyList();
+    public TypeRef[] getConstraints() {
+        return EMPTY;
     }
 
     @Override

@@ -1,12 +1,12 @@
 package at.pollaknet.api.facile.symtab.symbols;
 
-import java.util.List;
-
 import at.pollaknet.api.facile.symtab.symbols.meta.AttributableSymbol;
 
 public interface Parameter extends AttributableSymbol {
 
-	public final static int FLAGS_IN = 0x0001;
+    public static final TypeRef[] EMPTY = new TypeRef[0];
+
+    public final static int FLAGS_IN = 0x0001;
 	public final static int FLAGS_OUT = 0x0002;
 	public final static int FLAGS_IS_OPTIONAL = 0x0010;
 	public final static int FLAGS_HAS_DEFAULT_VALUE = 0x1000;
@@ -53,11 +53,11 @@ public interface Parameter extends AttributableSymbol {
 	public abstract TypeRef getTypeRef();
 
     /**
-     * Returns the list of type constraints for a generic parameter
+     * Returns the type constraints for a generic parameter
      *
-     * @return A potentially empty list of constraints
+     * @return A potentially empty array of constraints
      */
-    public abstract List<TypeRef> getConstraints();
+    public abstract TypeRef[] getConstraints();
 
 	/**
 	 * <p/>Tells you if the parameter is generic or not.
