@@ -1,5 +1,6 @@
 package at.pollaknet.api.facile.symtab.symbols;
 
+import at.pollaknet.api.facile.metamodel.entries.aggregation.ITypeOrMethodDef;
 import at.pollaknet.api.facile.symtab.symbols.meta.AttributableSymbol;
 
 public interface Parameter extends AttributableSymbol {
@@ -35,6 +36,12 @@ public interface Parameter extends AttributableSymbol {
 	 * @return The parameter's name.
 	 */
 	public abstract String getName();
+
+    /**
+     * Returns the owner of this generic parameter
+     * @return The owner or null, if isGeneric() returns false
+     */
+    public ITypeOrMethodDef getOwner();
 
 	/**
 	 * Returns the marshal signature if the parameter is a marshaled native type.

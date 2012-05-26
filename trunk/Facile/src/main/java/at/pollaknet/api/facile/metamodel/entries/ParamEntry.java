@@ -6,6 +6,7 @@ import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasConstant;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasCustomAttribute;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasFieldMarshal;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.ITypeDefOrRef;
+import at.pollaknet.api.facile.metamodel.entries.aggregation.ITypeOrMethodDef;
 import at.pollaknet.api.facile.renderer.LanguageRenderer;
 import at.pollaknet.api.facile.symtab.signature.ParamOrFieldMarshalSignature;
 import at.pollaknet.api.facile.symtab.symbols.Constant;
@@ -54,8 +55,13 @@ public class ParamEntry extends AbstractAttributable implements IHasCustomAttrib
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	@Override
+
+    @Override
+    public ITypeOrMethodDef getOwner() {
+        return null;
+    }
+
+    @Override
 	public String toString() {
 		return String.format("Param: %s %s (Flags: 0x%04x Sequence: %d)",
 				(type==null?"[not set]":type.toString()), name, flags, sequence );
