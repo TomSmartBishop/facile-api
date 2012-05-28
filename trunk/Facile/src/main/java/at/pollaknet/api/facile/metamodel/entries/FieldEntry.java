@@ -276,7 +276,7 @@ public class FieldEntry extends AbstractAttributable implements IHasCustomAttrib
 		if(type!=null) {
 			for(GenericParamEntry param : parent.getGenericParameters()) {
 				for(GenericParamEntry innerParam : parent.getGenericParameters()) {
-					if(param.getNumber()==innerParam.getNumber()) {
+					if(innerParam.getName()==null && param.getNumber()==innerParam.getNumber()) {
 						innerParam.setName(param.getName());
 						break; //break for inner loop
 					} 
@@ -301,7 +301,7 @@ public class FieldEntry extends AbstractAttributable implements IHasCustomAttrib
 				} else if (typeSpec.isGeneric()) {
 					TypeRefEntry[] genericArguments = typeSpec.getGenericArguments();
 					
-					if(genericNumber<genericArguments.length) {
+					if(genericNumber<genericArguments.length && genericArguments[genericNumber].getName()==null) {
 						genericArguments[genericNumber].setName(param.getName());
 					}
 					//no break in this case since there could be multiple generic parameter: Map<K,V>

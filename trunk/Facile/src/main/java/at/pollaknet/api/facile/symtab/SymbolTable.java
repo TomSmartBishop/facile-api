@@ -163,7 +163,7 @@ public class SymbolTable {
 		connectFieldLayout();
 		connectFieldRva();
 		
-		//connectParam();
+		connectParam();
 		
 		connectImplMap();
 		
@@ -183,14 +183,16 @@ public class SymbolTable {
 		
 		connectCustomAttributes();
 		
-		connectParam();
-
 		Logger.getLogger(FacileReflector.LOGGER_NAME).info(String.format("Extracted %d out of %d signatures.", numberOfDecodedSignatures, numberOfSignatures));
 		//assembly.setLoaded(true);
 		
 		connectExportedType();
 		
+		
 		//this is a temporary aolution:
+		for(ParamEntry param: metaModel.param)
+			param.linkGenericNameToType();
+				
 		for(TypeSpecEntry typeSpec: metaModel.typeSpec) {
 			typeSpec.porpagateGenericArguments();
 		}
@@ -415,10 +417,10 @@ public class SymbolTable {
 		for(MethodDefEntry method: metaModel.methodDef) {
 			methodRVA = method.getVirtualAddress();
 			
-			for(ParamEntry param :method.getParams()) {
-				param.setOwner(method);
-			}
-			
+			if(method.getParams()!=null)
+				for(ParamEntry param :method.getParams())
+					param.setOwner(method);
+
 			//check if the address is valid
 			if(	methodRVA!=0) {
 				
@@ -761,7 +763,7 @@ public class SymbolTable {
 		for(ParamEntry param: metaModel.param) {
 			try {
 				ParamOrFieldMarshalSignature.decodeAndAttach(directory, param);
-				param.linkGenericNameToType();
+				//param.linkGenericNameToType();
 			} catch (InvalidSignatureException e) {
 				if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS) throw e;
 				Logger.getLogger(FacileReflector.LOGGER_NAME).log(

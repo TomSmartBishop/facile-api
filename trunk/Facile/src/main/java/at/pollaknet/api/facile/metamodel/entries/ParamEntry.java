@@ -181,8 +181,11 @@ public class ParamEntry extends AbstractAttributable implements IHasCustomAttrib
 				return false;
 		} else if (other.type == null) {
 			return false;
-		} else if(!type.getFullQualifiedName().equals(other.type.getFullQualifiedName())){
-			return false;
+		} else {
+			String typeName = type.getFullQualifiedName();
+			String otherTypeName = other.type.getFullQualifiedName();
+			if(typeName!=otherTypeName && !typeName.equals(otherTypeName))
+				return false;
 		}
 		
 		if (paramMarshalSignature == null) {
@@ -197,7 +200,8 @@ public class ParamEntry extends AbstractAttributable implements IHasCustomAttrib
 	public void linkGenericNameToType() {
 		//consider type specs and type definitions
 		TypeSpecEntry typeSpec = type.getTypeSpec();
-		assert(type.getType()==null); //no type definition for parameters
+		//FIXME: the following assertion fails, so this case is possible..!
+		//assert(type.getType()==null);
 		
 		Type ownerType = owner.getOwner().getType();
 		assert(ownerType!=null);
@@ -219,7 +223,7 @@ public class ParamEntry extends AbstractAttributable implements IHasCustomAttrib
 				} else if (typeSpec.isGeneric()) {
 					TypeRefEntry[] genericArguments = typeSpec.getGenericArguments();
 					
-					if(genericNumber<genericArguments.length) {
+					if(genericNumber<genericArguments.length && genericArguments[genericNumber].getName()==null) {
 						genericArguments[genericNumber].setName(param.getName());
 					}
 					//no break in this case since there could be multiple generic parameter: Map<K,V>
