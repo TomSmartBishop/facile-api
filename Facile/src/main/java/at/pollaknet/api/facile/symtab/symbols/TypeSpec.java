@@ -21,9 +21,23 @@ public interface TypeSpec extends TypeRef, ResolutionScope {
 	/**
 	 * Returns the enclosed, inner type of this type specification
 	 * (If the type is an array the type of the array elements is hold there).
-	 * @return A type reference of {@code null}.
+	 * @return A type reference or {@code null}.
 	 */
 	public abstract TypeRef getEnclosedTypeRef();
+	
+	/**
+	 * Returns the most inner enclosed type reference of this type specification
+	 * (If there is no eclosed type reference it will return this).
+	 * @return The enclosed type reference or {@code this}.
+	 */
+	public abstract TypeRef getMostInnerEnclosedTypeRef();
+	
+	/**
+	 * Returns the most inner enclosed type specification of this type specification
+	 * (If there is no eclosed type specification it will return this).
+	 * @return The enclosed type specififcation or {@code this}.
+	 */
+	public abstract TypeSpec getMostInnerEnclosedTypeSpec();
 	
 	/**
 	 * ByRef means that the type is a managed pointer (this method is not 
