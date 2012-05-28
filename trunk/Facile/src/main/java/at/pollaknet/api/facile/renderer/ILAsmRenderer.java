@@ -3,6 +3,7 @@ package at.pollaknet.api.facile.renderer;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -1800,7 +1801,9 @@ public class ILAsmRenderer implements LanguageRenderer {
 
 	@Override
 	public void renderSourceFilesToDirectory(Assembly assembly, String directory) throws IOException {
-		String head = newLine + "//Decompiled with Facile (" + assembly.getFileName() + ")";
+		String head = 	"//Decompiled with Facile (" + assembly.getFileName() + ")" +
+						newLine + "//===========================================" + 
+						newLine + "//" + new Date(System.currentTimeMillis()).toString();
 		String file = assembly.getName() + ".il";
 		byte [] extraSpace = (newLine + newLine).getBytes("UTF8");
 		

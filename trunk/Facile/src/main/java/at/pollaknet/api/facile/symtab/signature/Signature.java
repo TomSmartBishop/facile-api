@@ -10,7 +10,6 @@ import at.pollaknet.api.facile.FacileReflector;
 import at.pollaknet.api.facile.exception.InvalidSignatureException;
 import at.pollaknet.api.facile.metamodel.HasBackupBlobIndex;
 import at.pollaknet.api.facile.metamodel.entries.AssemblyRefEntry;
-import at.pollaknet.api.facile.metamodel.entries.GenericParamEntry;
 import at.pollaknet.api.facile.metamodel.entries.ParamEntry;
 import at.pollaknet.api.facile.metamodel.entries.TypeRefEntry;
 import at.pollaknet.api.facile.metamodel.entries.TypeSpecEntry;
@@ -205,14 +204,9 @@ public abstract class Signature extends TypeKind {
 				int genericNumber;
 				
 				genericNumber = decodeIntegerInSignature();
+				assert(genericNumber>=0);
 
-				//FIXME: This is wrong because the generic param number are not unique... (start over in each class)
-				for(GenericParamEntry  g: directory.getGenericParams()) {
-					if(g.getNumber()==genericNumber){
-						enclosingType.setName(g.getName());
-						break;
-					}
-				}
+				//IMPROVE: can we assign the name of the generic parameter here...?
 				
 				enclosingType.setAsGenericParameter(genericNumber);
 				break;
@@ -586,10 +580,10 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 	 * @return An array of type specifications as
 	 * {@link at.pollaknet.api.facile.symtab.symbols.TypeRef}.
 	 */
-	protected TypeRef[] typeArray() {
+	protected TypeRefEntry[] typeArray() {
 		int count = decodeIntegerInSignature();
 
-		TypeRef genericTypes[] = new TypeRef[count];
+		TypeRefEntry genericTypes[] = new TypeRefEntry[count];
 		for (int i = 0; i < count; i++) {
 			genericTypes[i] = plainType();
 			if (genericTypes[i] == null) {

@@ -13,6 +13,7 @@ import at.pollaknet.api.facile.symtab.symbols.Constant;
 import at.pollaknet.api.facile.symtab.symbols.Field;
 import at.pollaknet.api.facile.symtab.symbols.Parameter;
 import at.pollaknet.api.facile.symtab.symbols.Property;
+import at.pollaknet.api.facile.symtab.symbols.Type;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.util.ArrayUtils;
 
@@ -27,6 +28,7 @@ public class ParamEntry extends AbstractAttributable implements IHasCustomAttrib
 	
 	private byte[] marshaledType;
 	private ParamOrFieldMarshalSignature paramMarshalSignature;
+	private MethodDefEntry owner;
 
 	/* (non-Javadoc)
 	 * @see facile.metamodel.entries.Parameter#getFlags()
@@ -58,7 +60,7 @@ public class ParamEntry extends AbstractAttributable implements IHasCustomAttrib
 
     @Override
     public ITypeOrMethodDef getOwner() {
-        return null;
+        return owner;
     }
 
     @Override
@@ -192,6 +194,41 @@ public class ParamEntry extends AbstractAttributable implements IHasCustomAttrib
 		return true;
 	}
 	
-	
+	public void linkGenericNameToType() {
+		//consider type specs and type definitions
+		TypeSpecEntry typeSpec = type.getTypeSpec();
+		assert(type.getType()==null); //no type definition for parameters
+		
+		Type ownerType = owner.getOwner().getType();
+		assert(ownerType!=null);
 
+		if(typeSpec==null)
+			return;
+		
+		//dig down to the most inner type spec
+		typeSpec = typeSpec.getMostInnerEnclosedTypeSpec();
+		
+		//"is generic" applies for members like 'public LinkedList<T> List', where
+		//"is generic instance" is true for 'public T Node'
+		if(typeSpec.isGenericInstance()||typeSpec.isGeneric()) {
+			for(Parameter param : ownerType.getGenericParameters()) {
+				int genericNumber = param.getNumber();
+				if(genericNumber==typeSpec.getGenericParameterNumber()) {
+					typeSpec.setName(param.getName());
+					break;
+				} else if (typeSpec.isGeneric()) {
+					TypeRefEntry[] genericArguments = typeSpec.getGenericArguments();
+					
+					if(genericNumber<genericArguments.length) {
+						genericArguments[genericNumber].setName(param.getName());
+					}
+					//no break in this case since there could be multiple generic parameter: Map<K,V>
+				}
+			}
+		}
+	}
+	
+	public void setOwner(MethodDefEntry owner) {
+		this.owner = owner;
+	}
 }

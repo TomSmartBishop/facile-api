@@ -163,7 +163,7 @@ public class SymbolTable {
 		connectFieldLayout();
 		connectFieldRva();
 		
-		connectParam();
+		//connectParam();
 		
 		connectImplMap();
 		
@@ -182,11 +182,18 @@ public class SymbolTable {
 		connectStandAloneSignatures();
 		
 		connectCustomAttributes();
+		
+		connectParam();
 
 		Logger.getLogger(FacileReflector.LOGGER_NAME).info(String.format("Extracted %d out of %d signatures.", numberOfDecodedSignatures, numberOfSignatures));
 		//assembly.setLoaded(true);
 		
 		connectExportedType();
+		
+		//this is a temporary aolution:
+		for(TypeSpecEntry typeSpec: metaModel.typeSpec) {
+			typeSpec.porpagateGenericArguments();
+		}
 		
 		connectSignatureEmbeddedTypes(metaModel.typeDef);
 		connectSignatureEmbeddedTypes(metaModel.typeRef);
@@ -231,6 +238,7 @@ public class SymbolTable {
 			try {
 				FieldSignature.decodeAndAttach(directory, fieldEntry);
 				ParamOrFieldMarshalSignature.decodeAndAttach(directory, fieldEntry);
+				fieldEntry.linkGenericNameToType();
 			} catch (InvalidSignatureException e) {
 				if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS) throw e;
 				Logger.getLogger(FacileReflector.LOGGER_NAME).log(
@@ -328,7 +336,8 @@ public class SymbolTable {
 		//set constraints for generic parameter
 		for(GenericParamConstraintEntry constraint: metaModel.genericParamConstraint) {
 			if(constraint.getOwner()!=null) {
-				constraint.getOwner().setConstraint(constraint.getConstraint());
+				constraint.getOwner().addConstraint(constraint.getConstraint());
+				//param.getOwner().setName(param.getName());
 			} else if (!metaModel.containsDeletedData()) {
 				throw new NullPointerException("The owner of a generic parameter constraint is null!");
 			}
@@ -405,7 +414,11 @@ public class SymbolTable {
 		//check each method
 		for(MethodDefEntry method: metaModel.methodDef) {
 			methodRVA = method.getVirtualAddress();
-				
+			
+			for(ParamEntry param :method.getParams()) {
+				param.setOwner(method);
+			}
+			
 			//check if the address is valid
 			if(	methodRVA!=0) {
 				
@@ -492,7 +505,7 @@ public class SymbolTable {
 								Level.SEVERE, "Faild to decode signature: " + method.toString());
 				}
 			}
-
+			
 			//prepare for next method body
 			tokenCounter++;
 			
@@ -748,6 +761,7 @@ public class SymbolTable {
 		for(ParamEntry param: metaModel.param) {
 			try {
 				ParamOrFieldMarshalSignature.decodeAndAttach(directory, param);
+				param.linkGenericNameToType();
 			} catch (InvalidSignatureException e) {
 				if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS) throw e;
 				Logger.getLogger(FacileReflector.LOGGER_NAME).log(

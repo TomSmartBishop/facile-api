@@ -54,11 +54,25 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 	private MethodSignature functionPointer = null;
 	private int genericNumber = -1;
 	private ArrayShape arrayShape = null;
-	private TypeRef[] genericArguments = null;
+	private TypeRefEntry[] genericArguments = null;
 	
 	private boolean isBasicType = false;
 	private int pointer = 0;
 
+	@Override
+	public void setName(String name) {
+		if(this.name==null) {
+//			if(enclosedType!=null)
+//				enclosedType.setName(name);
+//			else
+				super.setName(name);
+		} else {
+			assert(enclosedType!=null);
+			enclosedType.setName(name);
+		}
+		
+	}
+	
 	public byte[] getBinarySignature() {
 		return binarySignature;
 	}
@@ -315,12 +329,44 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 	}
 
 	@Override
-	public TypeRef getTypeRef() {
+	public TypeRefEntry getTypeRef() {
 		return this;
 	}
 	
+	@Override
 	public TypeRefEntry getEnclosedTypeRef() {
 		return enclosedType;
+	}
+	
+	@Override
+	public TypeRefEntry getMostInnerEnclosedTypeRef() {
+		if(enclosedType==null) return this;
+
+		TypeRefEntry  typeRef = enclosedType;
+		TypeSpecEntry typeSpec = enclosedType.getTypeSpec();
+		
+		while(typeSpec!=null && typeSpec.getEnclosedTypeRef()!=null) {
+			
+			typeRef = typeSpec.getEnclosedTypeRef();
+			typeSpec = typeRef.getTypeSpec();
+		}
+		
+		return typeRef;
+	}
+	
+	@Override
+	public TypeSpecEntry getMostInnerEnclosedTypeSpec() {
+		if(enclosedType==null) return this;
+
+		TypeSpecEntry typeSpec = enclosedType.getTypeSpec();
+		
+		if(typeSpec==null) return this;
+		
+		while(typeSpec.getEnclosedTypeRef()!=null && typeSpec.getEnclosedTypeRef().getTypeSpec()!=null) {
+			typeSpec =  typeSpec.getEnclosedTypeRef().getTypeSpec();
+		}
+		
+		return typeSpec;
 	}
 	
 	public void setEnclosedTypeRef(TypeRefEntry type) {
@@ -499,11 +545,12 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 		return arrayShape;
 	}
 
-	public void setGenericArguments(TypeRef[] genericTypes) {
+	public void setGenericArguments(TypeRefEntry[] genericTypes) {
+		assert(this.genericArguments==null);
 		this.genericArguments = genericTypes;
 	}
 	
-	public TypeRef[] getGenericArguments() {
+	public TypeRefEntry[] getGenericArguments() {
 		return genericArguments;
 	}
 
@@ -517,6 +564,32 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 	 */
 	public boolean isBasicType() {
 		return isBasicType;
+	}
+	
+	/**
+	 * Get the name of the generic arguments of the inner type
+	 * and propagate it to this type spec.
+	 */
+	public void porpagateGenericArguments() {
+		if(enclosedType!=null && genericArguments!=null) {
+			TypeSpecEntry typeSpec = enclosedType.getTypeSpec();
+			TypeDefEntry type = enclosedType.getType();
+
+			if(typeSpec!=null) {
+				//repeat that step for type specs
+				typeSpec.porpagateGenericArguments();
+				for(int i=0;i<this.genericArguments.length;++i) {
+					if(this.genericArguments[i].getName()==null)
+						this.genericArguments[i] = typeSpec.genericArguments[i];
+				}
+			} else if(type!=null) {
+				//in case the enclosed type is a type definition
+				for(int i=0;i<this.genericArguments.length;++i) {
+					if(this.genericArguments[i].getName()==null)
+						this.genericArguments[i].setName(type.getGenericParameters()[i].getName());
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -567,6 +640,5 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 		
 		return true;
 	}
-	
 }
 

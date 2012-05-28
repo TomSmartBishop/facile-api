@@ -16,4 +16,6 @@ public interface ITypeOrMethodDef extends RenderableCilElement {
 	public abstract boolean equals(Object obj);
 	
 	public abstract int hashCode();
+	
+	public abstract void setName(String name);
 }

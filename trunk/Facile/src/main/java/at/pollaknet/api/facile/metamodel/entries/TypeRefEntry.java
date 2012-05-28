@@ -10,7 +10,6 @@ import at.pollaknet.api.facile.metamodel.entries.aggregation.ITypeDefOrRef;
 import at.pollaknet.api.facile.renderer.LanguageRenderer;
 import at.pollaknet.api.facile.symtab.NamespaceContainer;
 import at.pollaknet.api.facile.symtab.TypeKind;
-import at.pollaknet.api.facile.symtab.symbols.Type;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.MethodAndFieldParent;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.Namespace;
@@ -57,6 +56,7 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 	}
 
 	public void setName(String name) {
+		assert(this.name==null);
 		this.name = name;
 	}
 
@@ -89,12 +89,12 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 	}
 
 	@Override
-	public Type getType() {
+	public TypeDefEntry getType() {
 		return null;
 	}
 
 	@Override
-	public TypeRef getTypeRef() {
+	public TypeRefEntry getTypeRef() {
 		return this;
 	}
 

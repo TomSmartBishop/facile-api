@@ -44,7 +44,7 @@ public class TypeDefEntry extends TypeRefEntry implements ITypeDefOrRef, IHasCus
 
 	private ArrayList <TypeRef> implementedInterfaces = null;
 	private ArrayList <Type> enclosingClasses = null;
-	private ArrayList <Parameter> genericParams = null;
+	private ArrayList <GenericParamEntry> genericParams = null;
 	private ArrayList <MethodDefEntry> additionalMethods = null;
 
 	
@@ -267,23 +267,23 @@ public class TypeDefEntry extends TypeRefEntry implements ITypeDefOrRef, IHasCus
 				internalFlags, INT_FLAGS_IS_NESTED, nested );
 	}
 	
-	public Parameter [] getGenericParameters() {
+	public GenericParamEntry [] getGenericParameters() {
 		if(genericParams==null || genericParams.size()==0)
-			return new Parameter[0];
+			return new GenericParamEntry[0];
 		
-		Parameter [] params = new Parameter[genericParams.size()];
+		GenericParamEntry [] params = new GenericParamEntry[genericParams.size()];
 		
 		genericParams.toArray(params);
 		return params;
 	}
 
 	public boolean addGenericParam(GenericParamEntry p) {
-		if(genericParams==null) genericParams = new ArrayList<Parameter>(4);
+		if(genericParams==null) genericParams = new ArrayList<GenericParamEntry>(4);
 		return genericParams.add(p);
 	}
 	
 	@Override
-	public Type getType() {
+	public TypeDefEntry getType() {
 		return this;
 	}
 
@@ -558,6 +558,5 @@ public class TypeDefEntry extends TypeRefEntry implements ITypeDefOrRef, IHasCus
 	
 		return ArrayUtils.compareStrings(other.getFullQualifiedName(),  getFullQualifiedName());
 	}
-	
-	
+
 }

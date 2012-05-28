@@ -1,10 +1,10 @@
 package at.pollaknet.api.facile.metamodel.entries.aggregation;
 
 import at.pollaknet.api.facile.metamodel.RenderableCilElement;
+import at.pollaknet.api.facile.metamodel.entries.TypeDefEntry;
+import at.pollaknet.api.facile.metamodel.entries.TypeRefEntry;
+import at.pollaknet.api.facile.metamodel.entries.TypeSpecEntry;
 import at.pollaknet.api.facile.symtab.symbols.QualifiableSymbol;
-import at.pollaknet.api.facile.symtab.symbols.Type;
-import at.pollaknet.api.facile.symtab.symbols.TypeRef;
-import at.pollaknet.api.facile.symtab.symbols.TypeSpec;
 
 /**
  * This interface is for internal use. Please avoid using it.
@@ -14,14 +14,16 @@ import at.pollaknet.api.facile.symtab.symbols.TypeSpec;
  */
 public interface ITypeDefOrRef extends RenderableCilElement, QualifiableSymbol {
 	
-	public abstract TypeRef getTypeRef();
+	public abstract TypeRefEntry getTypeRef();
 	
-	public abstract Type getType();
+	public abstract TypeDefEntry getType();
 	
-	public abstract TypeSpec getTypeSpec();
+	public abstract TypeSpecEntry getTypeSpec();
 	
 	public abstract boolean equals(Object obj);
 	
 	public abstract int hashCode();
+
+	public abstract void setName(String name);
 	
 }

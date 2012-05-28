@@ -267,4 +267,46 @@ public class FieldEntry extends AbstractAttributable implements IHasCustomAttrib
 		return this.parent;
 	}
 
+	public void linkGenericNameToType() {
+		//consider type specs and type definitions
+		TypeSpecEntry typeSpec = typeRef.getTypeSpec();
+		TypeDefEntry type = typeRef.getType();
+
+		//in case of a type defintion
+		if(type!=null) {
+			for(GenericParamEntry param : parent.getGenericParameters()) {
+				for(GenericParamEntry innerParam : parent.getGenericParameters()) {
+					if(param.getNumber()==innerParam.getNumber()) {
+						innerParam.setName(param.getName());
+						break; //break for inner loop
+					} 
+				}
+			}
+		}
+		
+		if(typeSpec==null)
+			return;
+		
+		//dig down to the most inner type spec
+		typeSpec = typeSpec.getMostInnerEnclosedTypeSpec();
+		
+		//"is generic" applies for members like 'public LinkedList<T> List', where
+		//"is generic instance" is true for 'public T Node'
+		if(typeSpec.isGenericInstance()||typeSpec.isGeneric()) {
+			for(Parameter param : parent.getGenericParameters()) {
+				int genericNumber = param.getNumber();
+				if(genericNumber==typeSpec.getGenericParameterNumber()) {
+					typeSpec.setName(param.getName());
+					break;
+				} else if (typeSpec.isGeneric()) {
+					TypeRefEntry[] genericArguments = typeSpec.getGenericArguments();
+					
+					if(genericNumber<genericArguments.length) {
+						genericArguments[genericNumber].setName(param.getName());
+					}
+					//no break in this case since there could be multiple generic parameter: Map<K,V>
+				}
+			}
+		}
+	}
 }

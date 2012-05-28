@@ -59,7 +59,12 @@ public class GenericParamEntry extends AbstractAttributable
 				name, number, flags, owner==null?"[DELETED]":owner.getName());
 	}
 	
-	public void setConstraint(ITypeDefOrRef constraint) {
+	public void addConstraint(ITypeDefOrRef constraint) {
+		if(constraint.getName()==null) {
+			assert(constraint.getTypeSpec()!=null);
+			constraint.setName(getName());
+		}
+		
 		this.typeConstraints.add(constraint);
 	}
 
