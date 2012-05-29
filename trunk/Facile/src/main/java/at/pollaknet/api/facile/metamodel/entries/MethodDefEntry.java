@@ -1,8 +1,5 @@
 package at.pollaknet.api.facile.metamodel.entries;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import at.pollaknet.api.facile.code.MethodBody;
 import at.pollaknet.api.facile.dia.DebugInformation;
 import at.pollaknet.api.facile.metamodel.AbstractGenericInstanceConatiner;
@@ -30,10 +27,15 @@ import at.pollaknet.api.facile.symtab.symbols.meta.DeclarativeSecurity;
 import at.pollaknet.api.facile.symtab.symbols.scopes.ModuleRef;
 import at.pollaknet.api.facile.util.ArrayUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 
 public class MethodDefEntry extends AbstractGenericInstanceConatiner
 		implements IHasCustomAttribute, IHasDeclSecurity, ITypeOrMethodDef,
 			MethodAndFieldParent, IMethodDefOrRef, IMemberForwarded, ICustomAttributeType, Method {
+
+    private final static Parameter[] EMPTY = new Parameter[0];
 
 	private long relativeVirtualAddress = -1;
 	private int implFlags;
@@ -235,7 +237,7 @@ public class MethodDefEntry extends AbstractGenericInstanceConatiner
 	}
 	
 	public Parameter [] getGenericParameters() {
-		if(genericParams==null || genericParams.size()==0) return null;
+		if(genericParams==null || genericParams.size()==0) return EMPTY;
 		
 		GenericParamEntry [] params = new GenericParamEntry[genericParams.size()];
 		
