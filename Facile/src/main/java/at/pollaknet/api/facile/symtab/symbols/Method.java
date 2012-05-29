@@ -90,7 +90,13 @@ public interface Method extends AttributableSymbol, Comparable<Method> {
 	 * {@link at.pollaknet.api.facile.symtab.symbols.MethodSignature} object.
 	 */
 	public abstract MethodSignature getMethodSignature();
-	
+
+    /**
+     * Returns the list fo generic parameters for this method
+     * @return A potentially empty array with generic parameters
+     */
+    public abstract Parameter[] getGenericParameters();
+
 	/**
 	 * Return the method implementation flags (e.g. managed, unmanaged, ...).
 	 * @return The method implementation flags as {@code int}.
