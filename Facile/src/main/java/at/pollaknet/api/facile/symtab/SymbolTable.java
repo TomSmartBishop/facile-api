@@ -138,11 +138,11 @@ public class SymbolTable {
 		
 		connectFileRef();
 		
-		connectGenericParamterAndConstraints();
-		
 		connectMethodImpls();
 		
 		connectTypes();
+		
+		connectGenericParamterAndConstraints();
 
 		connectManifestResource();
 		
