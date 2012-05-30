@@ -132,7 +132,7 @@ public class MethodDefOrRefSignature extends Signature implements MethodSignatur
 				if(parameter[i]!=null) {
 					if(!first) buffer.append(", ");
 				
-					buffer.append(fomratParameter(i));
+					buffer.append(formatParameter(i));
 					first = false;
 				}
 			}
@@ -140,7 +140,7 @@ public class MethodDefOrRefSignature extends Signature implements MethodSignatur
 		
 		buffer.append(") : ");
 		if(returnType==null) {
-			buffer.append(fomratParameter(0));
+			buffer.append(formatParameter(0));
 		} else {
 			if(returnType.getShortSystemName()!=null) {
 				buffer.append(returnType.getShortSystemName());
@@ -153,7 +153,7 @@ public class MethodDefOrRefSignature extends Signature implements MethodSignatur
 		return buffer.toString();
 	}
 
-	private String fomratParameter(int i) {
+	private String formatParameter(int i) {
 		StringBuffer buffer = new StringBuffer();
 		int flags = parameter[i].getFlags();
 		

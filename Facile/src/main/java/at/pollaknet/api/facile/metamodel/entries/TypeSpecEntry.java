@@ -1,9 +1,6 @@
 package at.pollaknet.api.facile.metamodel.entries;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasCustomAttribute;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.ITypeDefOrRef;
 import at.pollaknet.api.facile.renderer.LanguageRenderer;
@@ -16,6 +13,9 @@ import at.pollaknet.api.facile.symtab.symbols.aggregation.ResolutionScope;
 import at.pollaknet.api.facile.symtab.symbols.scopes.ModuleRef;
 import at.pollaknet.api.facile.util.ArrayUtils;
 import at.pollaknet.api.facile.util.ByteReader;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
@@ -98,8 +98,8 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 		if(name==null && enclosedType!=null) return enclosedType.getName();
 		return name;
 	}
-	
-	@Override
+
+    @Override
 	public String getFullQualifiedName() {
 		String namespace = getNamespace();
 		if(namespace==null)
@@ -570,14 +570,14 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 	 * Get the name of the generic arguments of the inner type
 	 * and propagate it to this type spec.
 	 */
-	public void porpagateGenericArguments() {
+	public void propagateGenericArguments() {
 		if(enclosedType!=null && genericArguments!=null) {
 			TypeSpecEntry typeSpec = enclosedType.getTypeSpec();
 			TypeDefEntry type = enclosedType.getType();
 
 			if(typeSpec!=null) {
 				//repeat that step for type specs
-				typeSpec.porpagateGenericArguments();
+				typeSpec.propagateGenericArguments();
 				for(int i=0;i<this.genericArguments.length;++i) {
 					if(this.genericArguments[i].getName()==null)
 						this.genericArguments[i] = typeSpec.genericArguments[i];
