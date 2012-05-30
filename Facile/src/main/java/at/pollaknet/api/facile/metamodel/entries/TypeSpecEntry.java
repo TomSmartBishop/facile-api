@@ -53,9 +53,10 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 	private int flags;
 	private MethodSignature functionPointer = null;
 	private int genericNumber = -1;
+    private boolean genericBelongsToMethod = false;
 	private ArrayShape arrayShape = null;
 	private TypeRefEntry[] genericArguments = null;
-	
+
 	private boolean isBasicType = false;
 	private int pointer = 0;
 
@@ -529,15 +530,21 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 		return functionPointer;
 	}
 
-	public void setAsGenericParameter(int genericNumber) {
+	public void setAsGenericParameter(int genericNumber, boolean belongsToMethod) {
 		this.genericNumber  = genericNumber;
+        this.genericBelongsToMethod = belongsToMethod;
 	}
 	
 	public int getGenericParameterNumber() {
 		return genericNumber;
 	}
 
-	public void setArrayShape(ArrayShape arrayShape) {
+    @Override
+    public boolean doesGenericParameterBelongToMethod() {
+        return genericBelongsToMethod;
+    }
+
+    public void setArrayShape(ArrayShape arrayShape) {
 		this.arrayShape = arrayShape;
 	}
 	
