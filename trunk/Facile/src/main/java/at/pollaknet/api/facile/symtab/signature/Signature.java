@@ -1,11 +1,5 @@
 package at.pollaknet.api.facile.symtab.signature;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import at.pollaknet.api.facile.FacileReflector;
 import at.pollaknet.api.facile.exception.InvalidSignatureException;
 import at.pollaknet.api.facile.metamodel.HasBackupBlobIndex;
@@ -20,6 +14,12 @@ import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.symtab.symbols.TypeSpec;
 import at.pollaknet.api.facile.util.ArrayUtils;
 import at.pollaknet.api.facile.util.ByteReader;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class Signature extends TypeKind {
 
@@ -149,7 +149,8 @@ public abstract class Signature extends TypeKind {
 		//x		| SZARRAY CustomMod* Type (single dimensional, zero-based array i.e., vector)
 		//x		| VALUETYPE TypeDefOrRefEncoded
 		//x		| VAR number
-		
+		boolean belongsToMethod = false;
+
 		switch(currentToken) {
 		
 			case ELEMENT_TYPE_BOOLEAN:
@@ -198,7 +199,9 @@ public abstract class Signature extends TypeKind {
 				typeDefOrRefEncoded(enclosingType);
 				break;
 				
-			case ELEMENT_TYPE_MVAR: //handle as equal!
+			case ELEMENT_TYPE_MVAR:
+                belongsToMethod = true;
+                // fall through
 			case ELEMENT_TYPE_VAR:
 				nextToken();
 				int genericNumber;
@@ -208,7 +211,7 @@ public abstract class Signature extends TypeKind {
 
 				//IMPROVE: can we assign the name of the generic parameter here...?
 				
-				enclosingType.setAsGenericParameter(genericNumber);
+				enclosingType.setAsGenericParameter(genericNumber, belongsToMethod);
 				break;
 				
 			case Signature.UNNAMED_CSTM_ATRB_ENUM:
