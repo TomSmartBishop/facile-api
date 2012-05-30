@@ -140,10 +140,9 @@ public class SymbolTable {
 		
 		connectMethodImpls();
 		
-        connectGenericParamterAndConstraints();
+        connectTypes();
 
-		connectTypes();
-		
+        connectGenericParamterAndConstraints();
 
 		connectManifestResource();
 		
