@@ -1,11 +1,5 @@
 package at.pollaknet.api.facile.symtab;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import at.pollaknet.api.facile.FacileReflector;
 import at.pollaknet.api.facile.code.CilContainer;
 import at.pollaknet.api.facile.code.MethodBody;
@@ -58,6 +52,12 @@ import at.pollaknet.api.facile.symtab.symbols.Type;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.ResolutionScope;
 import at.pollaknet.api.facile.util.ByteReader;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -140,9 +140,10 @@ public class SymbolTable {
 		
 		connectMethodImpls();
 		
+        connectGenericParamterAndConstraints();
+
 		connectTypes();
 		
-		connectGenericParamterAndConstraints();
 
 		connectManifestResource();
 		
@@ -194,7 +195,7 @@ public class SymbolTable {
 			param.linkGenericNameToType();
 				
 		for(TypeSpecEntry typeSpec: metaModel.typeSpec) {
-			typeSpec.porpagateGenericArguments();
+			typeSpec.propagateGenericArguments();
 		}
 		
 		connectSignatureEmbeddedTypes(metaModel.typeDef);
@@ -725,7 +726,7 @@ public class SymbolTable {
 			} catch (InvalidSignatureException e) {
 				if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS) throw e;
 				Logger.getLogger(FacileReflector.LOGGER_NAME).log(
-							Level.SEVERE, "Faild to decode signature: " + typeSpec.toString());
+							Level.SEVERE, "Failed to decode signature: " + typeSpec.toString());
 			}
 			
 			//will re-evaluate the name space of the enclosed type as well
