@@ -540,7 +540,7 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 	}
 
     @Override
-    public boolean doesGenericParameterBelongToMethod() {
+    public boolean isGenericMethodParameter() {
         return genericBelongsToMethod;
     }
 
