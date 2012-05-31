@@ -149,7 +149,7 @@ public interface TypeSpec extends TypeRef, ResolutionScope {
      * Test if this generic parameter belongs to a method.
      * @return returns true, if this is a generic parameter belonging to a method.
      */
-    public abstract boolean doesGenericParameterBelongToMethod();
+    public abstract boolean isGenericMethodParameter();
 
 	/**
 	 * Get the generic parameters of this type.
