@@ -103,7 +103,7 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
     @Override
 	public String getFullQualifiedName() {
 		String namespace = getNamespace();
-		if(namespace==null)
+		if(namespace==null || namespace.length() == 0)
 			return getName();
 		return getNamespace() + namespaceSeperator + getName();
 	}
