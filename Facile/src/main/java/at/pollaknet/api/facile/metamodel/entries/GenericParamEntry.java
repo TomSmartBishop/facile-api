@@ -64,14 +64,23 @@ public class GenericParamEntry extends AbstractAttributable
 			assert(constraint.getTypeSpec()!=null);
 			constraint.setName(getName());
 		} else {
-			//FIXME: Also handle type defs aswell
 			TypeSpecEntry typeSpec = constraint.getTypeSpec();
 			if(typeSpec!=null) {
-				TypeRefEntry [] typeRef = typeSpec.getGenericArguments();
+				TypeRefEntry [] typeRef = typeSpec.getGenericArguments(); //TODO: fix getGenericArguments that it returns never null, and fix all occurances
 				if(typeRef!=null && number<typeRef.length && typeRef[number].getName()==null) {
 					typeRef[number].setName(getName());
 				}
+			} else {
+				TypeDefEntry type = constraint.getType();
+				
+				if(type!=null) {
+					GenericParamEntry [] genericParams = type.getGenericParameters(); //never null
+					if(number<genericParams.length && genericParams[number].getName()==null) {
+						genericParams[number].setName(getName());
+					}
+				}
 			}
+			
 		}
 		
 		this.typeConstraints.add(constraint);
