@@ -11,6 +11,7 @@ public abstract class AbstractGenericInstanceConatiner extends AbstractMethodRef
 	private ArrayList<TypeSpecEntry> typeSpecInstances = new ArrayList<TypeSpecEntry>(1);
 
 	public void addGenericInstance(TypeSpecEntry typeSpec) {
+		assert(typeSpec!=null);
 		typeSpecInstances.add(typeSpec);
 	}
 

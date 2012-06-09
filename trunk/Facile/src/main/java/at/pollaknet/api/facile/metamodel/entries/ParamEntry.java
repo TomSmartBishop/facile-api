@@ -1,6 +1,10 @@
 package at.pollaknet.api.facile.metamodel.entries;
 
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import at.pollaknet.api.facile.FacileReflector;
 import at.pollaknet.api.facile.metamodel.AbstractAttributable;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasConstant;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasCustomAttribute;
@@ -202,21 +206,55 @@ public class ParamEntry extends AbstractAttributable implements IHasCustomAttrib
 		TypeSpecEntry typeSpec = type.getTypeSpec();
 		//FIXME: the following assertion fails, so this case is possible..!
 		//assert(type.getType()==null);
+		if(type.getType()!=null) {
+			Logger.getLogger(FacileReflector.LOGGER_NAME).log(
+					Level.SEVERE, "Unhandled generic type: " + type.getType().toString() + " for param " + toString());
+		}
 		
-		Type ownerType = owner.getOwner().getType();
-		assert(ownerType!=null);
 
 		if(typeSpec==null)
 			return;
 		
 		//dig down to the most inner type spec
 		typeSpec = typeSpec.getMostInnerEnclosedTypeSpec();
+
+		
+		//in case the this is a generic method parameter (not a generic parameter of the owner type)
+		if(typeSpec.isGenericMethodParameter()) {
+			Parameter [] genericMethodParams = owner.getGenericParameters();
+			assert(genericMethodParams!=null);
+			
+			for(Parameter param : genericMethodParams) {
+				int genericNumber = param.getNumber();
+					
+				if(genericNumber==typeSpec.getGenericParameterNumber()) {
+					typeSpec.setName(param.getName());
+					break;
+				} else if (typeSpec.isGeneric()) {
+					TypeRefEntry[] genericArguments = typeSpec.getGenericArguments();
+					
+					if(genericNumber<genericArguments.length && genericArguments[genericNumber].getName()==null) {
+						genericArguments[genericNumber].setName(param.getName());
+					}
+					//no break in this case since there could be multiple generic parameter: Map<K,V>
+				}
+			}
+			
+			assert(typeSpec.getName()!=null);
+			
+			//in this case we are done here...
+			return;
+		}
+		
+		Type ownerType = owner.getOwner().getType();
+		assert(ownerType!=null);
 		
 		//"is generic" applies for members like 'public LinkedList<T> List', where
 		//"is generic instance" is true for 'public T Node'
 		if(typeSpec.isGenericInstance()||typeSpec.isGeneric()) {
 			for(Parameter param : ownerType.getGenericParameters()) {
 				int genericNumber = param.getNumber();
+					
 				if(genericNumber==typeSpec.getGenericParameterNumber()) {
 					typeSpec.setName(param.getName());
 					break;
