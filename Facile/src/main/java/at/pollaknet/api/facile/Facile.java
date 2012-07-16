@@ -253,7 +253,9 @@ public class Facile {
 	 * 
 	 * @param pathToAssembly A {@link String}, containing the path to the .NET
 	 * assembly.
-	 * 
+	 *
+     * @param loadByteCode   true, if method byte code should be loaded
+     *
 	 * @return A loaded assembly accessible by the
 	 * {@link at.pollaknet.api.facile.symtab.symbols.scopes.Assembly} interface.
 	 * 
@@ -272,46 +274,81 @@ public class Facile {
 	 * @throws IOException if the reading process of the specified file throws
 	 * an {@link IOException}.
 	 */
-	public static Assembly loadAssembly(String pathToAssembly)
+	public static Assembly loadAssembly(String pathToAssembly, boolean loadByteCode)
 			throws CoffPeDataNotFoundException, DotNetContentNotFoundException, UnexpectedHeaderDataException,
 				SizeMismatchException, IOException {
 		FacileReflector reflector = new FacileReflector(pathToAssembly);
-		Assembly assembly = reflector.loadAssembly();
+		Assembly assembly = reflector.loadAssembly(loadByteCode);
 		return assembly;
 	}
-	
-	/**
-	 * Reflects all streams inside the .NET assembly and loads its content.
-	 * 
-	 * <p/>This also causes an access to the program debug database (pdb) specified
-	 * by the {@code pathToPdb} parameter. The debug information will be available
-	 * if the pdb file is valid and at the specified location.
-	 * 
-	 * <p/>There is an automatic fall-back to the path specified inside the .NET
-	 * assembly (by the compiler) if {@code pathToPdb} does not work.
-	 * 
-	 * @param pathToAssembly A {@link String}, containing the path to the .NET assembly.
-	 * 
-	 * @param pathToPdb A {@link String}, containing the path to the program debug
-	 * database (pdb).
-	 * 
-	 * @return A loaded assembly accessible by the
-	 * {@link at.pollaknet.api.facile.symtab.symbols.scopes.Assembly} interface.
-	 * 	
-	 * @throws CoffPeDataNotFoundException if the specified file
-	 * contains no COFF/PE data structure which contains the .NET assembly.
-	 * 
-	 * @throws DotNetContentNotFoundException if the specified file
-	 * contains no .NET assembly.
-	 *
-	 * @throws UnexpectedHeaderDataException if the expected data inside a
-	 * data header have not been found.
-	 *
-	 * @throws SizeMismatchException if the calculated size of internal
-	 * data does not match the real size in the assembly.
-	 *
-	 * @throws IOException if the reading process of the specified file throws
-	 */
+
+    /**
+     * Reflects all streams inside the .NET assembly and loads its content.
+     *
+     * <p/>This also causes an access to the program debug database (pdb) specified
+     * inside the assembly (by the compiler). The debug information will be
+     * available if the pdb file is valid and at the specified location. Byte
+     * code will be loaded
+     *
+     * @param pathToAssembly A {@link String}, containing the path to the .NET
+     * assembly.
+     *
+     * @return A loaded assembly accessible by the
+     * {@link at.pollaknet.api.facile.symtab.symbols.scopes.Assembly} interface.
+     *
+     * @throws CoffPeDataNotFoundException if the specified file
+     * contains no COFF/PE data structure which contains the .NET assembly.
+     *
+     * @throws DotNetContentNotFoundException if the specified file
+     * contains no .NET assembly.
+     *
+     * @throws UnexpectedHeaderDataException if the expected data inside a
+     * data header have not been found.
+     *
+     * @throws SizeMismatchException if the calculated size of internal
+     * data does not match the real size inside the assembly.
+     *
+     * @throws IOException if the reading process of the specified file throws
+     * an {@link IOException}.
+     */
+    public static Assembly loadAssembly(String pathToAssembly)
+            throws CoffPeDataNotFoundException, DotNetContentNotFoundException, UnexpectedHeaderDataException,
+                SizeMismatchException, IOException {
+        return loadAssembly(pathToAssembly, true);
+    }
+
+        /**
+       * Reflects all streams inside the .NET assembly and loads its content.
+       *
+       * <p/>This also causes an access to the program debug database (pdb) specified
+       * by the {@code pathToPdb} parameter. The debug information will be available
+       * if the pdb file is valid and at the specified location.
+       *
+       * <p/>There is an automatic fall-back to the path specified inside the .NET
+       * assembly (by the compiler) if {@code pathToPdb} does not work.
+       *
+       * @param pathToAssembly A {@link String}, containing the path to the .NET assembly.
+       *
+       * @param pathToPdb A {@link String}, containing the path to the program debug
+       * database (pdb).
+       *
+       * @return A loaded assembly accessible by the
+       * {@link at.pollaknet.api.facile.symtab.symbols.scopes.Assembly} interface.
+       *
+       * @throws CoffPeDataNotFoundException if the specified file
+       * contains no COFF/PE data structure which contains the .NET assembly.
+       *
+       * @throws DotNetContentNotFoundException if the specified file
+       * contains no .NET assembly.
+       *
+       * @throws UnexpectedHeaderDataException if the expected data inside a
+       * data header have not been found.
+       *
+       * @throws SizeMismatchException if the calculated size of internal
+       * data does not match the real size in the assembly.
+       *
+       * @throws IOException if the reading process of the specified file throws
+       */
 	public static Assembly loadAssembly(String pathToAssembly, String pathToPdb)
 			throws CoffPeDataNotFoundException, DotNetContentNotFoundException,
 				UnexpectedHeaderDataException, SizeMismatchException, IOException {

@@ -145,12 +145,13 @@ public class MethodBody {
 			long relativeVirtualAddress, int methodNumber) throws InvalidMethodBodyException {
 		//initialize the metadata token
 		methodToken += methodNumber;
-		
-		//resolve the RVA
-		int addressInByteBuffer = container.getPhysicalAddressOf(relativeVirtualAddress);
-		
-		//extract the data of the byte buffer
-		extractBody(metaModel, container.getCodeBuffer(), addressInByteBuffer);
+		if (metaModel.isByteCodeNeed()) {
+            //resolve the RVA
+            int addressInByteBuffer = container.getPhysicalAddressOf(relativeVirtualAddress);
+
+            //extract the data of the byte buffer
+            extractBody(metaModel, container.getCodeBuffer(), addressInByteBuffer);
+        }
 	}
 
 
