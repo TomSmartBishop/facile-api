@@ -181,9 +181,10 @@ public class MetadataModel {
 	private String alternativeModuleName;
 	private boolean assemblyHasIlSection;
 	private boolean containsDeletedData;
+    private boolean loadByteCode;
 
 	public MetadataModel(boolean assemblyHasIlSection, String alternativeModuleName,
-			MetadataStream m,  StringsStream s, UserStringStream u, GuidStream g, BlobStream b) {
+			MetadataStream m,  StringsStream s, UserStringStream u, GuidStream g, BlobStream b, boolean loadByteCode) {
 
 		//setup flags
 		containsDeletedData = ByteReader.testFlags(m.getHeaps(), MetadataStream.HEAPS_FLAGS_UNOPTIMIZED_CAN_CONTAIN_DELETED_DATA);
@@ -194,7 +195,10 @@ public class MetadataModel {
 
 		//remember the alternative module name
 		this.alternativeModuleName = alternativeModuleName;
-		
+
+        //do we want byte code loading
+        this.loadByteCode = loadByteCode;
+
 		//create the object representation of metadata items
 		AbstractTable [] tableModel = m.getMetadataTable();
 		table = new RenderableCilElement[64][];
@@ -400,9 +404,16 @@ public class MetadataModel {
 	public boolean containsDeletedData() {
 		return containsDeletedData;
 	}
-	
-	
-	public String toString() {
+
+    /**
+     * Returns true if byte code needs to be loaded
+     * @return true if byte code needs to be loaded, false otherwise
+     */
+    public boolean isByteCodeNeed() {
+        return loadByteCode;
+    }
+
+    public String toString() {
 
 		StringBuffer buffer = new StringBuffer("Metadata:");
 		

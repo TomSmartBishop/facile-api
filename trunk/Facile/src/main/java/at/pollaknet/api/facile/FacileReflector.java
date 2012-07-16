@@ -632,18 +632,34 @@ public class FacileReflector {
 		//return the created buffer
 		return buffer;
 	}
-	
-	/**
-	 * Loads a reflected assembly. If {@link at.pollaknet.api.facile.FacileReflector#loadAssembly()}
-	 * has already been called, the method returns a reference to the already
-	 * loaded assembly instead of processing the data once more.
-	 * 
-	 * @return A loaded assembly accessible by the {@link at.pollaknet.api.facile.symtab.symbols.scopes.Assembly}
-	 * interface.
-	 * 
-	 * @throws DotNetContentNotFoundException 
-	 */
-	public Assembly loadAssembly() throws DotNetContentNotFoundException {	
+
+    /**
+     * Loads a reflected assembly including byte code. If {@link at.pollaknet.api.facile.FacileReflector#loadAssembly()}
+     * has already been called, the method returns a reference to the already
+     * loaded assembly instead of processing the data once more.
+     *
+     * @return A loaded assembly accessible by the {@link at.pollaknet.api.facile.symtab.symbols.scopes.Assembly}
+     * interface.
+     *
+     * @throws DotNetContentNotFoundException
+     */
+    public Assembly loadAssembly() throws DotNetContentNotFoundException {
+        return loadAssembly(true);
+    }
+
+    /**
+     * Loads a reflected assembly. If {@link at.pollaknet.api.facile.FacileReflector#loadAssembly()}
+     * has already been called, the method returns a reference to the already
+     * loaded assembly instead of processing the data once more.
+     *
+     * @param loadByteCode  true, if method byte code should be loaded
+     *
+     * @return A loaded assembly accessible by the {@link at.pollaknet.api.facile.symtab.symbols.scopes.Assembly}
+     * interface.
+     *
+     * @throws DotNetContentNotFoundException
+     */
+    public Assembly loadAssembly(boolean loadByteCode) throws DotNetContentNotFoundException {
 		
 		if(assembly==null) {
 			//the metadata stream is required
@@ -668,9 +684,9 @@ public class FacileReflector {
 			}
 		
 			
-			//create the metamodel (out of the given streams)
+			//create the meta model (out of the given streams)
 			metaModel = new MetadataModel(assemblyHasIlSection, alternativeModuleName,
-					metadataStream, stringsStream, userStringStream, guidStream, blobStream);
+					metadataStream, stringsStream, userStringStream, guidStream, blobStream, loadByteCode);
 			logger.log(Level.INFO, "Finished meta object processing.");	  
 			
 			//verify data
