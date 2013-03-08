@@ -3,13 +3,15 @@
 
 = List of .Net Decompilers =
 
+== Dotnet IL Editor (DILE) ==
+I didn't test it by myself (so far), but it looks promising: http://sourceforge.net/projects/dile/
+Hope to find some time to do that soon.
 
 == dotPeek ==
 
 dotPeek is a new free .NET decompiler from JetBrains
 
 http://confluence.jetbrains.net/display/NETPEEK
-
 
 == .NET CodeReflect ==
 
@@ -49,6 +51,9 @@ But the IL view works properly...
 
 http://www.telerik.com/products/decompiler.aspx
 
+== IL.View ==
+Web-based decompiler, as source on github: https://github.com/DenisVuyka/IL.View
+I have to take a closer look at that some time soon...
 
 == ILSpy ==
 
@@ -71,6 +76,11 @@ http://netdecompiler.com/index.html
 Microsoft's disassembler.
 
 http://msdn.microsoft.com/en-us/library/f7dy01k1(v=vs.80).aspx
+
+== Assembly Analyzer ==
+
+Another decompiler a la "Lutz Roeder": http://asmanalyzer.codeplex.com/
+No test results until today... (sorry)
 
 == LSW DotNet-Reflection-Browser ==
 
