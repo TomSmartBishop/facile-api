@@ -58,6 +58,9 @@ public class TestGACFusion extends TestCase {
 						byte [] buffer = new byte[(int) file.length()];
 						stream.read(buffer);
 						
+						assert(stream.read()==-1); //we assume that we reached the end
+						stream.close();
+						
 						String text = new String(buffer);
 						
 						int pos = text.indexOf("URL=file:///");

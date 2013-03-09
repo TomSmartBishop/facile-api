@@ -1,26 +1,30 @@
 package at.pollaknet.api.facile;
 
+import java.util.ArrayDeque;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
 /**
  * The {@link FacileLogHandler} extends the abstract {@link java.util.logging.Handler} and simply
- * writes the log messages to a buffer or outputs it to the console on demand.
+ * writes the log messages to a buffer or outputs it to the console on demand. This log handler
+ * is not thread safe.
  * 
  * @author Thomas Pollak
  * <p/>Email: <i>http://code.google.com/p/facile-api/people/detail?u=103590059941737035763</i>
  */
 public class FacileLogHandler extends Handler {
 
-	private StringBuffer logBuffer;
+	private ArrayDeque<String> logBuffer = new ArrayDeque<String>();
 	private boolean intermediate = false;
 	private boolean isClosed = false;
+	private int maxNumLogLines = 64*1024;
+	private int numLogLines = 0;
 
 	/**
 	 * Create a new log handler which writes all message into a buffer.
 	 */
 	public FacileLogHandler() {
-		logBuffer = new StringBuffer(1024);
+		logBuffer = new ArrayDeque<String>();
 	}
 	
 	/**
@@ -58,6 +62,8 @@ public class FacileLogHandler extends Handler {
 	 */
 	@Override
 	public void flush() {
+		if(intermediate)
+			System.out.flush();
 	}
 
 	/*
@@ -72,7 +78,11 @@ public class FacileLogHandler extends Handler {
 			if(intermediate)
 				System.out.print(msg);
 			
-			logBuffer.append(msg);
+			logBuffer.add(msg);
+			numLogLines++;
+			
+			if(numLogLines>maxNumLogLines)
+				logBuffer.poll();
 		}
 	}
 
@@ -82,7 +92,16 @@ public class FacileLogHandler extends Handler {
 	 */
 	@Override
 	public String toString() {
-		return logBuffer.toString();
+		//size approximation: average of 32 character per line
+		int approximatedSize = numLogLines>maxNumLogLines ? maxNumLogLines*32 : numLogLines*32;
+		
+		StringBuffer buffer = new StringBuffer(approximatedSize);
+		
+		for(String line : logBuffer) {
+			buffer.append(line);
+		}
+		
+		return buffer.toString();
 	}
 
 }

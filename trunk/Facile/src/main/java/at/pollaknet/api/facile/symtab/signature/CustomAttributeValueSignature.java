@@ -43,12 +43,12 @@ public class CustomAttributeValueSignature extends Signature {
 		setBinarySignature(customAttribute.getValue());
 		setDirectory(directory);
 		nextToken();
-		
+
 		//read prolog
 		prolog();
 		
 		//handles the FixedArg block and eventual repetitions of it
-		fixedArgs(customAttribute);
+		fixedArgs(directory, customAttribute);
 		
 		if(hasNext()) {
 			int numNamedArguamtes = ByteReader.getUInt16(binarySignature, currentIndex);
@@ -103,7 +103,7 @@ public class CustomAttributeValueSignature extends Signature {
 	 *  Number of repetitions depends on the number of fixed arguments of the attach method or member
 	 *  This information is stored in the methodDef/memberRef
 	 */
-	private void fixedArgs(CustomAttributeEntry customAttribute) {
+	private void fixedArgs(BasicTypesDirectory directory, CustomAttributeEntry customAttribute) {
 		//get the type of the custom attribute
 		ICustomAttributeType customAttributeType = customAttribute.getCustomAttributeType();
 		assert(customAttributeType!=null);
@@ -130,9 +130,21 @@ public class CustomAttributeValueSignature extends Signature {
 			} else {
 				//it is a member reference
 				
-				if(memberRef.getMethodRefSignature()!=null) {	
-					for(Parameter p: memberRef.getMethodRefSignature().getParameters()) {
-						fixedArguments.add(fixedArgument(customAttribute, p.getTypeRef()));
+				if(memberRef.getMethodRefSignature()!=null) {
+					Parameter [] parameter = memberRef.getMethodRefSignature().getParameters();
+					if(parameter.length>0) {
+						for(Parameter p: parameter) {
+							fixedArguments.add(fixedArgument(customAttribute, p.getTypeRef()));
+						}
+					} else {
+						//FIXME: this is unfortunately just an internal heuristic
+						int backIndex = currentIndex;
+						TypeInstance newInstance = fixedArgument(customAttribute, directory.getType(TypeKind.ELEMENT_TYPE_STRING));
+						
+						if(currentIndex+2==binarySignature.length)
+							fixedArguments.add(newInstance);
+						else
+							currentIndex = backIndex;
 					}
 				}
 			}
@@ -140,7 +152,7 @@ public class CustomAttributeValueSignature extends Signature {
 		} else
 			//in this case the custom attribute is attached to a method
 			if(method.getMethodSignature()!=null) {
-				for(Parameter p:method.getMethodSignature().getParameters()) {
+				for(Parameter p: method.getMethodSignature().getParameters()) {
 					fixedArguments.add(fixedArgument(customAttribute, p.getTypeRef()));
 			}
 		}

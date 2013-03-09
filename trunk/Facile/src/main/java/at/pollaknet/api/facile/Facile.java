@@ -249,12 +249,15 @@ public class Facile {
 	 * 
 	 * <p/>This also causes an access to the program debug database (pdb) specified
 	 * inside the assembly (by the compiler). The debug information will be
-	 * available if the pdb file is valid and at the specified location.
+	 * available if the pdb file is valid and the code is executed on Windows (this
+	 * limitation is caused by the Microsoft Debug Interface Access DIA which exists
+     * as dll only). Byte code will be loaded.
 	 * 
 	 * @param pathToAssembly A {@link String}, containing the path to the .NET
 	 * assembly.
 	 *
-     * @param loadByteCode   true, if method byte code should be loaded
+     * @param loadByteCode   Set to {@code true} to load the byte code, otherwise
+	 * to {@code false}.
      *
 	 * @return A loaded assembly accessible by the
 	 * {@link at.pollaknet.api.facile.symtab.symbols.scopes.Assembly} interface.
@@ -287,8 +290,9 @@ public class Facile {
      *
      * <p/>This also causes an access to the program debug database (pdb) specified
      * inside the assembly (by the compiler). The debug information will be
-     * available if the pdb file is valid and at the specified location. Byte
-     * code will be loaded
+     * available if the pdb file is valid and the code is executed on Windows (this
+	 * limitation is caused by the Microsoft Debug Interface Access DIA which exists
+     * as dll only). Byte code will be loaded.
      *
      * @param pathToAssembly A {@link String}, containing the path to the .NET
      * assembly.
@@ -317,38 +321,40 @@ public class Facile {
         return loadAssembly(pathToAssembly, true);
     }
 
-        /**
-       * Reflects all streams inside the .NET assembly and loads its content.
-       *
-       * <p/>This also causes an access to the program debug database (pdb) specified
-       * by the {@code pathToPdb} parameter. The debug information will be available
-       * if the pdb file is valid and at the specified location.
-       *
-       * <p/>There is an automatic fall-back to the path specified inside the .NET
-       * assembly (by the compiler) if {@code pathToPdb} does not work.
-       *
-       * @param pathToAssembly A {@link String}, containing the path to the .NET assembly.
-       *
-       * @param pathToPdb A {@link String}, containing the path to the program debug
-       * database (pdb).
-       *
-       * @return A loaded assembly accessible by the
-       * {@link at.pollaknet.api.facile.symtab.symbols.scopes.Assembly} interface.
-       *
-       * @throws CoffPeDataNotFoundException if the specified file
-       * contains no COFF/PE data structure which contains the .NET assembly.
-       *
-       * @throws DotNetContentNotFoundException if the specified file
-       * contains no .NET assembly.
-       *
-       * @throws UnexpectedHeaderDataException if the expected data inside a
-       * data header have not been found.
-       *
-       * @throws SizeMismatchException if the calculated size of internal
-       * data does not match the real size in the assembly.
-       *
-       * @throws IOException if the reading process of the specified file throws
-       */
+	/**
+	 * Reflects all streams inside the .NET assembly and loads its content.
+	 *
+ 	 * <p/>This also causes an access to the program debug database (pdb) specified
+	 * by the {@code pathToPdb} parameter. The debug information will be available
+	 * if the pdb file is valid and the code is executed on Windows (this limitation
+	 * is caused by the Microsoft Debug Interface Access DIA which exists as dll only).
+	 * Byte code will be loaded.
+     *
+	 * <p/>There is an automatic fall-back to the path specified inside the .NET
+	 * assembly (by the compiler) if {@code pathToPdb} does not work.
+	 *
+	 * @param pathToAssembly A {@link String}, containing the path to the .NET assembly.
+	 *
+	 * @param pathToPdb A {@link String}, containing the path to the program debug
+	 * database (pdb).
+	 *
+	 * @return A loaded assembly accessible by the
+	 * {@link at.pollaknet.api.facile.symtab.symbols.scopes.Assembly} interface.
+	 *
+	 * @throws CoffPeDataNotFoundException if the specified file
+	 * contains no COFF/PE data structure which contains the .NET assembly.
+	 *
+	 * @throws DotNetContentNotFoundException if the specified file
+	 * contains no .NET assembly.
+	 *
+	 * @throws UnexpectedHeaderDataException if the expected data inside a
+	 * data header have not been found.
+	 *
+	 * @throws SizeMismatchException if the calculated size of internal
+	 * data does not match the real size in the assembly.
+	 *
+	 * @throws IOException if the reading process of the specified file throws
+	 */
 	public static Assembly loadAssembly(String pathToAssembly, String pathToPdb)
 			throws CoffPeDataNotFoundException, DotNetContentNotFoundException,
 				UnexpectedHeaderDataException, SizeMismatchException, IOException {
@@ -364,7 +370,9 @@ public class Facile {
 	 * 
 	 * <p/>This also causes an access to the program debug database (pdb) specified
 	 * inside the {@code buffer} (compiler generated). The debug information will
-	 * be available if the pdb file is valid and at the specified location.
+	 * be available if the pdb file is valid and the code is executed on Windows (this
+	 * limitation is caused by the Microsoft Debug Interface Access DIA which exists
+     * as dll only). Byte code will be loaded.
 	 * 
 	 * @param buffer A {@code byte[]} containing the binary representation
 	 * of a .NET assembly.
@@ -397,7 +405,9 @@ public class Facile {
 	 * 
 	 * <p/>This also causes an access to the program debug database (pdb) specified
 	 * inside the assembly (by the compiler). The debug information will be
-	 * available if the pdb file is valid and at the specified location.
+	 * available if the pdb file is valid and the code is executed on Windows (this
+	 * limitation is caused by the Microsoft Debug Interface Access DIA which exists
+     * as dll only). Byte code will be loaded.
 	 * 
 	 * @param pathToAssembly A {@link String}, containing the path to the .NET
 	 * assembly.
@@ -433,7 +443,9 @@ public class Facile {
 	 * 
 	 * <p/>This also causes an access to the program debug database (pdb) specified
 	 * by the {@code pathToPdb} parameter. The debug information will be available
-	 * if the pdb file is valid and at the specified location.
+	 * if the pdb file is valid and the code is executed on Windows (this limitation
+	 * is caused by the Microsoft Debug Interface Access DIA which exists as dll
+     * only). Byte code will be loaded.
 	 *
 	 * <p/>There is an automatic fall-back to the path specified inside the .NET
 	 * assembly (by the compiler) if {@code pathToPdb} does not work.
@@ -444,8 +456,8 @@ public class Facile {
 	 * @param pathToPdb A {@link String}, containing the path to the program
 	 * debug database (pdb).
 	 * 
-	 * @return A {@link at.pollaknet.api.facile.FacileReflector} object, which gives access to the
-	 * loaded assembly.
+	 * @return A {@link at.pollaknet.api.facile.FacileReflector} object, which 
+	 * gives access to the loaded assembly.
 	 * 
 	 * @throws CoffPeDataNotFoundException if the specified file
 	 * contains no COFF/PE data structure which contains the .NET assembly. 
@@ -475,13 +487,15 @@ public class Facile {
 	 * 
 	 * <p/>This also causes an access to the program debug database (pdb) specified
 	 * inside the {@code buffer} (compiler generated). The debug information will
-	 * be available if the pdb file is valid and at the specified location.
+	 * be available if the pdb file is valid and the code is executed on Windows (this
+	 * limitation is caused by the Microsoft Debug Interface Access DIA which exists
+     * as dll only). Byte code will be loaded.
 	 * 
 	 * @param buffer A {@code byte[]} containing the binary representation
 	 * of a .NET assembly.
 	 * 
-	 * @return A {@link at.pollaknet.api.facile.FacileReflector} object, which gives access to the
-	 * loaded assembly.
+	 * @return A {@link at.pollaknet.api.facile.FacileReflector} object, which gives
+	 * access to the loaded assembly.
 	 * 
 	 * @throws CoffPeDataNotFoundException if the specified file
 	 * contains no COFF/PE data structure which contains the .NET assembly. 
@@ -516,8 +530,9 @@ public class Facile {
 	 * <p><b>Note:</b> Calling the {@link at.pollaknet.api.facile.FacileReflector#loadAssembly()}
 	 * method of the {@link at.pollaknet.api.facile.FacileReflector} class will cause an access
 	 * to the program debug database (pdb) specified inside the assembly (by the compiler).
-	 * The debug information will be available if the pdb file is valid and at the
-	 * specified location.
+	 * The debug information will be available if the pdb file is valid and the code is executed 
+	 * on Windows (this limitation is caused by the Microsoft Debug Interface Access DIA which 
+     * exists as dll only). Byte code will be loaded.
 	 * 
 	 * @param pathToAssembly A {@link String}, containing the path to the .NET
 	 * assembly.
@@ -560,8 +575,9 @@ public class Facile {
 	 * <p/><b>Note:</b> Calling the {@link at.pollaknet.api.facile.FacileReflector#loadAssembly()}
 	 * method of the {@link at.pollaknet.api.facile.FacileReflector} class will cause an access
 	 * to the program debug database (pdb) specified by the {@code pathToPdb} parameter.
-	 * The debug information will be available if the pdb file can be found at the
-	 * specified location and if the content is valid.
+	 * The debug information will be available if the pdb file is valid and the code is executed 
+	 * on Windows (this limitation is caused by the Microsoft Debug Interface Access DIA which 
+     * exists as dll only). Byte code will be loaded.
 	 * 
 	 * <p/>There is an automatic fall-back to the path specified inside the .NET
 	 * assembly (by the compiler) if {@code pathToPdb} does not work.
@@ -610,7 +626,9 @@ public class Facile {
 	 * method of the {@link at.pollaknet.api.facile.FacileReflector} class will cause an
 	 * access to the program debug database (pdb) specified inside the
 	 * {@code buffer} (compiler generated). The debug information will be
-	 * available if the pdb file is valid and at the specified location.
+	 * available if the pdb file is valid and the code is executed on Windows (this
+	 * limitation is caused by the Microsoft Debug Interface Access DIA which exists
+     * as dll only). Byte code will be loaded.
 	 * 
 	 * @param buffer A {@code byte[]} containing the binary representation
 	 * of a .NET assembly.
