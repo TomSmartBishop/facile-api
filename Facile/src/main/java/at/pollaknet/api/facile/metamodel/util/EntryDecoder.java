@@ -282,9 +282,19 @@ public class EntryDecoder extends IndexDecoder {
 		int decodedIndex = decodeIndex(CodedIndex.TypeDefOrRef, index);
 		
 		switch(decodedIndex) {
-			case 0: return model.typeDef[decodedIndexContent];
-			case 1: return model.typeRef[decodedIndexContent];
-			case 2: return model.typeSpec[decodedIndexContent];
+			case 0:
+				if(decodedIndexContent>=model.typeDef.length)
+					return null;
+				return model.typeDef[decodedIndexContent];
+			case 1:
+				if(decodedIndexContent>=model.typeRef.length)
+					return null;
+				return model.typeRef[decodedIndexContent];
+				
+			case 2:
+				if(decodedIndexContent>=model.typeSpec.length)
+					return null;
+				return model.typeSpec[decodedIndexContent];
 			default:break;
 		}
 		

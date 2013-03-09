@@ -814,9 +814,13 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 		TypeSpec typeSpec = typeRef.getTypeSpec();
 
 		ensureSignatureLength(backupIndex, 4);
-		arrayLength = ByteReader.getUInt32(binarySignature, currentIndex);
+		arrayLength = ByteReader.getInt32(binarySignature, currentIndex);
 
 		skipTokens(4);
+		//null array
+		if(arrayLength==-1)
+			return TypeInstance.CreateArrayInstnace(typeRef, 0);
+					
 		assert (arrayLength <= ByteReader.INT32_MAX_VAL);
 		arrayInstance = TypeInstance.CreateArrayInstnace(typeRef,(int) arrayLength);
 

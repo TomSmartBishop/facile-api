@@ -100,17 +100,26 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 
 	@Override
 	public AssemblyRef getAssemblyRef() {
-		return getResolutionScope()==null?null:getResolutionScope().getAssemblyRef();
+		ResolutionScope resolutionScope = getResolutionScope();
+		
+		//some obfuscated assemblies have loops
+		return (resolutionScope==null||resolutionScope==this)?null:resolutionScope.getAssemblyRef();
 	}
 
 	@Override
 	public Module getModule() {
-		return getResolutionScope()==null?null:getResolutionScope().getModule();
+		ResolutionScope resolutionScope = getResolutionScope();
+		
+		//some obfuscated assemblies have loops
+		return (resolutionScope==null||resolutionScope==this)?null:resolutionScope.getModule();
 	}
 
 	@Override
 	public ModuleRef getModuleRef() {
-		return getResolutionScope()==null?null:getResolutionScope().getModuleRef();
+		ResolutionScope resolutionScope = getResolutionScope();
+		
+		//some obfuscated assemblies have loops
+		return (resolutionScope==null||resolutionScope==this)?null:resolutionScope.getModuleRef();
 	}
 
 	@Override
@@ -183,8 +192,9 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 		int result = 1;
 		result = prime + kind;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result
-				+ ((resolutionScope == null) ? 0 : resolutionScope.hashCode());
+		result = prime * result //do not use resolutionScope.hashCode since this could lead to a recursion
+				+ ((resolutionScope == null) ? 0 : resolutionScope.getName() == null ? 0 : resolutionScope.getName().hashCode());
+		
 		return result;
 	}
 

@@ -2,6 +2,10 @@
 
 <changelog name="Facile API">
   <version major="1" minor="0" fix="3">
+    <fixed>Fixed two small bugs in the custom attribute signature handling</fixed>
+    <added>Better #Strings stream handling, cycle avoidance and bounds checks for obfuscated assemblies</added>
+    <fixed>Fixed missing file.close() operations</fixed>
+    <fixed>Fixed memory leak in log handler</fixed>
     <added>Added new method to get the implicitly used type specs embedded inside the binary signatures</added>
     <added>New methods for the Field interface: getFullQualifiedName and getParent (on trial)</added>
     <added>New methods for the Property interface: getFullQualifiedName and getParent (on trial)</added>

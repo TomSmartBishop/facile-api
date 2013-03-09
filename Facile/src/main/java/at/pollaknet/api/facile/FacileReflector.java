@@ -611,10 +611,12 @@ public class FacileReflector {
 		//only accept files within the range [0,MAX_INT],
 		//because the array dimension is limited to that range
 		if(length<0 || length>ByteReader.INT32_MAX_VAL) {
+			file.close();
 			throw new SizeMismatchException("Size limit of " + ByteReader.INT32_MAX_VAL + "bytes exceeded");
 		}
 
 		//check the buffer length and perform a partial loading if possible
+		//(by doing this we can avoid loading large files which may not contain any .net content)
 		int bufferLength = (int) length;		
 		if(!partialLoaded && bufferLength>PARTIAL_LOADING_SIZE) {
 			bufferLength = PARTIAL_LOADING_SIZE;
@@ -624,6 +626,7 @@ public class FacileReflector {
 		//read the file
 		byte [] buffer = new byte[bufferLength];
 		file.read(buffer, 0, bufferLength);
+		assert(partialLoaded || file.read()==-1); //we assume that we read everything
 		file.close();
 		
 		//just for debug purpose...
