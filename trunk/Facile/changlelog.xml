@@ -2,6 +2,7 @@
 
 <changelog name="Facile API">
   <version major="1" minor="0" fix="3">
+    <added>Support for native 64bit DIA access, therefore pdb information can be used on Windows64+Java64 as well</added>
     <fixed>Fixed two small bugs in the custom attribute signature handling</fixed>
     <added>Better #Strings stream handling, cycle avoidance and bounds checks for obfuscated assemblies</added>
     <fixed>Fixed missing file.close() operations</fixed>
