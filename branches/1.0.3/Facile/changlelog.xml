@@ -1,0 +1,21 @@
+<?xml version="1.0" ?><!DOCTYPE changelog SYSTEM "changelog.dtd">
+
+<changelog name="Facile API">
+  <version major="1" minor="0" fix="3">
+    <added>Support for native 64bit DIA access, therefore pdb information can be used on Windows64+Java64 as well</added>
+    <fixed>Fixed two small bugs in the custom attribute signature handling</fixed>
+    <added>Better #Strings stream handling, cycle avoidance and bounds checks for obfuscated assemblies</added>
+    <fixed>Fixed missing file.close() operations</fixed>
+    <fixed>Fixed memory leak in log handler</fixed>
+    <added>Added new method to get the implicitly used type specs embedded inside the binary signatures</added>
+    <added>New methods for the Field interface: getFullQualifiedName and getParent (on trial)</added>
+    <added>New methods for the Property interface: getFullQualifiedName and getParent (on trial)</added>
+    <added>"--bca" option for Facile to dump custom attributes in binary format when outputting to ILAsm</added>
+    <fixed>Problem when testing flags for isInterface and isClass methods (and some internal methods)</fixed>
+    <fixed>ILAsmRenderer output is basically ILAsm conform</fixed>
+    <added>Methods for TypeSpecEntry: getMostInnerEnclosedTypeRef and getMostInnerEnclosedTypeSpec</added>
+    <added>Methods for generic argument handling: TypeSpecEntry::porpagateGenericArguments, ParamEntry::linkGenericNameToType and FieldEntry::linkGenericNameToType (all on trial)</added>
+    <changed>GenericParamEntry::setConstraint renamed to GenericParamEntry::addConstraint for better understanding</changed>
+    <changed>ParamEntry now returns a valid owner (null before)</changed>
+  </version>
+</changelog>
