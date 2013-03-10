@@ -94,8 +94,16 @@ public class PdbReader {
     	if(ENABLE_DEBUG) System.out.println("PdbReader.java: Performing setup inside the static constructor.");
 
     	//locate the current path of the binary file...
-    	//first of all get a resource url
-    	String binaryName = "bin/" + CLASS_NAME + ".dll";
+    	//find out the architecture of the JVM
+    	String archDataModel = System.getProperty("sun.arch.data.model");
+    	
+    	if(archDataModel!="32" || archDataModel!="64")
+    		archDataModel = System.getProperty("os.arch").endsWith("64") ? "64" : "32";
+    	
+    	String binaryName =
+    			"bin" + archDataModel + System.getProperty("file.separator")
+    			+ CLASS_NAME + archDataModel + ".dll";
+    	
     	URL dllUrl = PdbReader.class.getResource(binaryName);
 
     	if(dllUrl==null) {
@@ -192,7 +200,7 @@ public class PdbReader {
 	    					": " + e.getMessage());
 	    	} catch (URISyntaxException e) {
 	    		Logger logger = Logger.getLogger(FacileReflector.LOGGER_NAME);
-	    		logger.log(Level.SEVERE, "URISyntaxException: Unable to convert the " + CLASS_NAME +
+	    		logger.log(Level.SEVERE, "URISyntaxException: Unable to convert the " + CLASS_NAME + archDataModel +
 	    					".dll location (\"" + dllPath + "\") to a valid URI: " + e.getMessage());
 			} catch (Exception e) {
 	    		Logger logger = Logger.getLogger(FacileReflector.LOGGER_NAME);

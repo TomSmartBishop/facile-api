@@ -14,19 +14,6 @@
 #include "DiaContainer.h"
 #include "DiaString.h"
 
-//specify all debug interface access seach pathes
-const char* diaPaths[] = {
-        "msdia90.dll",
-        "..\\bin\\msdia90.dll",
-        "..\\..\\bin\\msdia90.dll",
-        "..\\..\\..\\bin\\msdia90.dll",
-		"msdia80.dll",
-        "..\\bin\\msdia80.dll",
-        "..\\..\\bin\\msdia80.dll",
-        "..\\..\\..\\bin\\msdia80.dll",
-        0
-};
-
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
@@ -209,8 +196,8 @@ const char* diaPaths[] = {
 		if ( SUCCEEDED(pDiaSession->findLinesByAddr( dwSection, dwOffset, static_cast<DWORD>( ullLength ), &pLines ) ) ) {
 		 
 			IDiaLineNumber *pLine = NULL;
-			DWORD dwFetchedLines;
-			DWORD dwRvaOffset;
+			DWORD dwFetchedLines = 0;
+			DWORD dwRvaOffset = 0;
 			boolean bFirst = true;
 
 			//check each line
@@ -237,10 +224,10 @@ const char* diaPaths[] = {
 					SAFE_RELEASE(pSrc);
 				}
 
-				DWORD dwCurrentLineNumber;
-				DWORD dwCurrentColNumber;
-				DWORD dwCurrentColEndNumber;
-				DWORD dwCurrentRva;
+				DWORD dwCurrentLineNumber = 0;
+				DWORD dwCurrentColNumber = 0;
+				DWORD dwCurrentColEndNumber = 0;
+				DWORD dwCurrentRva = 0;
 
 				//get the required debug information for the current instruction
 				pLine->get_lineNumber( &dwCurrentLineNumber );
