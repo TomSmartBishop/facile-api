@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0776F18B-0DC2-40CB-AC3A-6D19938E960C}</ProjectGuid>
     <RootNamespace>PdbReader</RootNamespace>
-    <ProjectName>PdbReader</ProjectName>
+    <ProjectName>NativePdbReader</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -169,12 +169,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DiaConatiner.cpp" />
-    <ClCompile Include="PdbReader.cpp" />
+    <ClCompile Include="NativePdbReader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\NativePdbReader.h" />
     <ClInclude Include="DiaContainer.h" />
     <ClInclude Include="DiaString.h" />
-    <ClInclude Include="..\PdbReader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

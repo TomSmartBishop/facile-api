@@ -10,14 +10,14 @@
 #include "diacreate.h"
 #include "cvconst.h"
 
-#include "../PdbReader.h"
+#include "../NativePdbReader.h"
 #include "DiaContainer.h"
 #include "DiaString.h"
 
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
- JNIEXPORT jint JNICALL Java_at_pollaknet_api_facile_dia_PdbReader_openPdb(JNIEnv *env, jobject obj, jstring jsPdbPath) {
+ JNIEXPORT jint JNICALL Java_at_pollaknet_api_facile_pdb_dia_NativePdbReader_openPdb(JNIEnv *env, jobject obj, jstring jsPdbPath) {
 
 	#ifdef DEBUG
 		 printf("Executing native function _openPdb...\n");
@@ -84,7 +84,7 @@
 	return jiReturnCode;
  }
 
- JNIEXPORT void JNICALL Java_at_pollaknet_api_facile_dia_PdbReader_closePdb(JNIEnv *env, jobject obj) {
+ JNIEXPORT void JNICALL Java_at_pollaknet_api_facile_pdb_dia_NativePdbReader_closePdb(JNIEnv *env, jobject obj) {
 
 	#ifdef DEBUG
 		 printf("Executing native function _closePdb...\n");
@@ -120,7 +120,7 @@
  }
 
 
- JNIEXPORT jobject JNICALL Java_at_pollaknet_api_facile_dia_PdbReader_getLineNumbersByRVA(JNIEnv *env, jobject obj, jlong jlRVA) {
+ JNIEXPORT jobject JNICALL Java_at_pollaknet_api_facile_pdb_dia_NativePdbReader_getLineNumbersByRVA(JNIEnv *env, jobject obj, jlong jlRVA) {
 	ULONGLONG ullLength = 0;
 	DWORD dwSection = 0;
 	DWORD dwOffset = 0;
@@ -143,9 +143,11 @@
 	assert(jfNativeHandleID!=NULL);
 
 	//get the pointer to the container
-	//(which has to be here because it was assingned just befor this method call)
+	//(which has to be here because it was assingned just before this method call)
 	DiaContainer *pDiaContainer = (DiaContainer *)env->GetLongField(obj, jfNativeHandleID);
-	assert(pDiaContainer!=NULL);
+	
+  //this happens when somebody calls that function and no PDB exists
+  if(pDiaContainer==NULL) return NULL;
 
 	//check if the session has been initialized
 	if(pDiaContainer->getSession()==NULL) return NULL;

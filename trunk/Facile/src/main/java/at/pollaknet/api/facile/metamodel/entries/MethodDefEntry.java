@@ -1,7 +1,6 @@
 package at.pollaknet.api.facile.metamodel.entries;
 
 import at.pollaknet.api.facile.code.MethodBody;
-import at.pollaknet.api.facile.dia.DebugInformation;
 import at.pollaknet.api.facile.metamodel.AbstractGenericInstanceConatiner;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.ICustomAttributeType;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasCustomAttribute;
@@ -10,6 +9,7 @@ import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasSemantics;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IMemberForwarded;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IMethodDefOrRef;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.ITypeOrMethodDef;
+import at.pollaknet.api.facile.pdb.DebugInformation;
 import at.pollaknet.api.facile.renderer.LanguageRenderer;
 import at.pollaknet.api.facile.symtab.signature.Permission;
 import at.pollaknet.api.facile.symtab.symbols.Event;

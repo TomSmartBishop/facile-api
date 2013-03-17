@@ -1,4 +1,4 @@
-package at.pollaknet.api.facile.dia;
+package at.pollaknet.api.facile.pdb;
 
 public interface DebugInformation {
 
@@ -11,7 +11,7 @@ public interface DebugInformation {
 	/**
 	 * Get an array of all line number information about each instruction of the
 	 * original .net language.
-	 * @return An array of {@link at.pollaknet.api.facile.dia.InstructionInfo} instances.
+	 * @return An array of {@link at.pollaknet.api.facile.pdb.InstructionInfo} instances.
 	 */
 	public abstract InstructionInfo[] getInstructionInfos();
 

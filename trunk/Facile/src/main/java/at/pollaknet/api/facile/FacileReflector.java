@@ -12,8 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import at.pollaknet.api.facile.code.CilContainer;
-import at.pollaknet.api.facile.dia.PdbReader;
-import at.pollaknet.api.facile.dia.UnexpectedPdbContent;
 import at.pollaknet.api.facile.exception.CoffPeDataNotFoundException;
 import at.pollaknet.api.facile.exception.DotNetContentNotFoundException;
 import at.pollaknet.api.facile.exception.NativeImplementationException;
@@ -35,6 +33,9 @@ import at.pollaknet.api.facile.header.coffpe.PEOptionalHeader;
 import at.pollaknet.api.facile.header.coffpe.PESectionHeader;
 import at.pollaknet.api.facile.metamodel.MetadataModel;
 import at.pollaknet.api.facile.metamodel.entries.AssemblyEntry;
+import at.pollaknet.api.facile.pdb.PdbReader;
+import at.pollaknet.api.facile.pdb.UnexpectedPdbContent;
+import at.pollaknet.api.facile.pdb.dia.NativePdbReader;
 import at.pollaknet.api.facile.symtab.SymbolTable;
 import at.pollaknet.api.facile.symtab.symbols.scopes.Assembly;
 import at.pollaknet.api.facile.util.ByteReader;
@@ -740,10 +741,10 @@ public class FacileReflector {
 
 	/**
 	 * Open the pdb specified in {@code pathToPdb}.
-	 * @return A {@link at.pollaknet.api.facile.dia.PdbReader} object instance
+	 * @return A {@link at.pollaknet.api.facile.pdb.dia.NativePdbReader} object instance
 	 * or {@code null} if no debug information is accessible.
 	 */
-	private PdbReader openPdb() {
+	private NativePdbReader openPdb() {
 		
 		//do nothing if the path is explicitly null
 		if(pathToPdb==null) {
@@ -751,11 +752,12 @@ public class FacileReflector {
 			return null;
 		}
 		
-		PdbReader pdbReader = null;
+		NativePdbReader pdbReader = null;
 		
 		try {
 			//first use the specified file (could be the .exe too)
-			pdbReader = new PdbReader(pathToPdb);
+			pdbReader = new NativePdbReader();
+			pdbReader.open(pathToPdb);
 			logger.log(Level.INFO, "Successfully opened PDB.");
 		} catch (FileNotFoundException e) {
 			
@@ -770,14 +772,18 @@ public class FacileReflector {
 				
 				//try the alternative file name
 				try {
-					pdbReader = new PdbReader(alternativePath);
+					pdbReader = new NativePdbReader();
+					pdbReader.open(alternativePath);
 					logger.log(Level.INFO, "Successfully opened alternative PDB.");
 				} catch (FileNotFoundException ex) {
 					logger.log(Level.WARNING, "PDB not opened: " + ex.getMessage());
+					pdbReader = null;
 				} catch (NativeImplementationException ex) {
 					logger.log(Level.WARNING, "PDB not opened: " + ex.getMessage());
+					pdbReader = null;
 				} catch (UnexpectedPdbContent ex) {
 					logger.log(Level.WARNING, "PDB not opened: " + ex.getMessage());
+					pdbReader = null;
 				}
 				
 			} else {
@@ -786,8 +792,10 @@ public class FacileReflector {
 			
 		} catch (NativeImplementationException e) {
 			logger.log(Level.WARNING, "PDB not opened: " + e.getMessage());
+			pdbReader = null;
 		} catch (UnexpectedPdbContent e) {
 			logger.log(Level.WARNING, "PDB not opened: " + e.getMessage());
+			pdbReader = null;
 		}
 		
 		//return the (maybe) loaded pdb file via the pdb reader

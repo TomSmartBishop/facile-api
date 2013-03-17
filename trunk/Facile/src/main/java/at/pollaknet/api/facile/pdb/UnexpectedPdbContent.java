@@ -1,4 +1,4 @@
-package at.pollaknet.api.facile.dia;
+package at.pollaknet.api.facile.pdb;
 
 public class UnexpectedPdbContent extends Exception {
 	

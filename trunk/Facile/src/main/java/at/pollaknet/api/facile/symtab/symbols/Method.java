@@ -1,7 +1,7 @@
 package at.pollaknet.api.facile.symtab.symbols;
 
 import at.pollaknet.api.facile.code.MethodBody;
-import at.pollaknet.api.facile.dia.DebugInformation;
+import at.pollaknet.api.facile.pdb.DebugInformation;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.MethodAndFieldParent;
 import at.pollaknet.api.facile.symtab.symbols.meta.AttributableSymbol;
 import at.pollaknet.api.facile.symtab.symbols.meta.DeclarativeSecurity;
@@ -174,7 +174,7 @@ public interface Method extends AttributableSymbol, Comparable<Method> {
 	/**
 	 * Returns the debug information of the method, holding
 	 * the line numbers for the instructions of the method body.
-	 * @return An instance of {@link at.pollaknet.api.facile.dia.DebugInformation}.
+	 * @return An instance of {@link at.pollaknet.api.facile.pdb.DebugInformation}.
 	 */
 	public abstract DebugInformation getDebungInformation();
 	
