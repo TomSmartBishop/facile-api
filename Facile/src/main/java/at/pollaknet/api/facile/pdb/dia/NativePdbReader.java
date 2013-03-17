@@ -1,4 +1,4 @@
-package at.pollaknet.api.facile.dia;
+package at.pollaknet.api.facile.pdb.dia;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,13 +15,16 @@ import java.util.zip.ZipInputStream;
 
 import at.pollaknet.api.facile.FacileReflector;
 import at.pollaknet.api.facile.exception.NativeImplementationException;
+import at.pollaknet.api.facile.pdb.DebugInformation;
+import at.pollaknet.api.facile.pdb.PdbReader;
+import at.pollaknet.api.facile.pdb.UnexpectedPdbContent;
 
 
-public class PdbReader {
+public class NativePdbReader implements PdbReader {
 
 	private final static boolean ENABLE_DEBUG = false;
 	
-	private final static String CLASS_NAME = "PdbReader";
+	private final static String CLASS_NAME = "NativePdbReader";
 	
 	private static boolean nativeLibraryLoaded = false;
 	
@@ -42,10 +45,13 @@ public class PdbReader {
 	//this field is used in the native implementation!
 	private long nativeHandle = 0;
 	
-	public PdbReader(String pathToPdbFile) throws NativeImplementationException, FileNotFoundException, UnexpectedPdbContent {
+	public NativePdbReader() throws NativeImplementationException {
 		if(!nativeLibraryLoaded)
 			throw new NativeImplementationException("Unable to locate " + CLASS_NAME + ".dll in the bin folder of the dia package!");
-		
+	}
+	
+	public void open(String pathToPdbFile) throws NativeImplementationException, FileNotFoundException, UnexpectedPdbContent {
+
 		int returnCode = openPdb(pathToPdbFile);
 		
 		if(returnCode!=SUCCESS) {
@@ -104,7 +110,7 @@ public class PdbReader {
     			"bin" + archDataModel + System.getProperty("file.separator")
     			+ CLASS_NAME + archDataModel + ".dll";
     	
-    	URL dllUrl = PdbReader.class.getResource(binaryName);
+    	URL dllUrl = NativePdbReader.class.getResource(binaryName);
 
     	if(dllUrl==null) {
     		Logger logger = Logger.getLogger(FacileReflector.LOGGER_NAME);

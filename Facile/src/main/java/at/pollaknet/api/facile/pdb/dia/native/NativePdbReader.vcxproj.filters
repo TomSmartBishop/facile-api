@@ -18,7 +18,7 @@
     <ClCompile Include="DiaConatiner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PdbReader.cpp">
+    <ClCompile Include="NativePdbReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,7 +29,7 @@
     <ClInclude Include="DiaString.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\PdbReader.h">
+    <ClInclude Include="..\NativePdbReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
