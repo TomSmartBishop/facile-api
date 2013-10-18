@@ -1,20 +1,15 @@
 package at.pollaknet.api.facile.symtab;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import at.pollaknet.api.facile.header.cli.stream.BlobStream;
 import at.pollaknet.api.facile.metamodel.MetadataModel;
-import at.pollaknet.api.facile.metamodel.entries.AssemblyRefEntry;
-import at.pollaknet.api.facile.metamodel.entries.GenericParamEntry;
-import at.pollaknet.api.facile.metamodel.entries.StandAloneSigEntry;
-import at.pollaknet.api.facile.metamodel.entries.TypeDefEntry;
-import at.pollaknet.api.facile.metamodel.entries.TypeRefEntry;
-import at.pollaknet.api.facile.metamodel.entries.TypeSpecEntry;
+import at.pollaknet.api.facile.metamodel.entries.*;
 import at.pollaknet.api.facile.symtab.signature.Signature;
 import at.pollaknet.api.facile.symtab.symbols.Type;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.ResolutionScope;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -182,7 +177,7 @@ public class BasicTypesDirectory {
 		else if(typeDefOrRef.getFullQualifiedName().equals("System.UIntPtr")) {
 			typeDefOrRef.setElementKind(TypeKind.ELEMENT_TYPE_PTR);
 			typeDefOrRef.setShortSystemName("native unsigned int");
-			typeRefs.put(TypeKind.ELEMENT_TYPE_I, typeDefOrRef);
+			typeRefs.put(TypeKind.ELEMENT_TYPE_U, typeDefOrRef);
 			return true;
 		}
 		else if(typeDefOrRef.getFullQualifiedName().equals("System.Type")) {
