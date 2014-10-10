@@ -2,12 +2,15 @@
 
 <changelog name="Facile API">
   <version major="1" minor="0" fix="4">
-    <changed>Moved dia package to pdb.dia and introduced a new interface PdbReader in order to abstract the PDB reading mechanism. The former PdbReader is now implemented in NativePdbReader</changed><added>Support for native 64bit DIA access, therefore pdb information can be used on Windows64+Java64 as well</added>
+    <changed>Moved dia package to pdb.dia and introduced a new interface PdbReader in order to abstract the PDB reading mechanism. The former PdbReader is now implemented in NativePdbReader</changed>
     <added>Added a LICENSE file</added>
     <added>Added an external eclipse launch configuration to generate the NativePdbReader.h</added>
+    <fixed>Added custom attribute signature enum size detection for the case that the enum is defined in the same assembly(still outstanding for an external referenced enum)</fixed>
+    <fixed>Log Handler was never flushed and therefore accumulated memory. Thanks to Ingmar Kellner</fixed>
+    <fixed>Owner for generic parameters was not set</fixed>
   </version>
   <version major="1" minor="0" fix="3">
-    <fixed>Fixed two small bugs in the custom attribute signature handling</fixed>
+    <added>Support for native 64bit DIA access, therefore pdb information can be used on Windows64+Java64 as well</added><fixed>Fixed two small bugs in the custom attribute signature handling</fixed>
     <added>Better #Strings stream handling, cycle avoidance and bounds checks for obfuscated assemblies</added>
     <fixed>Fixed missing file.close() operations</fixed>
     <fixed>Fixed memory leak in log handler</fixed>

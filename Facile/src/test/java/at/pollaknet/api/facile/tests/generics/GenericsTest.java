@@ -32,6 +32,10 @@ public class GenericsTest extends TestCase
 
                             if (spec.isGenericInstance())
                             {
+                            	if(spec.getName()==null)
+                            	{
+                            		assertNotNull(spec.getName());
+                            	}
                                 assertNotNull(spec.getName());
                             }
                         }

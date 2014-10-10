@@ -103,6 +103,9 @@ public class TestGACFusion extends TestCase {
 			try {
 				Assembly assembly = Facile.loadAssembly(path);
 				fileCount++;
+			} catch (Error e) {
+				System.out.println("Error occured: " + path);
+				missingCount++;
 			} catch (CoffPeDataNotFoundException e) {
 				System.out.println("No .NET content found: " + path);
 				missingCount++;

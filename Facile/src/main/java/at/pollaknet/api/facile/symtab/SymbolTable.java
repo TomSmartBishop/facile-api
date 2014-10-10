@@ -255,7 +255,7 @@ public class SymbolTable {
 			
 			if(customAttribute.getValue()!=null) {
 				try {
-					CustomAttributeValueSignature.decodeAndAttach(directory, customAttribute);
+					CustomAttributeValueSignature.decodeAndAttach(directory, metaModel, customAttribute);
 				} catch (InvalidSignatureException e) {
 					if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS) throw e;
 					Logger.getLogger(FacileReflector.LOGGER_NAME).log(
@@ -421,6 +421,12 @@ public class SymbolTable {
 				for(ParamEntry param :method.getParams())
 					param.setOwner(method);
 
+			if(method.getGenericParameters()!=null)
+			{
+				for(GenericParamEntry param :method.getGenericParameters())
+					param.setOwner(method);
+			}
+				
 			//check if the address is valid
 			if(	methodRVA!=0) {
 				
