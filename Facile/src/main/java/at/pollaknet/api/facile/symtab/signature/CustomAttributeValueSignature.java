@@ -161,7 +161,7 @@ public class CustomAttributeValueSignature extends Signature {
 	private boolean namedArgument(CustomAttributeEntry customAttribute) throws InvalidSignatureException {
 		List<Pair<String, Instance>> targetList;
 
-		//a named argument has a defind start signature - check this
+		//a named argument has a defined start signature - check this
 		if(currentToken==UNNAMED_CSTM_ATRB_FIELD) {
 			targetList = namedFields;
 		} else if(currentToken==UNNAMED_CSTM_ATRB_PROPERTY) {
