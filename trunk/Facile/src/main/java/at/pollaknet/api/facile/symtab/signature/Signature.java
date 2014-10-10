@@ -32,7 +32,7 @@ public abstract class Signature extends TypeKind {
 	public final static int UNNAMED_RESERVED			= 0x52;	//Reserved
 	public final static int UNNAMED_CSTM_ATRB_FIELD		= 0x53; //Used in custom attributes to indicate a FIELD
 	public final static int UNNAMED_CSTM_ATRB_PROPERTY	= 0x54; //Used in custom attributes to indicate a PROPERTY
-	public final static int SERIALIZATION_TYPE_PROPERTY	= 0x54; //Used in declerative security permissions (equal to PROPERTY)
+	public final static int SERIALIZATION_TYPE_PROPERTY	= 0x54; //Used in declarative security permissions (equal to PROPERTY)
 	public final static int UNNAMED_CSTM_ATRB_ENUM		= 0x55; //Used in custom attributes to specify an enum
 	
 	public final static int PREFIX_CUSTOM_ATTRIBUTE 	= 0x01; //followed by an additional 0x00
@@ -956,10 +956,28 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 			skipTokens(8);
 			return ByteReader.getInt64(binarySignature, index);
 
-		case Signature.UNNAMED_CSTM_ATRB_ENUM:
-			ensureSignatureLength(backupBlobIndex, 4);
-			skipTokens(4);
-			return ByteReader.getUInt32(binarySignature, index);
+		case Signature.UNNAMED_CSTM_ATRB_ENUM: {
+				int enumLength = estimateEnumLengthInCustomAttribute();
+				
+				//ensureSignatureLength(backupBlobIndex, enumLength); 
+				skipTokens(enumLength);
+				
+				//this is not entirely correct because we don't know when to use signed ints...
+				//(but we cannot figure out without reading the assembly that defines the enum)
+				switch(enumLength) {
+					case 1:
+						return ByteReader.getUInt8(binarySignature, index);
+					case 2:
+						return ByteReader.getUInt16(binarySignature, index);
+					case 4:
+						return ByteReader.getUInt32(binarySignature, index);
+					case 8:
+						return ByteReader.getInt64(binarySignature, index);
+					default:
+						assert(false) : "found unknown type while reading a numerical value";
+						return 0;
+				}
+			}
 			
 		default:
 			assert(false) : "found unknown type while reading a numerical value";
@@ -967,6 +985,82 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 
 		}
 	}
+	
+	protected int estimateEnumLengthInCustomAttribute() {
+		return Math.min(binarySignature.length-currentIndex, 4);
+	}
+	
+	//TODO: Add backup-index
+	//TODO: catch exceptional cases where the enum has the byte pattern of UNNAMED_CSTM_ATRB_FIELD or UNNAMED_CSTM_ATRB_PROPERTY + type token
+//	protected int estimateEnumLengthInCustomAttribute() throws InvalidSignatureException {
+//		int estimatedEnumLength = Math.min(binarySignature.length-currentIndex, 8); //an enum can use up to 64bits
+//		
+//		if(estimatedEnumLength<1) {
+//			throw new InvalidSignatureException("Signature too short to parse enum.");
+//		}
+//		
+//		boolean detected = false;
+//		
+//		//minimum byte length to apply the heuristic is 5:
+//		// byte 0: the candidate enum (could use up to 8 bytes)
+//		// byte 1: UNNAMED_CSTM_ATRB_FIELD or UNNAMED_CSTM_ATRB_PROPERTY
+//		// byte 2: a valid type token
+//		// byte 3: length of serString
+//		// byte 4: first (single) byte of serStering
+//		if(estimatedEnumLength>4) {
+//			for(int i=1;i<estimatedEnumLength-1;i++) {
+//				byte previewToken = binarySignature[i+currentIndex];
+//				if(previewToken==UNNAMED_CSTM_ATRB_FIELD||previewToken==UNNAMED_CSTM_ATRB_PROPERTY) {
+//					byte nextPreviewToken = binarySignature[i+currentIndex+1];
+//					switch(nextPreviewToken) {
+//						case ELEMENT_TYPE_BOOLEAN:
+//						case ELEMENT_TYPE_CHAR:
+//						case ELEMENT_TYPE_I1:
+//						case ELEMENT_TYPE_U1:
+//						case ELEMENT_TYPE_I2:
+//						case ELEMENT_TYPE_U2:
+//						case ELEMENT_TYPE_I4:
+//						case ELEMENT_TYPE_U4:
+//						case ELEMENT_TYPE_I8:
+//						case ELEMENT_TYPE_U8:
+//						case ELEMENT_TYPE_R4:
+//						case ELEMENT_TYPE_R8:
+//						case ELEMENT_TYPE_I:
+//						case ELEMENT_TYPE_U:
+//						case ELEMENT_TYPE_OBJECT:
+//						case ELEMENT_TYPE_STRING:
+//						case ELEMENT_TYPE_VOID:
+//						case ELEMENT_TYPE_TYPEDBYREF:
+//						case ELEMENT_TYPE_PTR:
+//						case ELEMENT_TYPE_ARRAY:
+//						case ELEMENT_TYPE_SZARRAY:	
+//						case ELEMENT_TYPE_FNPTR:
+//						case ELEMENT_TYPE_GENERICINST:
+//						case ELEMENT_TYPE_CLASS:
+//						case ELEMENT_TYPE_VALUETYPE:				
+//						case ELEMENT_TYPE_MVAR:
+//						case ELEMENT_TYPE_VAR:
+//						case UNNAMED_CSTM_ATRB_ENUM:
+//						case UNNAMED_SYSTEM_TYPE:
+//						case UNNAMED_BOXED_OBJECT:
+//							detected = true;
+//							estimatedEnumLength = i; //will also end the for loop
+//							break;
+//						
+//						default: 
+//							break; //we couldn't find any indication for the length of the enum
+//					}
+//				}
+//			}
+//		}
+//		
+//		//we do not accept uneven sizes and 64bit enums which haven't been detected
+//		if((estimatedEnumLength>3 && estimatedEnumLength!=8) || (estimatedEnumLength==8 && !detected))
+//			return 4;
+//		
+//		//remaining cases: 1, 2, 3, 8 (3 is not valid)
+//		return estimatedEnumLength==3 ? 2 : estimatedEnumLength;
+//	}
 
 	protected TypeRefEntry filedOrPropertyType()
 			throws InvalidSignatureException {

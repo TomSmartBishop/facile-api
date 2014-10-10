@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import at.pollaknet.api.facile.exception.InvalidSignatureException;
+import at.pollaknet.api.facile.metamodel.MetadataModel;
 import at.pollaknet.api.facile.metamodel.entries.CustomAttributeEntry;
 import at.pollaknet.api.facile.metamodel.entries.MemberRefEntry;
 import at.pollaknet.api.facile.metamodel.entries.MethodDefEntry;
@@ -12,8 +13,11 @@ import at.pollaknet.api.facile.metamodel.entries.aggregation.ICustomAttributeTyp
 import at.pollaknet.api.facile.symtab.BasicTypesDirectory;
 import at.pollaknet.api.facile.symtab.TypeInstance;
 import at.pollaknet.api.facile.symtab.TypeKind;
+import at.pollaknet.api.facile.symtab.symbols.Field;
 import at.pollaknet.api.facile.symtab.symbols.Instance;
 import at.pollaknet.api.facile.symtab.symbols.Parameter;
+import at.pollaknet.api.facile.symtab.symbols.TypeRef;
+import at.pollaknet.api.facile.symtab.symbols.aggregation.Namespace;
 import at.pollaknet.api.facile.util.ByteReader;
 import at.pollaknet.api.facile.util.Pair;
 
@@ -24,13 +28,13 @@ public class CustomAttributeValueSignature extends Signature {
 	private List<Pair<String, Instance>> namedFields = new ArrayList<Pair<String, Instance>>();
 	private List<Pair<String, Instance>> namedProperties = new ArrayList<Pair<String, Instance>>();
 	
-	public static CustomAttributeValueSignature decodeAndAttach(BasicTypesDirectory directory, CustomAttributeEntry customAttribute)
+	public static CustomAttributeValueSignature decodeAndAttach(BasicTypesDirectory directory, MetadataModel metaModel, CustomAttributeEntry customAttribute)
 			throws InvalidSignatureException {
-		return new CustomAttributeValueSignature(directory, customAttribute);
+		return new CustomAttributeValueSignature(directory, metaModel, customAttribute);
 	}
 
 	@SuppressWarnings("unchecked")
-	private CustomAttributeValueSignature(BasicTypesDirectory directory, CustomAttributeEntry customAttribute)
+	private CustomAttributeValueSignature(BasicTypesDirectory directory, MetadataModel metaModel, CustomAttributeEntry customAttribute)
 			throws InvalidSignatureException {
 		
 		//See ECMA 335 revision 5 - Partition II, 23.3 Custom attributes
@@ -56,7 +60,7 @@ public class CustomAttributeValueSignature extends Signature {
 			nextToken();
 	
 			for(int i=0;i<numNamedArguamtes;i++) {
-				if(!namedArgument(customAttribute)) {
+				if(!namedArgument(metaModel, customAttribute)) {
 					i=numNamedArguamtes;
 				}
 			}
@@ -158,7 +162,7 @@ public class CustomAttributeValueSignature extends Signature {
 		}
 	}
 
-	private boolean namedArgument(CustomAttributeEntry customAttribute) throws InvalidSignatureException {
+	private boolean namedArgument(MetadataModel metaModel, CustomAttributeEntry customAttribute) throws InvalidSignatureException {
 		List<Pair<String, Instance>> targetList;
 
 		//a named argument has a defined start signature - check this
@@ -192,7 +196,54 @@ public class CustomAttributeValueSignature extends Signature {
 		//read the name of the argument
 		String name = readSerString();
 		
+		
+		//check if the type is defined in the same assembly:
+		String typeNamespace = fieldOrPropertyTypeRef.getNamespace();
+		Namespace[] namespacesInAssembly = metaModel.module[0].getNamespaces();
+		
+		boolean isEnum = false;
+		//in case there is an enum in the custom attribute we should figure out if this enum
+		//is defined in the same assembly (then we can look-up it's size)
+		if(fieldOrPropertyTypeRef.getElementTypeKind()==Signature.UNNAMED_CSTM_ATRB_ENUM) {
+			for(Namespace n : namespacesInAssembly) {
+				if(n.getFullQualifiedName().equals(typeNamespace)) {
+				
+					//we found the namespace, let's find the type
+					for(TypeRef typeRef : n.getTypeRefs()) {
+						if(typeRef.getName().equals(fieldOrPropertyTypeRef.getName()) && typeRef.getType()!=null) {
+							Field [] fields = typeRef.getType().getFields();
+							
+							//the size of the enum is defined by the value entries in the constant table
+							for(Field f : fields) {
+								if(f.getConstant()!=null && f.getConstant().getValue()!=null) {
+									int estimatedSize = f.getConstant().getValue().length;
+									isEnum = true;
+									
+									switch(estimatedSize) {
+										case 1: fieldOrPropertyTypeRef.setElementKind(TypeKind.ELEMENT_TYPE_U1); break;
+										case 2: fieldOrPropertyTypeRef.setElementKind(TypeKind.ELEMENT_TYPE_U2); break;
+										case 4: fieldOrPropertyTypeRef.setElementKind(TypeKind.ELEMENT_TYPE_U4); break;
+										case 8: fieldOrPropertyTypeRef.setElementKind(TypeKind.ELEMENT_TYPE_I8); break; //skipping unsigned
+										default: isEnum = false; break;
+									}
+									
+									break;
+								}
+									
+							}
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
+		
 		TypeInstance instance = fixedArgument(customAttribute, fieldOrPropertyTypeRef);
+		
+		//reset to enum in case we changed the type kind
+		if(isEnum)
+			fieldOrPropertyTypeRef.setElementKind(Signature.UNNAMED_CSTM_ATRB_ENUM);
 		
 		targetList.add(new Pair<String, Instance>(name, instance));
 		

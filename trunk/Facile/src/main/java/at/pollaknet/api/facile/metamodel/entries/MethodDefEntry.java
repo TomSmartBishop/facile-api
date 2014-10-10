@@ -1,5 +1,8 @@
 package at.pollaknet.api.facile.metamodel.entries;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import at.pollaknet.api.facile.code.MethodBody;
 import at.pollaknet.api.facile.metamodel.AbstractGenericInstanceConatiner;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.ICustomAttributeType;
@@ -17,7 +20,6 @@ import at.pollaknet.api.facile.symtab.symbols.Field;
 import at.pollaknet.api.facile.symtab.symbols.Method;
 import at.pollaknet.api.facile.symtab.symbols.MethodSignature;
 import at.pollaknet.api.facile.symtab.symbols.NativeImplementation;
-import at.pollaknet.api.facile.symtab.symbols.Parameter;
 import at.pollaknet.api.facile.symtab.symbols.Property;
 import at.pollaknet.api.facile.symtab.symbols.Type;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
@@ -27,15 +29,12 @@ import at.pollaknet.api.facile.symtab.symbols.meta.DeclarativeSecurity;
 import at.pollaknet.api.facile.symtab.symbols.scopes.ModuleRef;
 import at.pollaknet.api.facile.util.ArrayUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 
 public class MethodDefEntry extends AbstractGenericInstanceConatiner
 		implements IHasCustomAttribute, IHasDeclSecurity, ITypeOrMethodDef,
 			MethodAndFieldParent, IMethodDefOrRef, IMemberForwarded, ICustomAttributeType, Method {
 
-    private final static Parameter[] EMPTY = new Parameter[0];
+    private final static GenericParamEntry[] EMPTY = new GenericParamEntry[0];
 
 	private long relativeVirtualAddress = -1;
 	private int implFlags;
@@ -50,7 +49,7 @@ public class MethodDefEntry extends AbstractGenericInstanceConatiner
 	private MethodBody methodBody;
 	private NativeImplementation nativeImpl;
 	
-	private ArrayList <Parameter> genericParams = null;
+	private ArrayList <GenericParamEntry> genericParams = null;
 
 	//private boolean methodOverrides;
 	//private MethodDefEntry overriddenMethod;
@@ -236,7 +235,7 @@ public class MethodDefEntry extends AbstractGenericInstanceConatiner
 		this.nativeImpl = nativeImpl;
 	}
 	
-	public Parameter [] getGenericParameters() {
+	public GenericParamEntry [] getGenericParameters() {
 		if(genericParams==null || genericParams.size()==0) return EMPTY;
 		
 		GenericParamEntry [] params = new GenericParamEntry[genericParams.size()];
@@ -247,7 +246,7 @@ public class MethodDefEntry extends AbstractGenericInstanceConatiner
 	}
 
 	public boolean addGenericParam(GenericParamEntry p) {
-		if(genericParams==null) genericParams = new ArrayList<Parameter>(4);
+		if(genericParams==null) genericParams = new ArrayList<GenericParamEntry>(4);
 		return genericParams.add(p);
 	}
 	/*

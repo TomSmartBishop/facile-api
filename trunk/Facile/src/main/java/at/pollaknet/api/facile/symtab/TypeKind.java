@@ -24,7 +24,7 @@ public class TypeKind {
 	public final static int ELEMENT_TYPE_BYREF 			= 0x10; //Followed by type
 	public final static int ELEMENT_TYPE_VALUETYPE 		= 0x11; //Followed by TypeDef or TypeRef token
 	public final static int ELEMENT_TYPE_CLASS 			= 0x12; //Followed by TypeDef or TypeRef token
-	public final static int ELEMENT_TYPE_VAR 			= 0x13; //Generic parameter in a generic type definition, represented as number
+	public final static int ELEMENT_TYPE_VAR 			= 0x13; //Generic parameter in a generic type definition, represented as number, e.g. class Pair <K, V> {...} //K==0, V==1
 	public final static int ELEMENT_TYPE_ARRAY 			= 0x14; //type rank boundsCount bound1 ... loCount lo1 ...
 	public final static int ELEMENT_TYPE_GENERICINST 	= 0x15; //Generic type instantiation. Followed by type typearg-count type-1 ... type-n
 	public final static int ELEMENT_TYPE_TYPEDBYREF 	= 0x16;
@@ -33,7 +33,7 @@ public class TypeKind {
 	public final static int ELEMENT_TYPE_FNPTR 			= 0x1b; //Followed by full method signature
 	public final static int ELEMENT_TYPE_OBJECT 		= 0x1c; //System.Object
 	public final static int ELEMENT_TYPE_SZARRAY 		= 0x1d; //Single-dim array with 0 lower bound
-	public final static int ELEMENT_TYPE_MVAR 			= 0x1e; //Generic parameter in a generic method definition, represented as number
+	public final static int ELEMENT_TYPE_MVAR 			= 0x1e; //Generic parameter in a generic method definition, followed by a number (0 based index of the generic parameter os this method)
 	public final static int ELEMENT_TYPE_CMOD_REQD 		= 0x1f; //Required modifier : followed by a TypeDef or TypeRef token
 	public final static int ELEMENT_TYPE_CMOD_OPT 		= 0x20; //Optional modifier : followed by a TypeDef or TypeRef token
 	public final static int ELEMENT_TYPE_INTERNAL 		= 0x21; //Implemented within the CLI
