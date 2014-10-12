@@ -13,10 +13,8 @@ import at.pollaknet.api.facile.metamodel.entries.aggregation.ICustomAttributeTyp
 import at.pollaknet.api.facile.symtab.BasicTypesDirectory;
 import at.pollaknet.api.facile.symtab.TypeInstance;
 import at.pollaknet.api.facile.symtab.TypeKind;
-import at.pollaknet.api.facile.symtab.symbols.Field;
 import at.pollaknet.api.facile.symtab.symbols.Instance;
 import at.pollaknet.api.facile.symtab.symbols.Parameter;
-import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.Namespace;
 import at.pollaknet.api.facile.util.ByteReader;
 import at.pollaknet.api.facile.util.Pair;
@@ -201,50 +199,7 @@ public class CustomAttributeValueSignature extends Signature {
 		String typeNamespace = fieldOrPropertyTypeRef.getNamespace();
 		Namespace[] namespacesInAssembly = metaModel.module[0].getNamespaces();
 		
-		boolean isEnum = false;
-		//in case there is an enum in the custom attribute we should figure out if this enum
-		//is defined in the same assembly (then we can look-up it's size)
-		if(fieldOrPropertyTypeRef.getElementTypeKind()==Signature.UNNAMED_CSTM_ATRB_ENUM) {
-			for(Namespace n : namespacesInAssembly) {
-				if(n.getFullQualifiedName().equals(typeNamespace)) {
-				
-					//we found the namespace, let's find the type
-					for(TypeRef typeRef : n.getTypeRefs()) {
-						if(typeRef.getName().equals(fieldOrPropertyTypeRef.getName()) && typeRef.getType()!=null) {
-							Field [] fields = typeRef.getType().getFields();
-							
-							//the size of the enum is defined by the value entries in the constant table
-							for(Field f : fields) {
-								if(f.getConstant()!=null && f.getConstant().getValue()!=null) {
-									int estimatedSize = f.getConstant().getValue().length;
-									isEnum = true;
-									
-									switch(estimatedSize) {
-										case 1: fieldOrPropertyTypeRef.setElementKind(TypeKind.ELEMENT_TYPE_U1); break;
-										case 2: fieldOrPropertyTypeRef.setElementKind(TypeKind.ELEMENT_TYPE_U2); break;
-										case 4: fieldOrPropertyTypeRef.setElementKind(TypeKind.ELEMENT_TYPE_U4); break;
-										case 8: fieldOrPropertyTypeRef.setElementKind(TypeKind.ELEMENT_TYPE_I8); break; //skipping unsigned
-										default: isEnum = false; break;
-									}
-									
-									break;
-								}
-									
-							}
-							break;
-						}
-					}
-					break;
-				}
-			}
-		}
-		
 		TypeInstance instance = fixedArgument(customAttribute, fieldOrPropertyTypeRef);
-		
-		//reset to enum in case we changed the type kind
-		if(isEnum)
-			fieldOrPropertyTypeRef.setElementKind(Signature.UNNAMED_CSTM_ATRB_ENUM);
-		
 		targetList.add(new Pair<String, Instance>(name, instance));
 		
 		return true;
