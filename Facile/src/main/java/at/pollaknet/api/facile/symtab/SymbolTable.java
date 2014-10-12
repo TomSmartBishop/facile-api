@@ -77,6 +77,8 @@ public class SymbolTable {
 	private BlobStream blobStream;
 	private CliHeader cliHeader;
 
+	private boolean haltOnErrors;
+	private boolean haltOnJniErrors;
 	
 	public SymbolTable(CliHeader cliHeader, MetadataModel metaModel, BlobStream blobStream, CilContainer codeContainer, PdbReader pdbReader, String pathToAssemby) {
 		assert(metaModel!=null);
@@ -99,8 +101,11 @@ public class SymbolTable {
 		}
 	}
 	
-	public void build() {
+	public void build(FacileReflector facileReflector) {
 	
+		haltOnErrors = facileReflector.getHaltOnErrors();
+		haltOnJniErrors = facileReflector.getHaltOnJniErrors();
+		
 		//See ECMA 335-Partition II, 22. Metadata logical format
 		//http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-335.pdf#page=229&view=FitH
 
@@ -126,7 +131,8 @@ public class SymbolTable {
 		//	File : 0x26                    	TypeRef : 0x01                 
 		//	GenericParam : 0x2A            	TypeSpec : 0x1B        
 		
-		directory = new BasicTypesDirectory(metaModel, blobStream);
+		directory = new BasicTypesDirectory(
+				metaModel, blobStream, facileReflector.getReferenceAssemblies(), facileReflector.getReferneceEnums());
 		
 		connectNestedClass();
 		
@@ -187,9 +193,8 @@ public class SymbolTable {
 		//assembly.setLoaded(true);
 		
 		connectExportedType();
-		
-		
-		//this is a temporary aolution:
+
+		//this is a temporary solution:
 		for(ParamEntry param: metaModel.param)
 			param.linkGenericNameToType();
 				
@@ -206,16 +211,7 @@ public class SymbolTable {
 		
 		connectSignatureEmbeddedTypes(signatureEmbeddedTypeSpecs);
 				
-		Arrays.sort(metaModel.typeDef);
-		Arrays.sort(metaModel.typeRef);
-		Arrays.sort(metaModel.typeSpec);
-		Arrays.sort(signatureEmbeddedTypeSpecs);
-		
-		//assign all types to the assembly
-		assembly.setTypes(metaModel.typeDef);
-		assembly.setTypeRefs(metaModel.typeRef);
-		assembly.setTypeSpecs(metaModel.typeSpec);
-		assembly.setEmbeddedTypeSpecs(signatureEmbeddedTypeSpecs);
+		finalizeAssembly(signatureEmbeddedTypeSpecs);
 		
 		//IMPROVE: remove unused data structures (initial byte buffer - depends on lazy loading)
 	}
@@ -226,7 +222,7 @@ public class SymbolTable {
 			if(m.getOwnerClass()!=null) {
 				m.getOwnerClass().addMethod((MethodDefEntry)method);
 			} else if (!metaModel.containsDeletedData()) {
-				if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS)
+				if(haltOnErrors)
 					throw new NullPointerException("The owner of a method is null: " + m.toString());
 				Logger.getLogger(FacileReflector.LOGGER_NAME).log(
 					Level.SEVERE, "The owner of a method is null: " + m.toString());				
@@ -242,7 +238,7 @@ public class SymbolTable {
 				ParamOrFieldMarshalSignature.decodeAndAttach(directory, fieldEntry);
 				fieldEntry.linkGenericNameToType();
 			} catch (InvalidSignatureException e) {
-				if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS) throw e;
+				if(haltOnErrors) throw e;
 				Logger.getLogger(FacileReflector.LOGGER_NAME).log(
 						Level.SEVERE, "Faild to decode signature: " + fieldEntry.toString());
 			}
@@ -257,7 +253,7 @@ public class SymbolTable {
 				try {
 					CustomAttributeValueSignature.decodeAndAttach(directory, metaModel, customAttribute);
 				} catch (InvalidSignatureException e) {
-					if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS) throw e;
+					if(haltOnErrors) throw e;
 					Logger.getLogger(FacileReflector.LOGGER_NAME).log(
 								Level.SEVERE, "Faild to decode signature: " + customAttribute.toString());
 				}
@@ -280,7 +276,7 @@ public class SymbolTable {
 				//memberRef.getOwnerClass().addMemberRef(memberRef);
 				
 			} catch (InvalidSignatureException e) {
-				if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS) throw e;
+				if(haltOnErrors) throw e;
 				Logger.getLogger(FacileReflector.LOGGER_NAME).log(
 							Level.SEVERE, "Faild to decode signature: " + memberRef.toString());
 			}
@@ -306,7 +302,7 @@ public class SymbolTable {
 				}
 				
 			} catch (InvalidSignatureException e) {
-				if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS) throw e;
+				if(haltOnErrors) throw e;
 				Logger.getLogger(FacileReflector.LOGGER_NAME).log(
 							Level.SEVERE, "Faild to decode signature: " + standAlone.toString());
 			}
@@ -318,7 +314,7 @@ public class SymbolTable {
 			try {
 				MethodSpecSignature.decodeAndAttach(directory, methodSpec);
 			} catch (InvalidSignatureException e) {
-				if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS) throw e;
+				if(haltOnErrors) throw e;
 				Logger.getLogger(FacileReflector.LOGGER_NAME).log(
 							Level.SEVERE, "Faild to decode signature: " + methodSpec.toString());
 			}
@@ -381,7 +377,7 @@ public class SymbolTable {
 			try {
 				DeclSecuritySignature.decodeAndAttach(directory, security);
 			} catch (InvalidSignatureException e) {
-				if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS) throw e;
+				if(haltOnErrors) throw e;
 				Logger.getLogger(FacileReflector.LOGGER_NAME).log(
 							Level.SEVERE, "Faild to decode signature: " + security.toString());
 			}
@@ -479,7 +475,7 @@ public class SymbolTable {
 				try {
 					LocalVarSignature.decodeAndAttach(directory, methodBody);
 				} catch (InvalidSignatureException e) {
-					if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS) throw e;
+					if(haltOnErrors) throw e;
 					Logger.getLogger(FacileReflector.LOGGER_NAME).log(
 								Level.SEVERE, "Faild to decode signature: " + methodBody.toString());
 				}
@@ -487,7 +483,13 @@ public class SymbolTable {
 				
 				//set the related debug information (if available)
 				if(pdbReader!=null) {
-					method.setDebungInformation(pdbReader.getLineNumbersByRVA(nativeCodeRVA));
+					try {
+						method.setDebungInformation(pdbReader.getLineNumbersByRVA(nativeCodeRVA));
+					} catch(Error e) {
+						if(haltOnJniErrors) throw e;
+						Logger.getLogger(FacileReflector.LOGGER_NAME).log(
+									Level.SEVERE, "Failed to query line number information: " + method.toString() + " at RVA " + nativeCodeRVA);
+					}
 				}
 
 				//IMPROVE: perform an alternative RVA calculation
@@ -508,7 +510,7 @@ public class SymbolTable {
 				try {
 					MethodDefOrRefSignature.decodeAndAttach(directory, method);
 				} catch (InvalidSignatureException e) {
-					if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS) throw e;
+					if(haltOnErrors) throw e;
 					Logger.getLogger(FacileReflector.LOGGER_NAME).log(
 								Level.SEVERE, "Faild to decode signature: " + method.toString());
 				}
@@ -541,6 +543,12 @@ public class SymbolTable {
 		//for now don't care about the real number of present assemblies
 		assembly = metaModel.assembly[0];
 		
+		//assign all types to the assembly (type ref and spec follow later)
+		assembly.setTypes(metaModel.typeDef);
+		
+		//add the assembly as a reference for itself so that we can look up assembly internal types
+		directory.getReferenceAssemblies().add(assembly);
+		
 		if(metaModel.assembly.length>1) {
 			//TODO: Handling of multi module - multi assembly files
 			Logger.getLogger(FacileReflector.LOGGER_NAME).log(Level.SEVERE,
@@ -553,6 +561,19 @@ public class SymbolTable {
 		assembly.setAssemblyRefs(metaModel.assemblyRef);
 		assembly.setAssemblyRefOs(metaModel.assemblyRefOs);
 		assembly.setAssemblyRefProcessor(metaModel.assemblyRefProcessor);
+	}
+	
+	private void finalizeAssembly(TypeSpecEntry[] signatureEmbeddedTypeSpecs) {
+		Arrays.sort(metaModel.typeDef);
+		Arrays.sort(metaModel.typeRef);
+		Arrays.sort(metaModel.typeSpec);
+		Arrays.sort(signatureEmbeddedTypeSpecs);
+		
+		//assign all types to the assembly
+		//assembly.setTypes(metaModel.typeDef);
+		assembly.setTypeRefs(metaModel.typeRef);
+		assembly.setTypeSpecs(metaModel.typeSpec);
+		assembly.setEmbeddedTypeSpecs(signatureEmbeddedTypeSpecs);
 	}
 
 	private void connectManifestResource() {
@@ -602,7 +623,7 @@ public class SymbolTable {
 			try {
 				PropertyEntrySignature.decodeAndAttach(directory, property);
 			} catch (InvalidSignatureException e) {
-				if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS) throw e;
+				if(haltOnErrors) throw e;
 				Logger.getLogger(FacileReflector.LOGGER_NAME).log(
 							Level.SEVERE, "Faild to decode signature: " + property.toString());
 			}
@@ -729,7 +750,7 @@ public class SymbolTable {
 			try {
 				TypeSpecSignature.decodeAndAttach(directory, typeSpec);
 			} catch (InvalidSignatureException e) {
-				if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS) throw e;
+				if(haltOnErrors) throw e;
 				Logger.getLogger(FacileReflector.LOGGER_NAME).log(
 							Level.SEVERE, "Failed to decode signature: " + typeSpec.toString());
 			}
@@ -755,7 +776,7 @@ public class SymbolTable {
 			if(customAttribute.getOwner()!=null) {
 				customAttribute.getOwner().addCustomAttribute(customAttribute);
 			} else if (!metaModel.containsDeletedData()) {
-				if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS)
+				if(haltOnErrors)
 					throw new NullPointerException(
 							"The owner of a custom attribute is null: " + customAttribute.toString());
 				Logger.getLogger(FacileReflector.LOGGER_NAME).log(Level.SEVERE,
@@ -771,7 +792,7 @@ public class SymbolTable {
 				ParamOrFieldMarshalSignature.decodeAndAttach(directory, param);
 				//param.linkGenericNameToType();
 			} catch (InvalidSignatureException e) {
-				if(FacileReflector.DEBUG_AND_HALT_ON_ERRORS) throw e;
+				if(haltOnErrors) throw e;
 				Logger.getLogger(FacileReflector.LOGGER_NAME).log(
 							Level.SEVERE, "Faild to decode signature: " + param.toString());
 			}

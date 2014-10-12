@@ -27,8 +27,8 @@ import at.pollaknet.api.facile.symtab.symbols.scopes.Assembly;
  * and are based on the <i>Common Language Infrastructure (CLI)</i>,
  * which is specified in the
  * <a href="//http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-335.pdf">
- * ECMA 335 Standard</a> (also known as .NET version 3.5). The current
- * implementation and all referenced are based on <b>revision 4!</b>
+ * ECMA 335 Standard</a> (also known as .NET version 4.5). The current
+ * implementation and all referenced are based on <b>revision 6!</b>
  *  
  * <p/>Common file extensions for .NET assemblies are: {@code .exe .dll .netmodule}
  * 
@@ -39,9 +39,8 @@ import at.pollaknet.api.facile.symtab.symbols.scopes.Assembly;
  * <a href="http://msdn2.microsoft.com/en-us/library/78f4aasd.aspx">csc</a>, which
  * can be obtained <a href="http://msdn2.microsoft.com/en-us/netframework/cc378097.aspx">
  * here</a>) file, is embedded inside the assembly. You can specify an alternative
- * path to the pdb file or use the embedded path. The current implementation supports pdb
- * files up to version {@code "MSF 7.0 DS"}, which is equivalent to output produced by
- * compilers for .NET version 3.5 and Microsoft Visual Studio version 2008.
+ * path to the pdb file or use the embedded path.The current implementation supports pdb
+ * files used by Microsoft Visual Studio version 2013.
  * 
  * <p/><b>Sample Code:</b>
  * <blockquote><pre>

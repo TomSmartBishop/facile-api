@@ -2,10 +2,12 @@
 
 <changelog name="Facile API">
   <version major="1" minor="0" fix="4">
+    <added>Extended the FacileReflector class to allow external references (addReferenceAssembly, addReferneceEnum) in order to resolve external enum sizes</added>
+    <changed>The static member DEBUG_AND_HALT_ON_ERRORS and PARTIAL_LOADING_SIZE of the FacileReflector class became a per instance member (getHaltOnErrors, getPartialLoadingSizeInBytes)</changed> 
     <changed>Moved dia package to pdb.dia and introduced a new interface PdbReader in order to abstract the PDB reading mechanism. The former PdbReader is now implemented in NativePdbReader</changed>
     <added>Added a LICENSE file</added>
     <added>Added an external eclipse launch configuration to generate the NativePdbReader.h</added>
-    <fixed>Added custom attribute signature enum size detection for the case that the enum is defined in the same assembly(still outstanding for an external referenced enum)</fixed>
+    <fixed>Added custom attribute signature enum size detection for the case that the enum is defined in the same assembly</fixed>
     <fixed>Log Handler was never flushed and therefore accumulated memory. Thanks to Ingmar Kellner</fixed>
     <fixed>Owner for generic parameters was not set</fixed>
   </version>

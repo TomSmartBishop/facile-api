@@ -7,9 +7,12 @@ import at.pollaknet.api.facile.symtab.signature.Signature;
 import at.pollaknet.api.facile.symtab.symbols.Type;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.ResolutionScope;
+import at.pollaknet.api.facile.symtab.symbols.scopes.Assembly;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -41,12 +44,8 @@ public class BasicTypesDirectory {
 
 	private BlobStream blobStream = null;
 	
-	/**
-	 * Since .Net 4 there are some enums just using 1 byte inside a signature instead of 4 bytes, the array
-	 * contains these enums.
-	 */
-	//FIXME: Think about a possibility to reolve enums of other assemblies!
-	public static String [] ENUMS_WITH_1_BYTE = { "System.Security.SecurityRuleSet", "System.Windows.Visibility" };
+	private List<Assembly> referenceAssemblies = null;
+	private Map<String, Byte> referneceEnums = null;
 
 	/**
 	 * Create a new basic data type directory. The basic types are
@@ -56,9 +55,12 @@ public class BasicTypesDirectory {
 	 * class to resolve even non basic (element) types, which can occur in type
 	 * specifications.
 	 */
-	public BasicTypesDirectory(MetadataModel metaModel, BlobStream blobStream) {
+	public BasicTypesDirectory(
+			MetadataModel metaModel, BlobStream blobStream, List<Assembly> referenceAssemblies, Map<String, Byte> referneceEnums) {
 		this.metaModel = metaModel;
 		this.blobStream  = blobStream;
+		this.referenceAssemblies = referenceAssemblies;
+		this.referneceEnums  = referneceEnums;
 		
 		//search for a reference to the core library
 		for(AssemblyRefEntry entry: metaModel.assemblyRef) {
@@ -71,6 +73,14 @@ public class BasicTypesDirectory {
 		assert(metaModel.assembly[0]!=null);
 	}
 
+	public List<Assembly> getReferenceAssemblies() {
+		return referenceAssemblies;
+	}
+
+	public Map<String, Byte> getReferneceEnums() {
+		return referneceEnums;
+	}
+	
 	/**
 	 * Register a valid defined or referenced basic data type. The type is getting registered
 	 * in the basic type directory, if it is a basic type (like int, long, ...).
@@ -377,15 +387,10 @@ public class BasicTypesDirectory {
 	 * @return The suggested type kind for the specified type
 	 * (in case it is not an enum the type kind of the passed TypeRef instance will be returned).
 	 */
-	public static int getEnumTypeKind(TypeRef typeRef)	{	
+	public static int findSuperTypeKind(TypeRef typeRef)	{	
 		TypeRef superType = typeRef;
 		while(superType!=null) {
-			
-			for(String fullQualifiedEnumName : ENUMS_WITH_1_BYTE) {
-				if(typeRef.getFullQualifiedName().equals(fullQualifiedEnumName))
-					return TypeKind.ELEMENT_TYPE_U1;
-			}
-			
+	
 			if(superType.getFullQualifiedName().equals("System.Enum")) {
 				return Signature.UNNAMED_CSTM_ATRB_ENUM;
 			}

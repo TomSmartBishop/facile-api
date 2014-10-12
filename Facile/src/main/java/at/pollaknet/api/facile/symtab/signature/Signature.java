@@ -10,8 +10,11 @@ import at.pollaknet.api.facile.metamodel.entries.TypeSpecEntry;
 import at.pollaknet.api.facile.symtab.BasicTypesDirectory;
 import at.pollaknet.api.facile.symtab.TypeInstance;
 import at.pollaknet.api.facile.symtab.TypeKind;
+import at.pollaknet.api.facile.symtab.symbols.Field;
+import at.pollaknet.api.facile.symtab.symbols.Type;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.symtab.symbols.TypeSpec;
+import at.pollaknet.api.facile.symtab.symbols.scopes.Assembly;
 import at.pollaknet.api.facile.util.ArrayUtils;
 import at.pollaknet.api.facile.util.ByteReader;
 
@@ -220,7 +223,7 @@ public abstract class Signature extends TypeKind {
 				setNameAndSpace(enclosingType, fullQualifiedName);
 
 				//query the type kind (which is tricky for enums)
-				int kind = BasicTypesDirectory.getEnumTypeKind(enclosingType);
+				int kind = BasicTypesDirectory.findSuperTypeKind(enclosingType);
 				if(kind==0)
 					kind = Signature.UNNAMED_CSTM_ATRB_ENUM;
 				
@@ -711,7 +714,7 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 		//perform a behavior correction in case of enums (which have a type kind of 0)
 		int kind = typeRef.getElementTypeKind();
 		if(kind==0) {
-			kind = BasicTypesDirectory.getEnumTypeKind(typeRef);
+			kind = BasicTypesDirectory.findSuperTypeKind(typeRef);
 		}
 		
 		// handle values according to the defined kinds
@@ -722,7 +725,7 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 	    		Logger logger = Logger.getLogger(FacileReflector.LOGGER_NAME);
 	    		logger.log(Level.WARNING, "Found a fixed Argument without a type kind specification, typeRef: " + typeRef);
 	    		
-	    		return new TypeInstance(typeRef, readNumericValue(backupIndex, Signature.UNNAMED_CSTM_ATRB_ENUM));
+	    		return new TypeInstance(typeRef, readNumericValue(backupIndex, Signature.UNNAMED_CSTM_ATRB_ENUM, typeRef));
 			}
 			
 			case TypeKind.ELEMENT_TYPE_VOID:
@@ -791,7 +794,7 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 			}
 	
 			default: {
-				return new TypeInstance(typeRef, readNumericValue(backupIndex, kind));
+				return new TypeInstance(typeRef, readNumericValue(backupIndex, kind, typeRef));
 			}
 		}
 	}
@@ -913,15 +916,16 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 	 * Read a numeric value from the current location inside the signature.
 	 * 
 	 * @param backupBlobIndex An index to the resource's blob heap location.
-	 * @param typeRefKind The type which specifies the kind of numeric value.
+	 * @param fixedTypeRefKind The type which specifies the kind of numeric value.
+	 * @param typeRef The type reference as additional information to read the binary data (used for enums only).
 	 * @return The numeric value which has been decoded from the signature.
 	 * @throws InvalidSignatureException if the signature length has been exceeded.
 	 */
-	protected long readNumericValue(int backupBlobIndex, int typeRefKind)
+	protected long readNumericValue(int backupBlobIndex, int fixedTypeRefKind, TypeRef typeRef)
 			throws InvalidSignatureException {
 		int index = currentIndex;
 
-		switch (typeRefKind) {
+		switch (fixedTypeRefKind) {
 		case TypeKind.ELEMENT_TYPE_I1:
 			ensureSignatureLength(backupBlobIndex, 1);
 			skipTokens(1);
@@ -956,41 +960,95 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 			skipTokens(8);
 			return ByteReader.getInt64(binarySignature, index);
 
-		case Signature.UNNAMED_CSTM_ATRB_ENUM: {
-				int enumLength = estimateEnumLengthInCustomAttribute();
+		case Signature.UNNAMED_CSTM_ATRB_ENUM:
+			//take a shortcut in case the type is defined in the same assembly and the
+			//type information comes as type (not as type spec)
+			if(typeRef!=null && typeRef.getType()!=null) {
+				int estimatedSize = estimateEnumSizeFromTypeFields(backupBlobIndex, typeRef.getType());
+				if(estimatedSize!=0)
+					return readEnum(backupBlobIndex, index, estimatedSize);
+			} else {
+				//check if there is an enum reference
+				for(String fullQualifiedEnumName : directory.getReferneceEnums().keySet()) {
+					if(typeRef.getFullQualifiedName().equals(fullQualifiedEnumName))
+						return readEnum(backupBlobIndex, index, directory.getReferneceEnums().get(fullQualifiedEnumName));
+				}
 				
-				//ensureSignatureLength(backupBlobIndex, enumLength); 
-				skipTokens(enumLength);
-				
-				//this is not entirely correct because we don't know when to use signed ints...
-				//(but we cannot figure out without reading the assembly that defines the enum)
-				switch(enumLength) {
-					case 1:
-						return ByteReader.getUInt8(binarySignature, index);
-					case 2:
-						return ByteReader.getUInt16(binarySignature, index);
-					case 4:
-						return ByteReader.getUInt32(binarySignature, index);
-					case 8:
-						return ByteReader.getInt64(binarySignature, index);
-					default:
-						assert(false) : "found unknown type while reading a numerical value";
-						return 0;
+				//check if there is an assembly reference
+				for(Assembly assembly : directory.getReferenceAssemblies()) {
+					for(Type type : assembly.getAllTypes()) {
+						if(type.getFullQualifiedName().equals(typeRef.getFullQualifiedName())) {
+							int estimatedSize = estimateEnumSizeFromTypeFields(backupBlobIndex, type);
+							if(estimatedSize!=0)
+								return readEnum(backupBlobIndex, index, estimatedSize);
+						}
+					}	
 				}
 			}
+
+			return readEnum(backupBlobIndex, index, 4);
 			
 		default:
 			assert(false) : "found unknown type while reading a numerical value";
 			return 0;
+		}
+	}
 
+	/**
+	 * Estimate the byte size of the given enum based on it's fields.
+	 * @param backupBlobIndex An index to the resource's blob heap location.
+	 * @param type The enum type used for size estimation
+	 * @return The number of bytes used by the enum type or 0 if a size indicator couldn't be found.
+	 */
+	protected int estimateEnumSizeFromTypeFields(int backupBlobIndex, Type type) {
+		if(type==null || type.getFields()==null)
+			return 0;
+		
+		Field [] fields = type.getFields();
+		
+		//the size of the enum is defined by the value entries in the constant table
+		for(Field f : fields) {
+			if(f.getConstant()!=null && f.getConstant().getValue()!=null) {
+				int estimatedSize = f.getConstant().getValue().length;
+				
+				if(estimatedEnumSizeIsValid(estimatedSize))
+					return estimatedSize;
+			}
+		}
+		
+		return 0;
+	}
+
+	/**
+	 * Check if the given byte size is valid for an enum.
+	 * @param estimatedSize The byte size to check.
+	 * @return Returns true if the specified size of the enum is valid.
+	 */
+	protected boolean estimatedEnumSizeIsValid(int estimatedSize) {
+		switch(estimatedSize) {
+			case 1: case 2: case 4: case 8: return true;
+			default: return false;
 		}
 	}
 	
-	protected int estimateEnumLengthInCustomAttribute() {
-		return Math.min(binarySignature.length-currentIndex, 4);
+	/**
+	 * Read an enum inside the signature with the specified byte size.
+	 * @param backupBlobIndex An index to the resource's blob heap location.
+	 * @param index Byte index where to read the enum within the signature.
+	 * @param byteSize The enum's byte size.
+	 * @return The numeric value of the read enum.
+	 */
+	protected long readEnum(int backupBlobIndex, int index, int byteSize) {
+		switch(byteSize) {
+			case 1: ensureSignatureLength(backupBlobIndex, 1); skipTokens(1); return ByteReader.getUInt8(binarySignature, index);
+			case 2: ensureSignatureLength(backupBlobIndex, 2); skipTokens(2); return ByteReader.getUInt16(binarySignature, index);
+			default:
+			case 4: ensureSignatureLength(backupBlobIndex, 4); skipTokens(4); return ByteReader.getUInt32(binarySignature, index);
+			case 8: ensureSignatureLength(backupBlobIndex, 8); skipTokens(8); return ByteReader.getInt64(binarySignature, index); //skipping unsigned
+		}
 	}
-	
-	//TODO: Add backup-index
+
+
 	//TODO: catch exceptional cases where the enum has the byte pattern of UNNAMED_CSTM_ATRB_FIELD or UNNAMED_CSTM_ATRB_PROPERTY + type token
 //	protected int estimateEnumLengthInCustomAttribute() throws InvalidSignatureException {
 //		int estimatedEnumLength = Math.min(binarySignature.length-currentIndex, 8); //an enum can use up to 64bits

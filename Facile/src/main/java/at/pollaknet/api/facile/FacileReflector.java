@@ -50,8 +50,8 @@ import at.pollaknet.api.facile.util.ByteReader;
  * and are based on the <i>Common Language Infrastructure (CLI)</i>,
  * which is specified in the
  * <a href="//http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-335.pdf">
- * ECMA 335 Standard</a> (also known as .NET version 3.5). The current
- * implementation and all referenced are based on <b>revision 4!</b>
+ * ECMA 335 Standard</a> (also known as .NET version 4.5). The current
+ * implementation and all referenced are based on <b>revision 6!</b>
  * (revision 5 is currently in development)
  *  
  * <p/>Common file extensions for .NET assemblies are: {@code .exe .dll .netmodule}
@@ -64,8 +64,7 @@ import at.pollaknet.api.facile.util.ByteReader;
  * can be obtained <a href="http://msdn2.microsoft.com/en-us/netframework/cc378097.aspx">
  * here</a>) file, is embedded inside the assembly. You can specify an alternative
  * path to the pdb file or use the embedded path. The current implementation supports pdb
- * files up to version {@code "MSF 7.0 DS"}, which is equivalent to output produced by
- * compilers for .NET version 3.5 and Microsoft Visual Studio version 2008.
+ * files used by Microsoft Visual Studio version 2013.
  * 
  * @author Thomas Pollak
  * <p/>Email: <i>http://code.google.com/p/facile-api/people/detail?u=103590059941737035763</i>
@@ -77,14 +76,14 @@ public class FacileReflector {
 	 */
 	public final static String LOGGER_NAME = "at.pollaknet.api.facile";
 	
+	private static final int DEFAULT_PARTIAL_LOADING_SIZE = 8388608; // 8 MiBi
+	
 	/**
-	 * Debug parameter. True enables bug tracking. Set it to false
-	 * in order to continue reflection even if an error occurs.
+	 * Debug parameters, please use getter and setter of FacileReflector.
 	 */
-	public static boolean DEBUG_AND_HALT_ON_ERRORS = true;
-	
-	private static final int PARTIAL_LOADING_SIZE = 8388608; // 8 MiBi
-	
+	private boolean haltOnErrors = true;
+	private boolean haltOnJniErrors = false;
+
 	//the names of the required streams
 	private final static String STREAM_SIGNATURE_METADATA 	= "#~";
 	private final static String STREAM_SIGNATURE_STRINGS 	= "#Strings";
@@ -159,7 +158,12 @@ public class FacileReflector {
 	private static Logger logger;
 	private static FacileLogHandler facileLogHandler;
 	private boolean debugDataAvailable = false;
-
+	private int partialLoadingSizeInBytes = DEFAULT_PARTIAL_LOADING_SIZE;
+	
+	//external references
+	private List<Assembly> referenceAssemblies = new ArrayList<Assembly>(4);
+	private Map<String, Byte> referneceEnums = new HashMap<String, Byte>(8);
+	
 	static {
 		facileLogHandler = new FacileLogHandler();
 	    logger = Logger.getLogger(LOGGER_NAME);
@@ -167,7 +171,13 @@ public class FacileReflector {
 	    logger.setUseParentHandlers(false);
 	}
 	
-	private FacileReflector () {
+	private FacileReflector () {		
+		//since enum sizes are not known when referenced in other assemblies we are adding the
+		//non-4-byte enums which are commonly known to our reference collection
+		addReferneceEnum("System.Security.SecurityRuleSet", (byte) 1);
+		addReferneceEnum("System.Windows.Visibility", 		(byte) 1);
+		addReferneceEnum("MonoTouch.ObjCRuntime.Platform",  (byte) 8);
+		
 	    logger.info(String.format("Created Instance 0x%x", this.hashCode()));
 	}
 	
@@ -287,7 +297,7 @@ public class FacileReflector {
 		assert(fileSectionPA + offsetToData < ByteReader.INT32_MAX_VAL);
 		cliHeaderPA += fileSectionPA + offsetToData;
 		
-		if(partialLoaded && (cliHeaderPA+CliHeader.STATIC_HEADER_SIZE)>PARTIAL_LOADING_SIZE) {
+		if(partialLoaded && (cliHeaderPA+CliHeader.STATIC_HEADER_SIZE)>partialLoadingSizeInBytes) {
 			buffer = getFileBuffer(pathToAssembly);
 		}
 		
@@ -619,8 +629,8 @@ public class FacileReflector {
 		//check the buffer length and perform a partial loading if possible
 		//(by doing this we can avoid loading large files which may not contain any .net content)
 		int bufferLength = (int) length;		
-		if(!partialLoaded && bufferLength>PARTIAL_LOADING_SIZE) {
-			bufferLength = PARTIAL_LOADING_SIZE;
+		if(!partialLoaded && bufferLength>partialLoadingSizeInBytes) {
+			bufferLength = partialLoadingSizeInBytes;
 			partialLoaded = true;
 		}
 		
@@ -721,7 +731,7 @@ public class FacileReflector {
 					metaModel, blobStream, codeContainer, pdbReader, pathToAssembly);
 			
 			//build the symbol table (link metadata items)
-			symbolTable.build();
+			symbolTable.build(this);
 			
 			//close the pdb if opened
 			if(pdbReader != null) {
@@ -1019,5 +1029,56 @@ public class FacileReflector {
 	public boolean isDebugDataAvailable() {
 		return debugDataAvailable;
 	}
+	
+	public int getPartialLoadingSizeInBytes() {
+		return partialLoadingSizeInBytes;
+	}
 
+	public void setPartialLoadingSizeInBytes(int partialLoadingSizeInBytes) {
+		this.partialLoadingSizeInBytes = partialLoadingSizeInBytes;
+	}
+	
+	public boolean getHaltOnErrors() {
+		return haltOnErrors;
+	}
+
+	public void setHaltOnErrors(boolean haltOnErrors) {
+		this.haltOnErrors = haltOnErrors;
+	}
+	
+	public boolean getHaltOnJniErrors() {
+		return haltOnJniErrors;
+	}
+
+	public void setHaltOnJniErrors(boolean haltOnJniErrors) {
+		this.haltOnJniErrors = haltOnJniErrors;
+	}
+
+	public List<Assembly> getReferenceAssemblies() {
+		return referenceAssemblies;
+	}
+
+	public boolean addReferenceAssembly(Assembly referenceAssembly) {
+		return this.referenceAssemblies.add(referenceAssembly);
+	}
+	
+	public boolean removeReferenceAssembly(Assembly referenceAssembly) {
+		return this.referenceAssemblies.remove(referenceAssembly);
+	}
+
+	public Map<String, Byte> getReferneceEnums() {
+		return referneceEnums;
+	}
+
+	public boolean addReferneceEnum(String fullQualifiedTypeName, byte sizeInBytes) {
+		if(!this.referneceEnums.containsKey(fullQualifiedTypeName)) {
+			this.referneceEnums.put(fullQualifiedTypeName, sizeInBytes);
+		    return true;
+		}
+		return false;
+	}
+	
+	public boolean removeReferneceEnum(String fullQualifiedTypeName) {
+		return this.referneceEnums.remove(fullQualifiedTypeName)!=null;
+	}
 }
