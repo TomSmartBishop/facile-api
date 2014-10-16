@@ -1066,10 +1066,27 @@ public class FacileReflector {
 		return this.referenceAssemblies.remove(referenceAssembly);
 	}
 
+	/**
+	 * Get the map which contains the previously set sizes for enums not contained
+	 * in the current assembly. Alternatively the assembly that contains
+	 * the enum can be added with {@code addReferenceAssembly} as well.
+	 * @return The map with full qualified enum type names and the corresponding byte size.
+	 */
 	public Map<String, Byte> getReferneceEnums() {
 		return referneceEnums;
 	}
 
+	/**
+	 * Add an enum with it's size information so that the reflector can read
+	 * it's size properly when the enum is not defined in the current assembly
+	 * (only required for enums in custom attributes).
+	 * Alternatively the assembly that contains the enum can be added with
+	 * {@code addReferenceAssembly} as well.
+	 * well.
+	 * @param fullQualifiedTypeName The full qualified name of the enum.
+	 * @param sizeInBytes The size of the enum in byte, which can be 1, 2, 4 or 8.
+	 * @return {@code true} on success, {@false} otherwise.
+	 */
 	public boolean addReferneceEnum(String fullQualifiedTypeName, byte sizeInBytes) {
 		if(!this.referneceEnums.containsKey(fullQualifiedTypeName)) {
 			this.referneceEnums.put(fullQualifiedTypeName, sizeInBytes);
@@ -1078,6 +1095,11 @@ public class FacileReflector {
 		return false;
 	}
 	
+	/**
+	 * Remove an enum from the internal map for enum sizes (not contained in the current assembly).
+	 * @param fullQualifiedTypeName The enum to remove.
+	 * @return {@code true} on success, {@false} otherwise.
+	 */
 	public boolean removeReferneceEnum(String fullQualifiedTypeName) {
 		return this.referneceEnums.remove(fullQualifiedTypeName)!=null;
 	}
