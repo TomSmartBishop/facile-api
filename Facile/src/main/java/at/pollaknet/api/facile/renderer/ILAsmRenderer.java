@@ -4,8 +4,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import at.pollaknet.api.facile.FacileReflector;
 import at.pollaknet.api.facile.code.ExceptionClause;
@@ -56,8 +54,12 @@ public class ILAsmRenderer implements LanguageRenderer {
 
 	private FacileReflector reflector;
 	private int programCounter;
-	private String newLine;
+	private static String newLine;
 	private boolean useBinaryCustomAttributes;
+	
+	static {
+		newLine = System.getProperty("line.separator");
+	}
 	
 	protected FacileReflector getReflector() {
 		return reflector;
@@ -70,13 +72,13 @@ public class ILAsmRenderer implements LanguageRenderer {
 	public ILAsmRenderer(FacileReflector reflector, boolean useBinaryCustomAttributes) {
 		this.reflector = reflector;
 		this.useBinaryCustomAttributes = useBinaryCustomAttributes;
-		newLine = System.getProperty("line.separator");
+		
 	}
 	
-	private String addTab(String block) {
+	private static String addTab(String block) {
 		return block.replaceAll(newLine, newLine + "  ");
 	}
-	private String addTab(String block, String prefix) {
+	private static String addTab(String block, String prefix) {
 		return block.replaceAll(newLine, newLine + "  " + prefix);
 	}
 	
@@ -91,15 +93,12 @@ public class ILAsmRenderer implements LanguageRenderer {
 		buffer.append("{");
 		buffer.append(newLine);
 		
-		//append the version string
-		buffer.append("  .ver ");
-		buffer.append(assembly.getMajorVersion());
-		buffer.append(":");
-		buffer.append(assembly.getMinorVersion());
-		buffer.append(":");
-		buffer.append(assembly.getRevisionNumber());
-		buffer.append(":");
-		buffer.append(assembly.getBuildNumber());
+		buffer.append(
+				renderAssemblyVersionInfo(
+						assembly.getMajorVersion(),
+						assembly.getMinorVersion(),
+						assembly.getRevisionNumber(),
+						assembly.getBuildNumber()		)	);
 		
 		buffer.append(String.format("%s  .hash algorithm 0x%08x", newLine, assembly.getHasAlgorithmId()));
 		
@@ -147,17 +146,14 @@ public class ILAsmRenderer implements LanguageRenderer {
 		buffer.append(assemblyRef.getName());
 		buffer.append(newLine);
 		buffer.append("{");
-		
-		//append version string
 		buffer.append(newLine);
-		buffer.append("  .ver ");
-		buffer.append(assemblyRef.getMajorVersion());
-		buffer.append(":");
-		buffer.append(assemblyRef.getMinorVersion());
-		buffer.append(":");
-		buffer.append(assemblyRef.getRevisionNumber());
-		buffer.append(":");
-		buffer.append(assemblyRef.getBuildNumber());
+		
+		buffer.append(
+				renderAssemblyVersionInfo(
+						assemblyRef.getMajorVersion(),
+						assemblyRef.getMinorVersion(),
+						assemblyRef.getRevisionNumber(),
+						assemblyRef.getBuildNumber()		)	);
 		
 		if(assemblyRef.getCulture()!=null && !assemblyRef.getCulture().equals("")) {
 			buffer.append(newLine);
@@ -188,6 +184,21 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		buffer.append(newLine);
 		buffer.append("}");
+		
+		return buffer.toString();
+	}
+	
+	public static String renderAssemblyVersionInfo(int majorVersion, int minorVersion, int revisionNumber, int buildNumber) {
+		//append version string
+		StringBuffer buffer = new StringBuffer(32);
+		buffer.append("  .ver ");
+		buffer.append(majorVersion);
+		buffer.append(":");
+		buffer.append(minorVersion);
+		buffer.append(":");
+		buffer.append(revisionNumber);
+		buffer.append(":");
+		buffer.append(buildNumber);
 		
 		return buffer.toString();
 	}
@@ -269,15 +280,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		StringBuffer buffer = new StringBuffer(256);
 		buffer.append(".class extern ");
 		
-		long flags = exportedType.getFlags();
-		
-		if(ByteReader.testAny(flags, ExportedType.FLAGS_VISIBILITY_NESTED_PUBLIC)) {
-			buffer.append("nested public ");
-		} else if(ByteReader.testAny(flags, ExportedType.FLAGS_VISIBILITY_NESTED_PUBLIC)) {
-			buffer.append("public ");
-		} else if(ByteReader.testAny(flags, ExportedType.FLAGS_FORWARDER_TYPE)) {
-			buffer.append("public ");
-		}
+		buffer.append(ILAsmFlagsRenderer.renderExportedTypeFlags(exportedType));
 		
 		buffer.append(exportedType.getFullQualifiedName());
 		
@@ -316,13 +319,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		StringBuffer buffer = new StringBuffer(256);
 		buffer.append(".mresource ");
 		
-		long flags = manifestResource.getFlags();
-		
-		if(ByteReader.testAny(flags, ManifestResource.FLAGS_VISIBILITY_PUBLIC)) {
-			buffer.append("nested public ");
-		} else if(ByteReader.testAny(flags, ManifestResource.FLAGS_VISIBILITY_PRIVATE)) {
-			buffer.append("public ");
-		}
+		buffer.append(ILAsmFlagsRenderer.renderManifestResourceFlags(manifestResource));
 		
 		buffer.append(manifestResource.getName());
 		
@@ -570,34 +567,6 @@ public class ILAsmRenderer implements LanguageRenderer {
 		return buffer.toString();
 	}
 
-	public String renderCallingConvention(MethodSignature signature) {
-		if(signature==null) return "";
-		
-		StringBuffer buffer = new StringBuffer();
-		byte flags = signature.getFlags();
-		
-		switch(flags&MethodSignature.CALL_BITMASK) {
-			case MethodSignature.CALL_HAS_THIS: 		buffer.append("instance "); break;
-			case MethodSignature.CALL_EXPLICIT_THIS: 	buffer.append("explicit "); break;
-			default: break;
-		}
-		
-		switch(flags&MethodSignature.CALL_CONV_BITMASK) {
-			case MethodSignature.CALL_CONV_DEFAULT: 	buffer.append("default "); break;
-			case MethodSignature.CALL_CONV_VARARG: 	buffer.append("vararg "); break;
-			case MethodSignature.CALL_CONV_C: 		buffer.append("unmanaged cdecl "); break;
-			case MethodSignature.CALL_CONV_FAST: 		buffer.append("unmanaged fastcall "); break;
-			case MethodSignature.CALL_CONV_STD: 		buffer.append("unmanaged stdcall "); break;
-			case MethodSignature.CALL_CONV_THIS: 		buffer.append("unmanaged thiscall "); break;
-			
-			case MethodSignature.CALL_CONV_GENERIC:
-			default:
-				break;
-	}
-		
-		return buffer.toString();
-	}
-
 	@Override
 	public String render(DeclarativeSecurity declarativeSecurity) {
 		
@@ -619,75 +588,9 @@ public class ILAsmRenderer implements LanguageRenderer {
 		if(type==null) return "";
 		
 		StringBuffer buffer = new StringBuffer();
-		long flags = type.getFlags();
-		
+				
 		buffer.append(".class ");
-		
-		switch((int)(flags&Type.FLAGS_VISIBILITY_BIT_MASK)) {
-			case Type.FLAGS_VISIBILITY_NESTED_ASSEMBLY: 			buffer.append("nested assembly "); break;
-			case Type.FLAGS_VISIBILITY_NESTED_PUBLIC: 				buffer.append("nested public "); break;
-			case Type.FLAGS_VISIBILITY_NESTED_PRIVATE: 				buffer.append("nested private "); break;
-			case Type.FLAGS_VISIBILITY_NESTED_FAMILY: 				buffer.append("nested family "); break;
-			case Type.FLAGS_VISIBILITY_NESTED_FAMILY_OR_ASSEMBLY: 	buffer.append("nested famorassem "); break;
-			case Type.FLAGS_VISIBILITY_NESTED_FAMILY_AND_ASSEMBLY:	buffer.append("nested famandassem "); break;
-			case Type.FLAGS_VISIBILITY_PRIVATE: 					buffer.append("private "); break;
-			case Type.FLAGS_VISIBILITY_PUBLIC:						buffer.append("public "); break;
-			default: break;
-		}
-		
-		if(type.isInheritedFrom("System.ValueType")) {
-			//value?
-			buffer.append("value ");
-		} else if(type.isInheritedFrom("System.Enum")) {
-			buffer.append("enum ");
-		}
-
-		if(type.isInterface()) {
-			buffer.append("interface ");
-		}
-		
-		if(ByteReader.testFlags(flags, Type.FLAGS_SEMANTICS_IS_SEALED)) {
-			buffer.append("sealed ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_SEMANTICS_IS_ABSTRACT)) {
-			buffer.append("abstract ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_LAYOUT_BIT_MASK, Type.FLAGS_LAYOUT_AUTO_FIELDS)) {
-			buffer.append("auto ");
-		} else {
-			if(ByteReader.testFlags(flags, Type.FLAGS_LAYOUT_SEQUENTIAL_FIELDS)) {
-				buffer.append("sequential ");
-			}
-			if(ByteReader.testFlags(flags, Type.FLAGS_LAYOUT_EXPLICIT)) {
-				buffer.append("explicit ");
-			}
-		}
-		
-		if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_ANSI)) {
-			buffer.append("ansi ");
-		} else if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_UNICODE)) {
-			buffer.append("unicode ");
-		} else if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_AUTO)) {
-			buffer.append("autochar ");
-		} else if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_CUSTOM)) {
-			//FIXME: custom string format
-		}
-
-		if(ByteReader.testFlags(flags, Type.FLAGS_IMPLEMENTATION_IS_IMPORTED)) {
-			buffer.append("import ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_IMPLEMENTATION_IS_SERIALIZABLE)) {
-			buffer.append("serializeable ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_IMPLEMENTATION_BEFORE_FIELD_INIT)) {
-			buffer.append("beforefieldinit ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_SEMANTICS_HAS_SPECIAL_NAME)) {
-			buffer.append("specialname ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_RT_SPECIAL_NAME)) {
-			buffer.append("rtspecialname ");
-		}
+		buffer.append(ILAsmFlagsRenderer.renderTypeFlags(type));
 
 		buffer.append(type.getName());
 		buffer.append(" ");
@@ -730,79 +633,8 @@ public class ILAsmRenderer implements LanguageRenderer {
 		if(type==null) return "";
 		
 		StringBuffer buffer = new StringBuffer();
-		long flags = type.getFlags();
-		
 		buffer.append(".class ");
-		
-		switch((int)(flags&Type.FLAGS_VISIBILITY_BIT_MASK)) {
-			case Type.FLAGS_VISIBILITY_NESTED_ASSEMBLY: 			buffer.append("nested assembly "); break;
-			case Type.FLAGS_VISIBILITY_NESTED_PUBLIC: 				buffer.append("nested public "); break;
-			case Type.FLAGS_VISIBILITY_NESTED_PRIVATE: 				buffer.append("nested private "); break;
-			case Type.FLAGS_VISIBILITY_NESTED_FAMILY: 				buffer.append("nested family "); break;
-			case Type.FLAGS_VISIBILITY_NESTED_FAMILY_OR_ASSEMBLY: 	buffer.append("nested famorassem "); break;
-			case Type.FLAGS_VISIBILITY_NESTED_FAMILY_AND_ASSEMBLY:	buffer.append("nested famandassem "); break;
-			case Type.FLAGS_VISIBILITY_PRIVATE: 					buffer.append("private "); break;
-			case Type.FLAGS_VISIBILITY_PUBLIC:						buffer.append("public "); break;
-			default: break;
-		}
-		
-		if(type.isInheritedFrom("System.ValueType")) {
-			//value?
-			buffer.append("value ");
-		} else if(type.isInheritedFrom("System.Enum")) {
-			buffer.append("enum ");
-		}
-
-		if(type.isInterface()) {
-			buffer.append("interface ");
-		}
-		
-		if(ByteReader.testFlags(flags, Type.FLAGS_SEMANTICS_IS_SEALED)) {
-			buffer.append("sealed ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_SEMANTICS_IS_ABSTRACT)) {
-			buffer.append("abstract ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_LAYOUT_BIT_MASK, Type.FLAGS_LAYOUT_AUTO_FIELDS)) {
-			buffer.append("auto ");
-		} else {
-			if(ByteReader.testFlags(flags, Type.FLAGS_LAYOUT_SEQUENTIAL_FIELDS)) {
-				buffer.append("sequential ");
-			}
-			if(ByteReader.testFlags(flags, Type.FLAGS_LAYOUT_EXPLICIT)) {
-				buffer.append("explicit ");
-			}
-		}
-		
-		if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_ANSI)) {
-			buffer.append("ansi ");
-		} else if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_UNICODE)) {
-			buffer.append("unicode ");
-		} else if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_AUTO)) {
-			buffer.append("autochar ");
-		}  else if(ByteReader.testFlags(flags, Type.FLAGS_STRING_FORMAT_BIT_MASK, Type.FLAGS_STRING_FORMAT_CUSTOM)) {
-			//FIXME: handle this case proper
-			String name = type.getFullQualifiedName();
-			if(name==null || name.equals("")) name = "[Unknown Type]";
-			Logger.getLogger(FacileReflector.LOGGER_NAME).log(Level.SEVERE, "Flags with unknown notation detected in " + name + "!");
-		}
-
-		if(ByteReader.testFlags(flags, Type.FLAGS_IMPLEMENTATION_IS_IMPORTED)) {
-			buffer.append("import ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_IMPLEMENTATION_IS_SERIALIZABLE)) {
-			buffer.append("serializeable ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_IMPLEMENTATION_BEFORE_FIELD_INIT)) {
-			buffer.append("beforefieldinit ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_SEMANTICS_HAS_SPECIAL_NAME)) {
-			buffer.append("specialname ");
-		}
-		if(ByteReader.testFlags(flags, Type.FLAGS_RT_SPECIAL_NAME)) {
-			buffer.append("rtspecialname ");
-		}
-		
+		buffer.append(ILAsmFlagsRenderer.renderTypeFlags(type));
 		buffer.append(type.getName());
 		
 		Parameter [] genericParams = type.getGenericParameters();
@@ -886,6 +718,8 @@ public class ILAsmRenderer implements LanguageRenderer {
 		return buffer.toString();
 	}
 
+	
+
 	@Override
 	public String render(PropertySignature propertySignature) {
 		
@@ -897,16 +731,10 @@ public class ILAsmRenderer implements LanguageRenderer {
 		if(property==null) return "";
 		
 		StringBuffer buffer = new StringBuffer();
-		long flags = property.getFlags();
 		
 		buffer.append(".property ");
 		
-		if(ByteReader.testFlags(flags, Property.FLAGS_SPECIAL_NAME)) {
-			buffer.append("specialname ");
-		}
-		if(ByteReader.testFlags(flags, Property.FLAGS_RT_SPECIAL_NAME)) {
-			buffer.append("rtspecialname ");
-		}
+		buffer.append(ILAsmFlagsRenderer.renderPropertyFlags(property));
 		
 		buffer.append("instance ");
 		
@@ -963,24 +791,8 @@ public class ILAsmRenderer implements LanguageRenderer {
 		if(parameter==null) return "";
 		
 		StringBuffer buffer = new StringBuffer();
-		int flags = parameter.getFlags();
 		
-		//TODO: check notation
-		if(ByteReader.testFlags(flags, Parameter.FLAGS_OUT)) {
-			buffer.append("[out] ");
-		} else if(ByteReader.testFlags(flags, Parameter.FLAGS_IN)) {
-			buffer.append("[in] ");
-		}
-		if(ByteReader.testFlags(flags, Parameter.FLAGS_IS_OPTIONAL)) {
-			buffer.append("[opt] ");
-		}
-		if(ByteReader.testFlags(flags, Parameter.FLAGS_UNUSED)) {
-			buffer.append("[unused] ");
-		}
-				
-		if(ByteReader.testFlags(flags, Parameter.FLAGS_HAS_DEFAULT_VALUE)) {
-			buffer.append("[defval] ");
-		}
+		buffer.append(ILAsmFlagsRenderer.renderParameterFlags(parameter));
 
 		buffer.append(renderClassRef(parameter.getTypeRef()));
 		
@@ -1080,101 +892,12 @@ public class ILAsmRenderer implements LanguageRenderer {
 
 		buffer.append(".method ");
 		
-		int flags = method.getFlags();
-		int implFlags = method.getImplFlags();
-		
-		if(ByteReader.testFlags(flags, Method.FLAGS_STATIC)) {
-			buffer.append("static ");
-		}
-		
-		switch(flags&Method.FLAGS_VISIBILITY_BIT_MASK) {
-			case Method.FLAGS_VISIBILITY_PRIVATE: 				buffer.append("private "); break;
-			case Method.FLAGS_VISIBILITY_PUBLIC:				buffer.append("public "); break;	
-			case Method.FLAGS_VISIBILITY_FAMILIY: 				buffer.append("family "); break;
-			case Method.FLAGS_VISIBILITY_ASSEMBLY: 				buffer.append("assembly "); break;
-			case Method.FLAGS_VISIBILITY_FAMILY_AND_ASSEMBLY: 	buffer.append("famandassem "); break;
-			case Method.FLAGS_VISIBILITY_FAMILY_OR_ASSEMBLY: 	buffer.append("famorassem "); break;
-			//compilercontrolled??
-			case Method.FLAGS_VISIBILITY_COMPILER_CONTROLLED: 	buffer.append("privatescope "); break;
-			
-			default: break;
-		}	
-		
-		if(ByteReader.testFlags(flags, Method.FLAGS_FINAL)) {
-			buffer.append("final ");
-		}
-		if(ByteReader.testFlags(flags, Method.FLAGS_VIRTUAL)) {
-			buffer.append("virtual ");
-		}
-		if(ByteReader.testFlags(flags, Method.FLAGS_ABSTRACT)) {
-			buffer.append("abstract ");
-		}
-		if(ByteReader.testFlags(flags, Method.FLAGS_HIDE_BY_SIG)) {
-			buffer.append("hidebysig ");
-		}
-		if(ByteReader.testFlags(flags, Method.FLAGS_VTABLE_BIT_MASK, Method.FLAGS_VTABLE_NEW_SLOT)) {
-			buffer.append("newslot ");
-		}
-		if(ByteReader.testFlags(flags, Method.FLAGS_ADDITIONAL_REQUIRE_SECURITY_OBJECT)) {
-			buffer.append("reqsecobj ");
-		}
-		if(ByteReader.testFlags(flags, Method.FLAGS_SPECIAL_NAME)) {
-			buffer.append("specialname ");
-		}
-		if(ByteReader.testFlags(flags, Method.FLAGS_ADDITIONAL_RT_SPECIAL_NAME)) {
-			buffer.append("rtspecialname ");
-		}
-		if(ByteReader.testFlags(flags, Method.FLAGS_INTEROP_UNMANAGED_EXPORT)) {
-			buffer.append("unmanagedexp ");
-		}
-		if(ByteReader.testFlags(flags, Method.FLAGS_INTEROP_PINVOKE)) {
-			
-			if(method.getNativeImplementation()==null) {
-				//FIXME: handle this case proper
-				Logger.getLogger(FacileReflector.LOGGER_NAME).log(Level.SEVERE, "Found PInvokeImpl without valid name!");
-				buffer.append("pinvokeimpl [UNABLE_TO_RESOLVE] ");
-			} else {
-				buffer.append("pinvokeimpl ");
-				buffer.append(method.getNativeImplementation().getImportName());
-				buffer.append(" "); //confirm notation
-			}
-		}
-		//further flags?
+		buffer.append(ILAsmFlagsRenderer.renderMethodFlags(method));
 		
 		buffer.append(renderMethodDefSig(method, false));
 		buffer.append(" ");
 		
-		if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_CODE_TYPE_BIT_MASK, Method.IMPL_FLAGS_CODE_TYPE_IL)) {
-			buffer.append("cil ");
-		} else if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_CODE_TYPE_BIT_MASK, Method.IMPL_FLAGS_CODE_TYPE_NATIVE)) {
-			buffer.append("native ");
-		} else if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_CODE_TYPE_BIT_MASK, Method.IMPL_FLAGS_CODE_TYPE_OPTIL)) {
-			buffer.append("optil ");
-		} else if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_CODE_TYPE_BIT_MASK, Method.IMPL_FLAGS_CODE_TYPE_RUNTIME)) {
-			buffer.append("runtime ");
-		}
-		
-		if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_ORGANISATION_BIT_MASK, Method.IMPL_FLAGS_ORGANISATION_MANAGED)) {
-			buffer.append("managed ");
-		} else if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_ORGANISATION_BIT_MASK, Method.IMPL_FLAGS_ORGANISATION_UNMANAGED)) {
-			buffer.append("unmanaged ");
-		}
-		
-		if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_FORWARD_REF)) {
-			buffer.append("forwardref ");
-		}
-		if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_PRESERVE_SIG)) {
-			buffer.append("preservesig ");
-		}
-		if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_INTERNAL_CALL)) {
-			buffer.append("internalcall ");
-		}
-		if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_SYNCHRONIZED)) {
-			buffer.append("synchronized ");
-		}
-		if(ByteReader.testFlags(implFlags, Method.IMPL_FLAGS_NO_INLINING)) {
-			buffer.append("noinlining ");
-		}
+		buffer.append(ILAsmFlagsRenderer.renderMethodImplFlags(method));
 		
 		buffer.append(newLine);
 		buffer.append("{");	
@@ -1288,22 +1011,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		}
 		for(ExceptionClause e: methodBody.getExceptionClauses()) {
 			buffer.append(String.format("%s.try IL_%04x to IL_%04x ", newLine, e.getTryOffset(), e.getTryOffset() + e.getTryLength()) );
-			long flags = e.getFlags();
-			if(flags == ExceptionClause.FLAGS_CATCH_TYPE) {
-				buffer.append("catch ");
-				if(e.getExcpetionType()==null) {
-					buffer.append("[mscorlib]System.Exception");
-				} else {
-					buffer.append(renderAsReference(e.getExcpetionType()));
-				}
-				buffer.append(" handler ");
-			} else if(flags == ExceptionClause.FLAGS_FILTER_TYPE) {
-				buffer.append(String.format("filter IL_%04x handler", e.getFilterOffset()));
-			} else if(flags == ExceptionClause.FLAGS_FINAL_TYPE) {
-				buffer.append("finally handler ");
-			} else {
-				buffer.append("fault handler ");
-			}
+			buffer.append(ILAsmFlagsRenderer.renderExceptionClauseFlags(this, e));
 			buffer.append(String.format("IL_%04x to IL_%04x", e.getHandlerOffset(), e.getHandlerOffset() + e.getHanderLength()) );
 		}
 		
@@ -1362,7 +1070,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 				if(first) {
 					first = false;
 				} else {
-					buffer.append(" "); //correctness needs to be prooven
+					buffer.append(" "); //correctness needs to be proven
 				}
 			}
 			
@@ -1417,10 +1125,22 @@ public class ILAsmRenderer implements LanguageRenderer {
 		TypeRef typeRef = field.getTypeRef();
 		TypeSpec typeSpec = typeRef.getTypeSpec();
 		
-		if(typeSpec!=null && typeSpec.isGenericInstance())
-			buffer.append(String.format(".field %s !%s %s", renderFieldFlags(field), typeSpec.getName(), field.getName()));
-		else
-		   buffer.append(String.format(".field %s %s %s", renderFieldFlags(field), renderClassRef(typeRef), field.getName()));
+		buffer.append(".field ");
+		
+		buffer.append(ILAsmFlagsRenderer.renderFieldFlags(field));
+		buffer.append(" ");
+		buffer.append(render(field.getMarshalSignature()));
+		buffer.append(" ");
+		
+		if(typeSpec!=null && typeSpec.isGenericInstance()) {
+			buffer.append("!");
+			buffer.append(typeSpec.getName());
+		} else {
+		   buffer.append(renderClassRef(typeRef));
+		}
+		
+		buffer.append(" ");
+		buffer.append(field.getName());
 		
 		CustomAttribute [] attributes = field.getCustomAttributes();
 
@@ -1444,41 +1164,6 @@ public class ILAsmRenderer implements LanguageRenderer {
 		return buffer.toString();
 	}
 
-	private String renderFieldFlags(Field field) {
-		StringBuffer buffer = new StringBuffer();
-		int flags = field.getFlags();
-		
-		switch(flags&Field.FLAGS_VISIBILITY_BIT_MASK) {
-			case Field.FLAGS_VISIBILITY_ASSEMBLY: buffer.append("assembly");break;
-			case Field.FLAGS_VISIBILITY_PRIVATE: buffer.append("private");break;
-			case Field.FLAGS_VISIBILITY_PUBLIC: buffer.append("public");break;
-			case Field.FLAGS_VISIBILITY_FAMILY_OR_ASSEMBLY: buffer.append("famorassem");break;
-			case Field.FLAGS_VISIBILITY_FAMILY_AND_ASSEMBLY: buffer.append("famandassem");break;
-			case Field.FLAGS_VISIBILITY_FAMILY: buffer.append("family");break;
-			default: buffer.append("privatescope");break;
-		}
-		
-		if(ByteReader.testFlags(flags,Field.FLAGS_STATIC)) {
-			buffer.append(" static");
-		}
-		
-		if(ByteReader.testFlags(flags,Field.FLAGS_INIT_ONLY)) {
-			buffer.append(" initonly");
-		}
-		
-		if(ByteReader.testFlags(flags,Field.FLAGS_REMOTING_NOT_SERIALIZED)) {
-			buffer.append(" notserialized");
-		}
-		
-		if(ByteReader.testFlags(flags,Field.FLAGS_SPECIAL_NAME)) {
-			buffer.append(" specialname");
-		}
-		
-		buffer.append(render(field.getMarshalSignature()));
-		
-		return buffer.toString();
-	}
-
 	@Override
 	public String render(Event event) {
 		if(event==null) return "";
@@ -1487,16 +1172,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		buffer.append(".event ");
 
-		int flags = event.getFlags();
-		
-		if(ByteReader.testFlags(flags,Event.FLAGS_SPECIAL_NAME)) {
-			buffer.append("specialname ");
-		}
-		
-		if(ByteReader.testFlags(flags,Event.FLAGS_RT_SPECIAL_NAME)) {
-			buffer.append("rtspecialname ");
-		}
-		
+		buffer.append(ILAsmFlagsRenderer.renderEventFlags(event));
 		
 		buffer.append(" ");
 		
@@ -1507,17 +1183,15 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		for(Method m:event.getMethods()) {
 
+			buffer.append(newLine);
+			
 			if(m.getName().startsWith("add_")) {
-				buffer.append(newLine);
 				buffer.append("  .addon ");
 			} else if(m.getName().startsWith("remove_")) {
-				buffer.append(newLine);
 				buffer.append("  .removeon ");
 			} else if(m.getName().startsWith("fire_")) {
-				buffer.append(newLine);
 				buffer.append("  .fire ");
 			} else {
-				buffer.append(newLine);
 				buffer.append("  .other ");
 			}
 			buffer.append(renderMethodRef(m, false));
@@ -1653,7 +1327,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		StringBuffer buffer = new StringBuffer(32);
 
-		buffer.append(renderCallingConvention(method.getMethodSignature()));
+		buffer.append(ILAsmFlagsRenderer.renderMethodSignatureFlags(method.getMethodSignature()));
 		
 		if(method.getMethodSignature().getReturnParameter()!=null) {
 			buffer.append(render(method.getMethodSignature().getReturnParameter()));
@@ -1690,7 +1364,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		MethodSignature signature = memberRef.getMethodRefSignature();
 		
 		if(signature!=null) {
-			buffer.append(renderCallingConvention(signature));
+			buffer.append(ILAsmFlagsRenderer.renderMethodSignatureFlags(signature));
 			
 			if(signature.getReturnParameter()!=null) {
 				buffer.append(render(signature.getReturnParameter()));

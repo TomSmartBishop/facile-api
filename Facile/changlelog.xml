@@ -2,6 +2,7 @@
 
 <changelog name="Facile API">
   <version major="1" minor="0" fix="4">
+    <changed>Refactored the ILAsmRender and introduced the ILAsmFlagsRenderer</changed>
     <added>Extended the FacileReflector class to allow external references (addReferenceAssembly, addReferneceEnum) in order to resolve external enum sizes</added>
     <changed>The static member DEBUG_AND_HALT_ON_ERRORS and PARTIAL_LOADING_SIZE of the FacileReflector class became a per instance member (getHaltOnErrors, getPartialLoadingSizeInBytes)</changed> 
     <changed>Moved dia package to pdb.dia and introduced a new interface PdbReader in order to abstract the PDB reading mechanism. The former PdbReader is now implemented in NativePdbReader</changed>
