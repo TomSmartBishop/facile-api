@@ -6,7 +6,7 @@ DiaContainer::DiaContainer():m_pSource(NULL), m_pSession(NULL), m_pGlobal(NULL) 
 	m_hInitResult = CoInitialize(NULL);
 
 	#ifdef DEBUG
-		printf("COM Interface initialized.\n");
+		printf("Native: COM Interface initialized.\n");
 		_flushall();
 	#endif
 }
@@ -20,7 +20,7 @@ DiaContainer::~DiaContainer() {
 	CoUninitialize();
 
 	#ifdef DEBUG
-		printf("COM Interface has been uninitialized.\n");
+		printf("Native: COM Interface has been uninitialized.\n");
 		_flushall();
 	#endif
 }
@@ -28,7 +28,7 @@ DiaContainer::~DiaContainer() {
 void DiaContainer::cleanUpResources() {
 
 	#ifdef DEBUG
-		printf("Releasing COM objects (if possible)...\n");
+		printf("Native: Releasing COM objects (if possible)...\n");
 		_flushall();
 	#endif
 
@@ -65,7 +65,7 @@ int DiaContainer::openProgramDebugDatabase(char* pFilePath) {
 	mbstowcs_s( &sConverted, wszFilename, sWideSize, pFilePath, sSize );
 
 	#ifdef DEBUG
-		printf("Opening \"%ws\".\n", wszFilename);
+		printf("Native: Opening \"%ws\".\n", wszFilename);
 		_flushall();
 	#endif
 
@@ -103,7 +103,7 @@ int DiaContainer::openProgramDebugDatabase(char* pFilePath) {
 	}
 
 	#ifdef DEBUG
-		printf("Pdb successfully opened.\n", wszFilename);
+		printf("Native: Pdb successfully opened.\n", wszFilename);
 		_flushall();
 	#endif
 

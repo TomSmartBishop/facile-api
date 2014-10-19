@@ -20,7 +20,7 @@
  JNIEXPORT jint JNICALL Java_at_pollaknet_api_facile_pdb_dia_NativePdbReader_openPdb(JNIEnv *env, jobject obj, jstring jsPdbPath) {
 
 	#ifdef DEBUG
-		 printf("Executing native function _openPdb...\n");
+		 printf("Native: executing native function _openPdb...\n");
 		 _flushall();
 	#endif
 
@@ -35,6 +35,11 @@
 
 	//return with error if this requiered field is not present in the class
 	if(jfNativeHandleID==NULL) return ERROR_FIELD_NOT_FOUND;
+
+  #ifdef DEBUG
+    printf("Native: Creating DIA container...\n");
+    _flushall();
+  #endif
 
 	//create a new debug interface access container
 	DiaContainer *pDiaContainer = new DiaContainer();
@@ -52,6 +57,11 @@
 
 	//convert the jchar string to simple c style string
 	sprintf_s(szPdbPath, sSize, "%ws", pNativeString);
+
+  #ifdef DEBUG
+    printf("Native: (DiaContainer *):%p Opening pdb file...\n", pDiaContainer);
+    _flushall();
+  #endif
 
 	//open the pdb file
 	jint jiReturnCode = pDiaContainer->openProgramDebugDatabase(szPdbPath);
@@ -76,7 +86,7 @@
 	}
 
 	#ifdef DEBUG
-		printf("Leaving native function _openPdb...\n");
+		printf("Native: Leaving native function _openPdb...\n");
 		_flushall();
 	#endif
 
@@ -87,7 +97,7 @@
  JNIEXPORT void JNICALL Java_at_pollaknet_api_facile_pdb_dia_NativePdbReader_closePdb(JNIEnv *env, jobject obj) {
 
 	#ifdef DEBUG
-		 printf("Executing native function _closePdb...\n");
+		 printf("NAtive: Executing native function _closePdb...\n");
 		 _flushall();
 	#endif
 
@@ -114,7 +124,7 @@
 	env->SetLongField(obj, jfNativeHandleID, (jlong)0);
 
 	#ifdef DEBUG
-		printf("Leaving native function _closePdb...\n");
+		printf("Native: Leaving native function _closePdb...\n");
 		_flushall();
 	#endif
  }
@@ -126,7 +136,7 @@
 	DWORD dwOffset = 0;
 
 	#ifdef DEBUG
-		printf("Executing native function _getLineNumbersByRVA...\n");
+		printf("Native: Executing native function _getLineNumbersByRVA...\n");
 		_flushall();
 	#endif
 
@@ -142,23 +152,33 @@
 	//assume that the field is still present
 	assert(jfNativeHandleID!=NULL);
 
+  #ifdef DEBUG
+    printf("Native: Accessing DIA container...\n");
+    _flushall();
+  #endif
+
 	//get the pointer to the container
 	//(which has to be here because it was assingned just before this method call)
-	DiaContainer *pDiaContainer = (DiaContainer *)env->GetLongField(obj, jfNativeHandleID);
+  DiaContainer *pDiaContainer = (DiaContainer *)env->GetLongField(obj, jfNativeHandleID);
 	
   //this happens when somebody calls that function and no PDB exists
   if(pDiaContainer==NULL) return NULL;
 
-	//check if the session has been initialized
-	if(pDiaContainer->getSession()==NULL) return NULL;
+  #ifdef DEBUG
+    printf("Native: (DiaContainer *):%p Find class at/pollaknet/api/facile/pdb/LineNumberInfo...\n", pDiaContainer);
+    _flushall();
+  #endif
+
+  //check if the session has been initialized
+  if (pDiaContainer->getSession() == NULL) return NULL;
 
 	//search for the java LineNumberInfo class
-	jclass jcLineNumberInfoClass = env->FindClass("at/pollaknet/api/facile/dia/LineNumberInfo");
+	jclass jcLineNumberInfoClass = env->FindClass("at/pollaknet/api/facile/pdb/LineNumberInfo");
 
 	//do not continue if this class is missing
 	if(jcLineNumberInfoClass==NULL) return NULL;
 
-	//create an instance of the java LineNumberInfo class
+	//create an instance of the java LineNumberInfo class_getLineNumbersByRVA...
 	jmethodID jmidConstructor = env->GetMethodID(jcLineNumberInfoClass, "<init>", "()V");
 	jmethodID jmidSetSourceFile = env->GetMethodID(jcLineNumberInfoClass, "setSourceFileName", "(Ljava/lang/String;)V");
 	jmethodID jmidAddInstruction = env->GetMethodID(jcLineNumberInfoClass, "addInstruction", "(JJJJ)V");
@@ -180,6 +200,11 @@
 		return NULL;
 	}
 
+  #ifdef DEBUG
+    printf("Native: Search for DIA at RVA %ul symbol...\n", (DWORD)jlRVA);
+    _flushall();
+  #endif
+
 	if(pDiaSession->findSymbolByRVA((DWORD)jlRVA, SymTagFunction, &pSymbol)!=S_OK) {
 		SAFE_RELEASE(pSymbol);
 		return NULL;
@@ -189,6 +214,11 @@
 	pSymbol->get_addressSection( &dwSection );
 	pSymbol->get_addressOffset( &dwOffset );
 	pSymbol->get_length( &ullLength );
+
+  #ifdef DEBUG
+    printf("Native: Checking symbol data...\n");
+    _flushall();
+  #endif
 
 	//check if the data is useful
 	if ( dwSection != 0 && ullLength > 0 ) {
@@ -201,6 +231,11 @@
 			DWORD dwFetchedLines = 0;
 			DWORD dwRvaOffset = 0;
 			boolean bFirst = true;
+
+      #ifdef DEBUG
+        printf("Native: Check line by line...\n");
+        _flushall();
+      #endif
 
 			//check each line
 			while ( SUCCEEDED( pLines->Next( 1, &pLine, &dwFetchedLines ) ) && dwFetchedLines == 1 ) {
@@ -253,7 +288,7 @@
 	SAFE_RELEASE(pSymbol);
 
 	#ifdef DEBUG
-		printf("Leaving native function _getLineNumbersByRVA...\n");
+		printf("Native: Leaving native function _getLineNumbersByRVA...\n");
 		_flushall();
 	#endif
 

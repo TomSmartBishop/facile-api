@@ -82,7 +82,7 @@ public class FacileReflector {
 	 * Debug parameters, please use getter and setter of FacileReflector.
 	 */
 	private boolean haltOnErrors = true;
-	private boolean haltOnJniErrors = false;
+	private boolean haltOnJniErrors = true;
 
 	//the names of the required streams
 	private final static String STREAM_SIGNATURE_METADATA 	= "#~";
