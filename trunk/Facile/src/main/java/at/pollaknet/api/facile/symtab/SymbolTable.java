@@ -72,8 +72,8 @@ public class SymbolTable {
 	private CilContainer codeContainer;
 	private PdbReader pdbReader;
 	
-	private int numberOfSignatures = 0;
-	private int numberOfDecodedSignatures = 0;
+	//private int numberOfSignatures = 0;
+	//private int numberOfDecodedSignatures = 0;
 	private BlobStream blobStream;
 	private CliHeader cliHeader;
 
@@ -189,7 +189,7 @@ public class SymbolTable {
 		
 		connectCustomAttributes();
 		
-		Logger.getLogger(FacileReflector.LOGGER_NAME).info(String.format("Extracted %d out of %d signatures.", numberOfDecodedSignatures, numberOfSignatures));
+		//Logger.getLogger(FacileReflector.LOGGER_NAME).info(String.format("Extracted %d out of %d signatures.", numberOfDecodedSignatures, numberOfSignatures));
 		//assembly.setLoaded(true);
 		
 		connectExportedType();

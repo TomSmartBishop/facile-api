@@ -174,9 +174,11 @@ public class FacileReflector {
 	private FacileReflector () {		
 		//since enum sizes are not known when referenced in other assemblies we are adding the
 		//non-4-byte enums which are commonly known to our reference collection
-		addReferneceEnum("System.Security.SecurityRuleSet", (byte) 1);
-		addReferneceEnum("System.Windows.Visibility", 		(byte) 1);
-		addReferneceEnum("MonoTouch.ObjCRuntime.Platform",  (byte) 8);
+		addReferneceEnum("System.Security.SecurityRuleSet", 			(byte) 1);
+		addReferneceEnum("System.Windows.Visibility", 					(byte) 1);
+		addReferneceEnum("System.Diagnostics.Tracing.EventKeywords",  	(byte) 8);
+		addReferneceEnum("MonoTouch.ObjCRuntime.Platform",  			(byte) 8);
+		
 		
 	    logger.info(String.format("Created Instance 0x%x", this.hashCode()));
 	}

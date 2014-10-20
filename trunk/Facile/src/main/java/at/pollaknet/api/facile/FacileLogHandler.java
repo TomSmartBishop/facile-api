@@ -9,7 +9,9 @@ import java.util.logging.LogRecord;
  * buffer or outputs it to the console on demand.
  *
  * @author Thomas Pollak
- * <p/> Email: <i>http://code.google.com/p/facile-api/people/detail?u=103590059941737035763</i>
+ *         <p/>
+ *         Email: <i>http://code.google.com/p/facile-api/people/detail?u=
+ *         103590059941737035763</i>
  */
 public class FacileLogHandler extends Handler {
 
@@ -29,8 +31,9 @@ public class FacileLogHandler extends Handler {
 	 * Create a new log handler which writes all message into a buffer and
 	 * outputs them to the console if the intermediate mode is set.
 	 * 
-	 * @param intermediate Set to {@code true} if the log messages should
-	 * appear on the console.
+	 * @param intermediate
+	 *            Set to {@code true} if the log messages should appear on the
+	 *            console.
 	 */
 	public FacileLogHandler(boolean intermediate) {
 		this();
@@ -40,8 +43,9 @@ public class FacileLogHandler extends Handler {
 	/**
 	 * Enable or disable intermediate mode.
 	 * 
-	 * @param intermediate Set to {@code true} if the log messages should
-     * appear on the console.
+	 * @param intermediate
+	 *            Set to {@code true} if the log messages should appear on the
+	 *            console.
 	 */
 	public void SetIntermediate(boolean intermediate) {
 		this.intermediate = intermediate;
@@ -75,9 +79,6 @@ public class FacileLogHandler extends Handler {
 	 */
 	@Override
 	public void publish(LogRecord record) {
-		if (!intermediate) {
-			return;
-		}
 		if (!isClosed) {
 			String msg = record.getLevel().toString() + ": "
 					+ record.getMessage() + "\n";

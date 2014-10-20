@@ -108,7 +108,7 @@ public class ArrayUtils {
 		return a1.length==a2.length ? 0 : limit;
 	}
 	
-	public static String formatAsHexTable(long codeRVA, byte[] byteBuffer, int length) {
+	public static String formatAsHexTable(long codeRVA, byte[] byteBuffer, int length, boolean addHeader) {
 		
 		if(byteBuffer==null)
 			return null;
@@ -116,17 +116,21 @@ public class ArrayUtils {
 		if(length> byteBuffer.length)
 			length = byteBuffer.length;
 			
-		StringBuffer stringBuffer = new StringBuffer("Address: ");
+		StringBuffer stringBuffer = new StringBuffer();
 		
-		stringBuffer.append(String.format("-%1x--%1x--%1x--%1x--%1x--%1x--%1x--%1x--",
-				codeRVA%16, (codeRVA+1)%16, (codeRVA+2)%16, (codeRVA+3)%16,
-				(codeRVA+4)%16, (codeRVA+5)%16, (codeRVA+6)%16, (codeRVA+7)%16));
-		
-		stringBuffer.append(String.format("%1x--%1x--%1x--%1x--%1x--%1x--%1x--%1x\n",
-				(codeRVA+8)%16, (codeRVA+9)%16, (codeRVA+10)%16, (codeRVA+11)%16,
-				(codeRVA+12)%16, (codeRVA+13)%16, (codeRVA+14)%16, (codeRVA+15)%16));
+		if(addHeader) {
+			stringBuffer.append("Address: ");
 			
-		stringBuffer.append(String.format("%08X ", codeRVA));
+			stringBuffer.append(String.format("-%1x--%1x--%1x--%1x--%1x--%1x--%1x--%1x--",
+					codeRVA%16, (codeRVA+1)%16, (codeRVA+2)%16, (codeRVA+3)%16,
+					(codeRVA+4)%16, (codeRVA+5)%16, (codeRVA+6)%16, (codeRVA+7)%16));
+			
+			stringBuffer.append(String.format("%1x--%1x--%1x--%1x--%1x--%1x--%1x--%1x\n",
+					(codeRVA+8)%16, (codeRVA+9)%16, (codeRVA+10)%16, (codeRVA+11)%16,
+					(codeRVA+12)%16, (codeRVA+13)%16, (codeRVA+14)%16, (codeRVA+15)%16));
+				
+			stringBuffer.append(String.format("%08X ", codeRVA));
+		}
 		
 		int i;
 		
@@ -136,7 +140,10 @@ public class ArrayUtils {
 				byte [] buffer = new byte[16];
 				System.arraycopy(byteBuffer,i-15,buffer,0,16);
 				codeRVA += 16;
-				stringBuffer.append(String.format(" %s\n%08X ", new String(buffer).replaceAll("\\p{Cntrl}","."), codeRVA));
+				if(addHeader)
+					stringBuffer.append(String.format(" %s\n%08X ", new String(buffer).replaceAll("\\p{Cntrl}","."), codeRVA));
+				else
+					stringBuffer.append(String.format(" %s\n ", new String(buffer).replaceAll("\\p{Cntrl}",".")));
 			}
 		}
 		
@@ -155,16 +162,16 @@ public class ArrayUtils {
 		return stringBuffer.toString();
 	}
 
-	public static String formatAsHexTable(byte[] byteBuffer) {
-		return formatAsHexTable(0, byteBuffer, byteBuffer.length);
+	public static String formatAsHexTable(byte[] byteBuffer, boolean addHeader) {
+		return formatAsHexTable(0, byteBuffer, byteBuffer==null ? 0 : byteBuffer.length, addHeader);
 	}
 
-	public static String formatAsHexTable(byte[] byteBuffer, int length) {
-		return formatAsHexTable(0, byteBuffer, length);
+	public static String formatAsHexTable(byte[] byteBuffer, int length, boolean addHeader) {
+		return formatAsHexTable(0, byteBuffer, length, addHeader);
 	}
 	
-	public static String formatAsHexTable(long codeRVA, byte[] byteBuffer) {
-		return formatAsHexTable(codeRVA, byteBuffer, byteBuffer.length);
+	public static String formatAsHexTable(long codeRVA, byte[] byteBuffer, boolean addHeader) {
+		return formatAsHexTable(codeRVA, byteBuffer, byteBuffer==null ? 0 : byteBuffer.length, addHeader);
 	}
 	
 	/**

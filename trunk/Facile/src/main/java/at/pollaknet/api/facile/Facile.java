@@ -210,7 +210,10 @@ public class Facile {
 			return;
 		}
 		
-		if(log) System.out.println(FacileReflector.getFacileLogHandler());
+		if(log) {
+			System.out.println("Facile Log:");
+			System.out.println(FacileReflector.getFacileLogHandler());
+		}
 		
 		System.out.println("Done.");
 	}
