@@ -60,7 +60,7 @@ public class UnknownStream implements IDataHeader {
 		buffer.append(" (Unknown Stream Type):\n");
 		
 		//format stream content
-		buffer.append(ArrayUtils.formatAsHexTable(offset, content));
+		buffer.append(ArrayUtils.formatAsHexTable(offset, content, true));
 		
 		//return as string
 		return buffer.toString();

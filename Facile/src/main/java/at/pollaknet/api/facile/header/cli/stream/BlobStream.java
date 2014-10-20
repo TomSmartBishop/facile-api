@@ -63,7 +63,7 @@ public class BlobStream implements IDataHeader {
 			Arrays.sort(keySet);
 			
 			for(Integer key: keySet) {
-				String value = ArrayUtils.formatByteArray(blobHeap.get(key));
+				String value = ArrayUtils.formatAsHexTable(blobHeap.get(key), false);
 				buffer.append(String.format("\n%10d:\t%s", key, value));
 			}
 		}

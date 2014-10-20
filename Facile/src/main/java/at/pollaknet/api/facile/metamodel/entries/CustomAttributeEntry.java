@@ -45,7 +45,7 @@ public class CustomAttributeEntry implements RenderableCilElement, CustomAttribu
 		this.owner = parent;
 	}
 	
-	public void setCustomAttributeType(ICustomAttributeType customAttributeType) {		
+	public void setCustomAttributeType(ICustomAttributeType customAttributeType) {
 		this.customAttributeType = customAttributeType;
 	}
 	
@@ -112,16 +112,24 @@ public class CustomAttributeEntry implements RenderableCilElement, CustomAttribu
 	public String toExtendedString() {
 		//IMPROVE: uniform string representation
 		
-		StringBuffer buffer;
+		StringBuffer buffer = new StringBuffer();
 		boolean hasEntries = false;
 		
-		assert(customAttributeType!=null);
+		//assert(customAttributeType!=null);
 		MethodAndFieldParent parent = null;
 		
+		//unfortunately there are custom attributes not having a type (malformed assembly?)
+		if(customAttributeType==null) {
+			buffer.append("// INVALID ");
+		}
+		
 		if(owner==null) {
-			buffer = new StringBuffer("// DELETED CustomAttribute: [");
+			if(buffer.length()==0)
+				buffer.append("// DELETED CustomAttribute: [");
+			else
+				buffer.append("& DELETED CustomAttribute: [");
 		} else {
-			buffer = new StringBuffer("CustomAttribute: [");
+			buffer.append("CustomAttribute: [");
 
 			if(owner instanceof Assembly) {
 				buffer.append("assembly: ");
@@ -130,16 +138,20 @@ public class CustomAttributeEntry implements RenderableCilElement, CustomAttribu
 			}
 		}
 		
-		if(customAttributeType.getMethod()!=null) {
-			parent = customAttributeType.getMethod().getOwner();
-		} else {
-			assert(customAttributeType.getMemberRef()!=null);
-			parent = customAttributeType.getMemberRef().getOwner();
+		if(customAttributeType!=null) {
+			if(customAttributeType.getMethod()!=null) {
+				parent = customAttributeType.getMethod().getOwner();
+			} else {
+				assert(customAttributeType.getMemberRef()!=null);
+				parent = customAttributeType.getMemberRef().getOwner();
+			}
 		}
-
-		assert(parent!=null);
-		assert(parent.getTypeRef().getFullQualifiedName()!=null);
-		buffer.append(parent.getTypeRef().getFullQualifiedName());
+		
+		if(parent!=null) {
+			assert(parent.getTypeRef().getFullQualifiedName()!=null);
+			buffer.append(parent.getTypeRef().getFullQualifiedName());
+		}
+		
 		if(fixedArguments==null && namedFields==null && namedProperties==null) {
 			buffer.append("]");
 		} else {

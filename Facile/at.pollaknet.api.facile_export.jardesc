@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
 <jardesc>
     <jar path="Facile/at.pollaknet.api.facile.jar"/>
-    <options buildIfNeeded="true" compress="true" descriptionLocation="/Facile/at.pollaknet.api.facile_export.jardesc" exportErrors="false" exportWarnings="false" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/Facile/at.pollaknet.api.facile_export.jardesc" exportErrors="false" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
     <manifest generateManifest="true" mainClassHandleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile{Facile.java[Facile" manifestLocation="/Facile/Manifest" manifestVersion="1.0" reuseManifest="false" saveManifest="true" usesManifest="true">
@@ -14,43 +14,36 @@
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.header.cli.util"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.header.cli.stream.metatable"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.symtab.symbols.meta"/>
-        <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.dia{PdbReader.java"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.util"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.symtab.symbols.aggregation"/>
         <file path="/Facile/Manifest"/>
-        <file path="/Facile/src/main/java/at/pollaknet/api/facile/dia/bin32/msdia100.dll"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.symtab"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.header"/>
-        <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.dia{DebugInformation.java"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.code"/>
+        <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.pdb.dia{NativePdbReader.java"/>
+        <file path="/Facile/src/main/java/at/pollaknet/api/facile/pdb/dia/bin32/NativePdbReader32.dll"/>
+        <file path="/Facile/src/main/java/at/pollaknet/api/facile/pdb/dia/bin64/NativePdbReader64.dll"/>
         <file path="/Facile/.classpath"/>
-        <file path="/Facile/src/main/java/at/pollaknet/api/facile/dia/bin64/PdbReader64.dll"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.metamodel.util"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.metamodel.entries.aggregation"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.symtab.signature"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.renderer"/>
-        <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.dia{UnexpectedPdbContent.java"/>
-        <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.dia{LineNumberInfo.java"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.code.instruction"/>
-        <file path="/Facile/src/main/java/at/pollaknet/api/facile/dia/bin64/msdia100.dll"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.symtab.symbols.scopes"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.code.instruction.prefix"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.symtab.symbols.misc"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.header.cli.stream"/>
+        <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.pdb"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.exception"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.symtab.symbols"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.code.instruction.object"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.code.instruction.base"/>
-        <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.dia{InstructionInfo.java"/>
         <file path="/Facile/.project"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.metamodel"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.metamodel.entries"/>
         <file path="/Facile/changlelog.xml"/>
-        <file path="/Facile/src/main/java/at/pollaknet/api/facile/dia/bin32/PdbReader32.dll"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile"/>
-        <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.dia{Instruction.java"/>
-        <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.header.coffpe"/>
         <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.header.cli"/>
-        <file path="/Facile/src/main/java/at/pollaknet/api/facile/dia/PdbReader.h"/>
+        <javaElement handleIdentifier="=Facile/src\/main\/java&lt;at.pollaknet.api.facile.header.coffpe"/>
     </selectedElements>
 </jardesc>

@@ -856,16 +856,29 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 		} else if (length == 0) {
 			return "";
 		} else {
-			String value;
-			if (length >= 0) ensureSignatureLength(backupBlobIndex, length);
-			try {
-				value = new String(binarySignature, currentIndex, length, "UTF8");
-			} catch (UnsupportedEncodingException e) {
-				value = "Undecoadeable UTF8 identifier in signature";
-			}
-			skipTokens(length);
-			return value;
+			return readString(backupBlobIndex, length);
 		}
+	}
+
+	/**
+	 * Read a plain string inside a signature with a backup index.
+	 * @param backupBlobIndex An index of the string (or super container - like
+	 * a custom attribute) to the blob heap where the serialized data is located.
+	 * This is used in order to repair (continue) broken signatures.
+	 * @param length The byte length of the string to read.
+	 * @return The restored string.
+	 * @throws InvalidSignatureException if the signature length has been exceeded.
+	 */
+	protected String readString(int backupBlobIndex, int length) {
+		String value;
+		if (length >= 0) ensureSignatureLength(backupBlobIndex, length);
+		try {
+			value = new String(binarySignature, currentIndex, length, "UTF8");
+		} catch (UnsupportedEncodingException e) {
+			value = "Undecoadeable UTF8 identifier in signature";
+		}
+		skipTokens(length);
+		return value;
 	}
 
 	/**

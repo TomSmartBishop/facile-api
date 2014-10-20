@@ -2,7 +2,10 @@ package at.pollaknet.api.facile.symtab.signature;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import at.pollaknet.api.facile.FacileReflector;
 import at.pollaknet.api.facile.exception.InvalidSignatureException;
 import at.pollaknet.api.facile.metamodel.MetadataModel;
 import at.pollaknet.api.facile.metamodel.entries.CustomAttributeEntry;
@@ -15,7 +18,6 @@ import at.pollaknet.api.facile.symtab.TypeInstance;
 import at.pollaknet.api.facile.symtab.TypeKind;
 import at.pollaknet.api.facile.symtab.symbols.Instance;
 import at.pollaknet.api.facile.symtab.symbols.Parameter;
-import at.pollaknet.api.facile.symtab.symbols.aggregation.Namespace;
 import at.pollaknet.api.facile.util.ByteReader;
 import at.pollaknet.api.facile.util.Pair;
 
@@ -35,7 +37,7 @@ public class CustomAttributeValueSignature extends Signature {
 	private CustomAttributeValueSignature(BasicTypesDirectory directory, MetadataModel metaModel, CustomAttributeEntry customAttribute)
 			throws InvalidSignatureException {
 		
-		//See ECMA 335 revision 5 - Partition II, 23.3 Custom attributes
+		//See ECMA 335 revision 6 - Partition II, 23.3 Custom attributes
 		//                  .---------------.                     .--------------.
 		//                  v               |                     v              |
 		//  -->[Prolog]--+----->[FixedArg]--+----->[NumNamed]--+---->[NamedArg]--+----->
@@ -108,15 +110,15 @@ public class CustomAttributeValueSignature extends Signature {
 	private void fixedArgs(BasicTypesDirectory directory, CustomAttributeEntry customAttribute) {
 		//get the type of the custom attribute
 		ICustomAttributeType customAttributeType = customAttribute.getCustomAttributeType();
-		assert(customAttributeType!=null);
 		
-		//The following code is intended to be used for the unimplemented feature
-		//"custom attribute type via string".
-		//		if(customAttributeType==null) {
-		//			//the custom attribute type is specified by a string (stupid specification!)
-		//			assert(customAttribute.getCustomAttributeTypeByString()!=null);
-		//			return;
-		//		}
+		//unfortunately there are (invalid) assemblies (Windows Phone SDK v8) that have null references here
+		if(customAttributeType==null) {
+			//this could be the case of "custom attribute type via string" but we have never seen that.
+			//Microsoft.VisualStudio.TestPlatform.Core.dll would be a candidate for that, but it has not
+			//the expected format "StrLenInt32 String"
+			Logger.getLogger(FacileReflector.LOGGER_NAME).log(Level.WARNING, "Custom attribute without type reference. BlobIndex=" + customAttribute.getBinaryBlobIndex() + ". Derrived from System.Attribute?");
+			return;
+		}
 		
 		//detect kind (weather method or member-ref)
 		MethodDefEntry method = customAttributeType.getMethod();
@@ -193,11 +195,6 @@ public class CustomAttributeValueSignature extends Signature {
 		
 		//read the name of the argument
 		String name = readSerString();
-		
-		
-		//check if the type is defined in the same assembly:
-		String typeNamespace = fieldOrPropertyTypeRef.getNamespace();
-		Namespace[] namespacesInAssembly = metaModel.module[0].getNamespaces();
 		
 		TypeInstance instance = fixedArgument(customAttribute, fieldOrPropertyTypeRef);
 		targetList.add(new Pair<String, Instance>(name, instance));
