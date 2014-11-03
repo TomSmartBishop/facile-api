@@ -1010,7 +1010,7 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 				//check if there is an assembly reference
 				for(Assembly assembly : directory.getReferenceAssemblies()) {
 					for(Type type : assembly.getAllTypes()) {
-						if(type.getFullQualifiedName().equals(typeRef.getFullQualifiedName())) {
+						if(type.getName()!=null && type.getFullQualifiedName().equals(typeRef.getFullQualifiedName())) {
 							int estimatedSize = estimateEnumSizeFromTypeFields(backupBlobIndex, type);
 							if(estimatedSize!=0)
 								return readEnum(backupBlobIndex, index, estimatedSize);
