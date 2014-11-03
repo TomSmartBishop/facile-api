@@ -4,6 +4,7 @@ import at.pollaknet.api.facile.exception.InvalidSignatureException;
 import at.pollaknet.api.facile.metamodel.entries.MethodSpecEntry;
 import at.pollaknet.api.facile.metamodel.entries.TypeSpecEntry;
 import at.pollaknet.api.facile.symtab.BasicTypesDirectory;
+import at.pollaknet.api.facile.symtab.symbols.Parameter;
 
 
 public class MethodSpecSignature extends Signature {
@@ -27,7 +28,15 @@ public class MethodSpecSignature extends Signature {
 		
 		TypeSpecEntry typeSpec = new TypeSpecEntry();
 		typeSpec.setAsGenericInstance(true);
-		typeSpec.setGenericArguments(typeArray());
+		Parameter[] genericParameters = null;
+		if(methodSpec.getMethod()!=null && methodSpec.getMethod().getMethod()!=null)
+			genericParameters = methodSpec.getMethod().getMethod().getGenericParameters();
+
+		typeSpec.setGenericArguments(typeArray(genericParameters));
+		
+//		if(typeSpec.getName()==null) {
+//			typeSpec.setName(Signature.UNRESOLVED_GENERIC_TYPE_REF_NAME);
+//		}
 		
 		directory.registerEmbeddedTypeSpec(typeSpec);
 		methodSpec.getMethod().addGenericInstance(typeSpec);

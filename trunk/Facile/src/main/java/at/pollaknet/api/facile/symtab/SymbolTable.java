@@ -1,5 +1,11 @@
 package at.pollaknet.api.facile.symtab;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import at.pollaknet.api.facile.FacileReflector;
 import at.pollaknet.api.facile.code.CilContainer;
 import at.pollaknet.api.facile.code.MethodBody;
@@ -48,16 +54,12 @@ import at.pollaknet.api.facile.symtab.signature.PropertyEntrySignature;
 import at.pollaknet.api.facile.symtab.signature.Signature;
 import at.pollaknet.api.facile.symtab.signature.TypeSpecSignature;
 import at.pollaknet.api.facile.symtab.symbols.Method;
+import at.pollaknet.api.facile.symtab.symbols.Parameter;
 import at.pollaknet.api.facile.symtab.symbols.Type;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
+import at.pollaknet.api.facile.symtab.symbols.TypeSpec;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.ResolutionScope;
 import at.pollaknet.api.facile.util.ByteReader;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -194,13 +196,7 @@ public class SymbolTable {
 		
 		connectExportedType();
 
-		//this is a temporary solution:
-		for(ParamEntry param: metaModel.param)
-			param.linkGenericNameToType();
-				
-		for(TypeSpecEntry typeSpec: metaModel.typeSpec) {
-			typeSpec.propagateGenericArguments();
-		}
+		connectGenericTypeNames();
 		
 		connectSignatureEmbeddedTypes(metaModel.typeDef);
 		connectSignatureEmbeddedTypes(metaModel.typeRef);
@@ -210,11 +206,79 @@ public class SymbolTable {
 		TypeSpecEntry [] signatureEmbeddedTypeSpecs = directory.getEmbeddedTypeSpecs().toArray(new TypeSpecEntry [] {});
 		
 		connectSignatureEmbeddedTypes(signatureEmbeddedTypeSpecs);
-				
+		
+//		resolvedDelayedGenerics(metaModel.typeSpec);
+//		resolvedDelayedGenerics(signatureEmbeddedTypeSpecs);
+
 		finalizeAssembly(signatureEmbeddedTypeSpecs);
 		
 		//IMPROVE: remove unused data structures (initial byte buffer - depends on lazy loading)
 	}
+
+	public void connectGenericTypeNames() {
+		for(ParamEntry param: metaModel.param)
+			param.linkGenericNameToType();
+				
+		for(TypeSpecEntry typeSpec: metaModel.typeSpec) {
+			typeSpec.propagateGenericArguments();
+		}
+		
+//		for(MethodDefEntry methodDefEntry: metaModel.methodDef) {
+//			Parameter param = methodDefEntry.getMethodSignature().getReturnParameter();
+//			if(param==null) {
+//				int z=0;
+//				z++;
+//			} else if(param.getTypeRef()!=null && param.getTypeRef().getName()!=null && param.getTypeRef().getName().equals(Signature.UNRESOLVED_GENERIC_TYPE_REF_NAME)) {
+//				int t=0;
+//				t++;
+//			}
+//		}
+		
+		//fixup method specs
+		for(MethodSpecEntry methodSpecEntry: metaModel.methodSpec) {
+			Method method = methodSpecEntry.getMethod().getMethod();
+			
+			if(method!=null) {
+				Parameter [] genericParams = method.getGenericParameters();
+				if(genericParams.length>0) {
+					TypeRef typeRef = method.getMethodSignature().getReturnType(); //return getReturnParameter could be null!!!! Needs docu improvement
+					if(typeRef!=null) {
+						TypeSpecEntry typeSpecEntry = (TypeSpecEntry)typeRef.getTypeSpec();
+						if(typeSpecEntry!=null && typeSpecEntry.isGenericInstance() && (typeSpecEntry.getName()==null )) {
+							//|| typeSpecEntry.getName().equals(Signature.UNRESOLVED_GENERIC_TYPE_REF_NAME))) {
+							typeSpecEntry.setName(genericParams[0].getName());
+						}
+					}
+					
+					TypeSpec [] genericInstances = method.getGenericInstances();
+					
+					if(genericInstances.length>0) {
+						for(int i=0;i<genericInstances.length;i++) {
+							if(i<genericParams.length && (genericInstances[i].getName()==null)) {
+								//|| genericInstances[i].getName().equals(Signature.UNRESOLVED_GENERIC_TYPE_REF_NAME))) {
+								((TypeSpecEntry)genericInstances[i]).setName(genericParams[i].getName());
+							}
+						}
+					}
+				}
+				
+			}
+		}
+	}
+	
+//	private static void resolvedDelayedGenerics(TypeRefEntry types[]) {
+//		for(TypeRefEntry type: types) {
+//
+//			if(type.getName()==null && type.getTypeSpec()!=null && type.getTypeSpec().isGenericInstance()) {
+//				int j=0;
+//				j++;
+//			}
+//			else if(type.getName()!=null && type.getName().equals(Signature.UNRESOLVED_GENERIC_TYPE_REF_NAME)) {
+//				int j=0;
+//				j++;
+//			}
+//		}
+//	}
 
 	private void connectMethodImpls() {
 		for(MethodImplEntry m: metaModel.methodImpl) {
@@ -745,7 +809,7 @@ public class SymbolTable {
 			}
 		}
 		
-		//type contain type def's and type ref's, so they have no own name space
+		//type spec contain type def's and type ref's, so they have no own name space
 		for(TypeSpecEntry typeSpec: metaModel.typeSpec) {
 			try {
 				TypeSpecSignature.decodeAndAttach(directory, typeSpec);

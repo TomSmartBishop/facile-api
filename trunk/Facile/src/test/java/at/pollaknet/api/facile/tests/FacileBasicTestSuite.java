@@ -9,6 +9,7 @@ import at.pollaknet.api.facile.tests.assemblies.FacileMscorlibV2_0_50727_832Test
 import at.pollaknet.api.facile.tests.assemblies.FacileMscorlibV4_0_30319Tests;
 import at.pollaknet.api.facile.tests.assemblies.FacileMscorlibV4_0_4_0_0_0Tests;
 import at.pollaknet.api.facile.tests.assemblies.FacileNativeTests;
+import at.pollaknet.api.facile.tests.assemblies.FacileReferenceTests;
 import at.pollaknet.api.facile.tests.utils.ArrayUtilsTest;
 import at.pollaknet.api.facile.tests.utils.ByteReaderTests;
 import at.pollaknet.api.facile.tests.utils.IndexDecoderTests;
@@ -31,8 +32,10 @@ public class FacileBasicTestSuite {
 		suite.addTestSuite(FacileMscorlibV2_0_31005_0Tests.class);
 		suite.addTestSuite(FacileMscorlibV2_0_50727_832Tests.class);
 		suite.addTestSuite(FacileMscorlibV2_0_50727_1433Tests.class);
-		suite.addTestSuite(FacileMscorlibV4_0_4_0_0_0Tests.class);
 		suite.addTestSuite(FacileMscorlibV4_0_30319Tests.class);
+		suite.addTestSuite(FacileMscorlibV4_0_4_0_0_0Tests.class);
+		
+		suite.addTestSuite(FacileReferenceTests.class);
 		
 		suite.addTestSuite(FacileMscorlibGeneralAPITests.class);
 		suite.addTestSuite(FacileNativeTests.class);
