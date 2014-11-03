@@ -11,6 +11,7 @@ import at.pollaknet.api.facile.symtab.BasicTypesDirectory;
 import at.pollaknet.api.facile.symtab.TypeInstance;
 import at.pollaknet.api.facile.symtab.TypeKind;
 import at.pollaknet.api.facile.symtab.symbols.Field;
+import at.pollaknet.api.facile.symtab.symbols.Parameter;
 import at.pollaknet.api.facile.symtab.symbols.Type;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.symtab.symbols.TypeSpec;
@@ -26,6 +27,8 @@ import java.util.logging.Logger;
 
 public abstract class Signature extends TypeKind {
 
+	//public final static String UNRESOLVED_GENERIC_TYPE_REF_NAME = "<RESOLVE_DELAYED>";
+	
 	public final static int ELEMENT_TYPE_MODIFIER 		= 0x40; //Or d with following element types
 	public final static int ELEMENT_TYPE_SENTINEL 		= 0x41; //Sentinel for vararg method signature
 	public final static int ELEMENT_TYPE_PINNED 		= 0x45; //Denotes a local variable that points at a pinned object
@@ -212,7 +215,8 @@ public abstract class Signature extends TypeKind {
 				genericNumber = decodeIntegerInSignature();
 				assert(genericNumber>=0);
 
-				//IMPROVE: can we assign the name of the generic parameter here...?
+				//FIXME: can we assign the name of the generic parameter here...?
+				//enclosingType.setName(Signature.UNRESOLVED_GENERIC_TYPE_REF_NAME);
 				
 				enclosingType.setAsGenericParameter(genericNumber, belongsToMethod);
 				break;
@@ -454,7 +458,8 @@ public abstract class Signature extends TypeKind {
 			plainType = plainType();
 
 		if (plainType != null) {
-			paramEntry.setTypeRef(plainType);
+			returnType.setEnclosedTypeRef(plainType);
+			paramEntry.setTypeRef(returnType);
 		} else {
 			type(returnType);
 			directory.registerEmbeddedTypeSpec(returnType);
@@ -571,7 +576,11 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 				nextToken();
 				typeDefOrRefEncoded(enclosingType);
 				
-				enclosingType.setGenericArguments(typeArray());
+				enclosingType.setGenericArguments(typeArray(null));
+				
+//				if(enclosingType.getName()==null) {
+//					enclosingType.setName(Signature.UNRESOLVED_GENERIC_TYPE_REF_NAME);
+//				}
 				break;
 			}
 				
@@ -586,7 +595,7 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 	 * @return An array of type specifications as
 	 * {@link at.pollaknet.api.facile.symtab.symbols.TypeRef}.
 	 */
-	protected TypeRefEntry[] typeArray() {
+	protected TypeRefEntry[] typeArray(Parameter[] genericParameters) {
 		int count = decodeIntegerInSignature();
 
 		TypeRefEntry genericTypes[] = new TypeRefEntry[count];
@@ -603,7 +612,17 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 				
 				//TODO:check if this is correct:
 				directory.registerEmbeddedTypeSpec(typeSpec);
+				
 			}
+			if(genericTypes[i].getName()==null) {
+				if(genericParameters!=null && genericParameters.length>i) {
+					genericTypes[i].setName(genericParameters[i].getName());
+				} 
+//				else {
+//					genericTypes[i].setName(UNRESOLVED_GENERIC_TYPE_REF_NAME);
+//				}
+			}
+			
 		}
 		return genericTypes;
 	}
@@ -666,7 +685,8 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 			plainType = plainType();
 
 		if (plainType != null) {
-			paramEntry.setTypeRef(plainType);
+			enclosingType.setEnclosedTypeRef(plainType);
+			paramEntry.setTypeRef(enclosingType);
 		} else {
 			type(enclosingType);
 			assert (enclosingType != null);

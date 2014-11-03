@@ -1,6 +1,9 @@
 package at.pollaknet.api.facile.metamodel.entries;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasCustomAttribute;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.ITypeDefOrRef;
 import at.pollaknet.api.facile.renderer.LanguageRenderer;
@@ -13,9 +16,6 @@ import at.pollaknet.api.facile.symtab.symbols.aggregation.ResolutionScope;
 import at.pollaknet.api.facile.symtab.symbols.scopes.ModuleRef;
 import at.pollaknet.api.facile.util.ArrayUtils;
 import at.pollaknet.api.facile.util.ByteReader;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
@@ -62,7 +62,7 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 
 	@Override
 	public void setName(String name) {
-		if(this.name==null) {
+		if(this.name==null) {//||this.name.equals(Signature.UNRESOLVED_GENERIC_TYPE_REF_NAME)) {
 //			if(enclosedType!=null)
 //				enclosedType.setName(name);
 //			else
@@ -582,17 +582,19 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 			TypeSpecEntry typeSpec = enclosedType.getTypeSpec();
 			TypeDefEntry type = enclosedType.getType();
 
+			//Improve: Evaluate if first case really happens
+			
 			if(typeSpec!=null) {
 				//repeat that step for type specs
 				typeSpec.propagateGenericArguments();
 				for(int i=0;i<this.genericArguments.length;++i) {
-					if(this.genericArguments[i].getName()==null)
+					if(this.genericArguments[i].getName()==null)//||this.genericArguments[i].getName().equals(Signature.UNRESOLVED_GENERIC_TYPE_REF_NAME))
 						this.genericArguments[i] = typeSpec.genericArguments[i];
 				}
 			} else if(type!=null) {
 				//in case the enclosed type is a type definition
 				for(int i=0;i<this.genericArguments.length;++i) {
-					if(this.genericArguments[i].getName()==null)
+					if(this.genericArguments[i].getName()==null)//||this.genericArguments[i].getName().equals(Signature.UNRESOLVED_GENERIC_TYPE_REF_NAME))
 						this.genericArguments[i].setName(type.getGenericParameters()[i].getName());
 				}
 			}

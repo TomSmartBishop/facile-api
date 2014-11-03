@@ -210,7 +210,6 @@ public class ParamEntry extends AbstractAttributable implements IHasCustomAttrib
 			Logger.getLogger(FacileReflector.LOGGER_NAME).log(
 					Level.SEVERE, "Unhandled generic type: " + type.getType().toString() + " for param " + toString());
 		}
-		
 
 		if(typeSpec==null)
 			return;
@@ -218,7 +217,6 @@ public class ParamEntry extends AbstractAttributable implements IHasCustomAttrib
 		//dig down to the most inner type spec
 		typeSpec = typeSpec.getMostInnerEnclosedTypeSpec();
 
-		
 		//in case the this is a generic method parameter (not a generic parameter of the owner type)
 		if(typeSpec.isGenericMethodParameter()) {
 			Parameter [] genericMethodParams = owner.getGenericParameters();
@@ -252,6 +250,28 @@ public class ParamEntry extends AbstractAttributable implements IHasCustomAttrib
 		//"is generic" applies for members like 'public LinkedList<T> List', where
 		//"is generic instance" is true for 'public T Node'
 		if(typeSpec.isGenericInstance()||typeSpec.isGeneric()) {
+			
+			//(1)
+			if(typeSpec.getGenericArguments()!=null) {
+				int genericIndexHelper = 0;
+				for(TypeRefEntry t : typeSpec.getGenericArguments()) {
+					TypeSpecEntry enclosedTypeSpec = typeSpec.getTypeSpec();
+					if(enclosedTypeSpec!=null) {
+						TypeRefEntry typeRefEntry = enclosedTypeSpec.getMostInnerEnclosedTypeSpec().getEnclosedTypeRef();
+						TypeDefEntry typeDefEntry = typeRefEntry!=null ? typeRefEntry.getType() : null;
+						if(typeDefEntry!=null) {
+							GenericParamEntry[] genericParams = typeDefEntry.getGenericParameters();
+								
+							if(genericParams!=null && genericIndexHelper<genericParams.length &&
+									(t.getName()==null)) {
+													 //|| t.getName().equals(Signature.UNRESOLVED_GENERIC_TYPE_REF_NAME))) {
+								t.setName(genericParams[genericIndexHelper].getName());
+							}
+						}
+					}
+					genericIndexHelper++;
+				}
+			}
 			for(Parameter param : ownerType.getGenericParameters()) {
 				int genericNumber = param.getNumber();
 					
@@ -259,12 +279,26 @@ public class ParamEntry extends AbstractAttributable implements IHasCustomAttrib
 					typeSpec.setName(param.getName());
 					break;
 				} else if (typeSpec.isGeneric()) {
+					//this seems to be handled entirely by (1)
 					TypeRefEntry[] genericArguments = typeSpec.getGenericArguments();
 					
-					if(genericNumber<genericArguments.length && genericArguments[genericNumber].getName()==null) {
+					if(genericNumber<genericArguments.length && (genericArguments[genericNumber].getName()==null)) {
+							// || genericArguments[genericNumber].getName().equals(Signature.UNRESOLVED_GENERIC_TYPE_REF_NAME))) {
 						genericArguments[genericNumber].setName(param.getName());
 					}
 					//no break in this case since there could be multiple generic parameter: Map<K,V>
+					
+//					if(param.getTypeRef()!=null && param.getTypeRef().getName()!=null && param.getTypeRef().getName().equals(Signature.UNRESOLVED_GENERIC_TYPE_REF_NAME)) {
+//						int z=0;
+//						z++;
+//					}
+					
+//					for(TypeRefEntry tre : genericArguments) {
+//						if(tre.getTypeRef()!=null && tre.getTypeRef().getName()!=null && tre.getTypeRef().getName().equals(Signature.UNRESOLVED_GENERIC_TYPE_REF_NAME)) {
+//							int z=0;
+//							z++;
+//						}
+//					}
 				}
 			}
 		}

@@ -56,7 +56,7 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 	}
 
 	public void setName(String name) {
-		assert(this.name==null);
+		assert(this.name==null);//||this.name.equals(Signature.UNRESOLVED_GENERIC_TYPE_REF_NAME));
 		this.name = name;
 	}
 
