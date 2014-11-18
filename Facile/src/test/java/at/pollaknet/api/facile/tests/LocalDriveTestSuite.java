@@ -7,7 +7,7 @@ import junit.framework.TestSuite;
 public class LocalDriveTestSuite {
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Tests all files detected on drive C and D");
+		TestSuite suite = new TestSuite("Tests all files detected on drive A to Z and '/' on POSIX");
 		
 		//$JUnit-BEGIN$
 		

@@ -15,7 +15,9 @@ import junit.framework.TestCase;
 
 public class TestGACFusion extends TestCase {
 
-	private final static String GAC_ABOLUTE_PATH ="C:/WINDOWS/assembly";
+	private final static String GAC_WIN_ABOLUTE_PATH ="C:/WINDOWS/assembly";
+	private final static String GAC_OSX_PATH_PREFIX ="/Library/Frameworks/Mono.framework/Versions";
+	private final static String ALL_OSX_PATH_POSTFIX ="/lib/mono";
 	
 	private static ArrayList<String> assemblies = null;
 
@@ -38,7 +40,23 @@ public class TestGACFusion extends TestCase {
 				}
 			};
 			
-			addFiles(GAC_ABOLUTE_PATH);
+			String operatingSystem = System.getProperty("os.name").toLowerCase();
+			
+			if (operatingSystem.startsWith("win")) {
+				addFiles(GAC_WIN_ABOLUTE_PATH);
+			} else if (operatingSystem.startsWith("mac")) {
+				
+				File currentDirectory = new File(GAC_OSX_PATH_PREFIX);
+				
+				//check all 'version' folders (eg. 3.10.0)
+				for(File file:currentDirectory.listFiles()) {
+					if(file.isDirectory()) {
+						addFiles(file.getAbsolutePath() + ALL_OSX_PATH_POSTFIX);
+					}
+				}
+			} else {
+				assertTrue("Please define operating system first!", false);
+			}
 		}
 	}
 
