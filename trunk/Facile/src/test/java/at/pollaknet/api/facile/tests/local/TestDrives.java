@@ -54,9 +54,17 @@ public class TestDrives extends TestCase {
 		
 		//System.out.println("PDB;Size (MiBi);Time (sec);Used Heap (MiBi);Used NonHeap (MiBi); Total Mem (MiBi);Nr. of Classes;Types;Name;;Nr;");
 		
-		for(char letter='A';letter<='Z';letter++) {
-			addAndInvokeFiles(letter + ":\\");
+		String operatingSystem = System.getProperty("os.name").toLowerCase();
+		
+		if (operatingSystem.startsWith("win")) {
+			for(char letter='A';letter<='Z';letter++) {
+				addAndInvokeFiles(letter + ":\\");
+			}
+		} else {
+			addAndInvokeFiles("/");
 		}
+		
+
 		
 		System.out.println("\nProcessed "+ fileCount + " files.");
 		System.out.println("(" + failedCount + " out of " + (failedCount+loadedAssemblyCount) + " assemblies failed)");
