@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Facile-api by TomSmartBishop</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Facile-api</h1>
+        <p>The Facile API is capable of reading (decompiling) .Net assemblies. Covering the metadata tables, the embedded types and methods, including their bodies as CIL (bytecode).</p>
+        <p class="view"><a href="https://github.com/TomSmartBishop/facile-api">View the Project on GitHub <small>TomSmartBishop/facile-api</small></a></p>
+        <ul>
+          <li><a href="https://github.com/TomSmartBishop/facile-api/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/TomSmartBishop/facile-api/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/TomSmartBishop/facile-api">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h2>
+<a id="background" class="anchor" href="#background" aria-hidden="true"><span class="octicon octicon-link"></span></a>Background</h2>
+
+<p>Initially the Facile API has been written to perform analysis of .Net assemblies, independent of the authoring .Net language.</p>
+
+<h2>
+<a id="support" class="anchor" href="#support" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support</h2>
+
+<p>Please make a donation if you like it:
+<img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=4XAU6DKYLW7VA"></p>
+
+<h2>
+<a id="code-sample" class="anchor" href="#code-sample" aria-hidden="true"><span class="octicon octicon-link"></span></a>Code Sample</h2>
+
+<pre><code>try {
+    //specify a path, where to find the assembly
+    String assemblyName = "mscorlib.dll";
+    String assemblyLocation = "../path/to/assembly/" + assemblyName;
+
+    //reflect and load the assembly using the Facile factory
+    Assembly assembly = Facile.loadAssembly(assemblyLocation);
+
+    //perform your custom operations on the assembly...
+    System.out.println("All defined types in " + assemblyName + ":\n");
+    for(Type type : assembly.getAllTypes()) {
+        System.out.println(type);
+    }
+} catch (Exception e) {
+    e.printStackTrace();
+}
+</code></pre>
+
+<h2>
+<a id="current-focus" class="anchor" href="#current-focus" aria-hidden="true"><span class="octicon octicon-link"></span></a>Current Focus</h2>
+
+<ul>
+<li>Bug issue#4 has been partially resolved with r77, but there is still some work to do (to be solved until 1.0.4).</li>
+<li>Fix all FIXME and TODO's in the code base</li>
+<li>IL Source Renderer for round tripping: basic version, but pretty poor</li>
+<li>C# Renderer: not implementation so far</li>
+<li>Moving from Java6 to Java8</li>
+</ul>
+
+<h3>
+<a id="other-issues" class="anchor" href="#other-issues" aria-hidden="true"><span class="octicon octicon-link"></span></a>Other Issues</h3>
+
+<ul>
+<li><p>FacileReader (RCP using the Facile API): There is an alpha version of that, see download section (still using API version 1.0.2). I might do a total re-write without Eclipse/RCP because of several plugin issues.</p></li>
+<li><p>Running CIL code in Java, emulating the VES: internal idea, collecting more infromation...</p></li>
+<li>Code analysis for uncaught exception: internal idea, collecting more infromation...</li>
+</ul>
+
+<h2>
+<a id="downloads" class="anchor" href="#downloads" aria-hidden="true"><span class="octicon octicon-link"></span></a>Downloads</h2>
+
+<ul>
+<li><p>The most recent stable API version as Java archive 
+(even though the master/trunk can be always seen as stable):
+<a href="http://facile-api.googlecode.com/files/at.pollaknet.apps.facile.reader-1.0.3.jar">http://facile-api.googlecode.com/files/at.pollaknet.apps.facile.reader-1.0.3.jar</a></p></li>
+<li><p>Using the Facile API for a decompiler application - FacileReader (alpha):
+<a href="http://facile-api.googlecode.com/files/FacileReader.zip">http://facile-api.googlecode.com/files/FacileReader.zip</a></p></li>
+</ul>
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/TomSmartBishop">TomSmartBishop</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-26399209-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
