@@ -1,0 +1,30 @@
+# Basics #
+
+This is my development setup, it should work for you too:
+
+  * Windows7
+  * JDK 1.6x
+  * Eclipse 3.7
+    * All required configurations can be found in the Eclipse 'Run' and 'External Tools' dialog.
+      * For 'External Tools' -> 'Run ILAsm' you need a binary of ILAsm (comes with Visual Studio)
+
+
+# Run Configurations in Eclipse #
+  * Facile (select assembly): Read a dedicated assembly (full refelction) - this configuration is good for debugging a specific assembly.
+  * Facile(select assembly and pdb): The same as before but allows the additional specification of a program debug database, so that it additionally process Visual Studio debug information.
+  * Facile IL Dump: Test configuration... will read the specifid assembly and writes it as decompiled ILAsm program to the console. I use it to test the ILAsmRender implmentation: If everything works correctly you can use this output to rebuild the program with ILAsm
+
+# Unit Test Configurations in Eclipse #
+  * Facile Basic Test Suite: Runs all basic unit tests (reading and decoding binary formats, decompiling all registered versions of mscorlib and some addtional basic tests)
+  * Facile GAC Test Suite: Reads (reflects, decompiles) all assemblies of your local Windows GAC. Errors will be dumped to the output...!
+  * Local Drive Test Suite: Will scann all drives and directories for assemblies and will decompile it. Errors will be dumped to the output...!
+
+Especially the last two configurations are good to test the coverage and make sure that the reflection is working as expected.
+
+# External Tools Configurations in Eclipse #
+  * Facile read output.txt: Opens a text editor to view the output of the last run, which is always dumped to output.txt - maybe you have to change the path or text editor of this configuration
+  * Run ILAsm (select IL file): Run ILAsm to test if the decompiled output of facile can be compiled again (round tripping) - this is still in development..!
+
+# Additional #
+
+Sometimes a program like Total Commader http://www.totalcmd.net/ is useful to copy assemblies from the GAC to a desired location!

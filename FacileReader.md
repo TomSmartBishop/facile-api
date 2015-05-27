@@ -1,0 +1,10 @@
+# Facile Reader #
+
+![http://facile-api.googlecode.com/files/facile_reader_logo.jpg](http://facile-api.googlecode.com/files/facile_reader_logo.jpg)
+
+This is an early screenshot:
+
+![http://facile-api.googlecode.com/files/facile_reader_screenshot.gif](http://facile-api.googlecode.com/files/facile_reader_screenshot.gif)
+
+There is an alpha version of Facile Reader:
+http://facile-api.googlecode.com/files/FacileReader.zip

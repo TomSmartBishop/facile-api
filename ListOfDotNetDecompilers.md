@@ -1,0 +1,90 @@
+# List of .Net Decompilers #
+
+## Dotnet IL Editor (DILE) ##
+I didn't test it by myself (so far), but it looks promising: http://sourceforge.net/projects/dile/
+Hope to find some time to do that soon.
+
+## dotPeek ##
+
+dotPeek is a new free .NET decompiler from JetBrains
+
+http://confluence.jetbrains.net/display/NETPEEK
+
+## .NET CodeReflect ##
+
+DevExtras .NET CodeReflect is a simple yet advanced free .NET assembly browser/decompiler. It is a free alternative to Red Gate's/Lutz Roeder's .NET Reflector.
+
+In case of obfuscated method bodies the C# implementation will be skiped. IL code looks good.
+
+http://www.devextras.com/decompiler/
+
+
+## RedGate Reflector ##
+
+Long time ago this was known as Lutz Roeder's .Net Reflector.
+
+http://www.reflector.net/
+
+
+## telerik JustDecompile ##
+
+A nice feature of this decompiler is that it can create a Visual Studio C# project file for you. It is not always possible, but still a good idea.
+
+My first tests with this tool showed that the C# code view often fails in case obfuscated code, where you will see exceptions like this:
+<font color='#ff0000'>
+<pre>
+call<br>
+at Telerik.JustDecompiler.Decompiler.StatementDecompiler.(Instruction instruction)<br>
+at Telerik.JustDecompiler.Decompiler.StatementDecompiler.(CatchHandlerData catch_data)<br>
+at Telerik.JustDecompiler.Decompiler.StatementDecompiler.(ExceptionHandlerData data, TryStatement try)<br>
+at Telerik.JustDecompiler.Decompiler.StatementDecompiler.(ExceptionHandlerData data)<br>
+at Telerik.JustDecompiler.Decompiler.StatementDecompiler.(InstructionBlock block, InstructionBlock previous)<br>
+at Telerik.JustDecompiler.Decompiler.StatementDecompiler.(InstructionBlock block)<br>
+at Telerik.JustDecompiler.Decompiler.StatementDecompiler.()<br>
+</pre>
+</font>
+
+But the IL view works properly...
+
+http://www.telerik.com/products/decompiler.aspx
+
+## IL.View ##
+Web-based decompiler, as source on github: https://github.com/DenisVuyka/IL.View
+I have to take a closer look at that some time soon...
+
+## ILSpy ##
+
+ILSpy is the open-source .NET assembly browser and decompiler.
+
+Development started after Red Gate announced that the free version of .NET Reflector would cease to exist by end of February 2011.
+
+http://wiki.sharpdevelop.net/ilspy.ashx
+
+
+## Dis# ##
+
+The tool looks already a bit older, but has a nice feature called 'in-place editor', where you can rename variables...
+
+http://netdecompiler.com/index.html
+
+
+## ILDasm ##
+
+Microsoft's disassembler.
+
+http://msdn.microsoft.com/en-us/library/f7dy01k1(v=vs.80).aspx
+
+## Assembly Analyzer ##
+
+Another decompiler a la "Lutz Roeder": http://asmanalyzer.codeplex.com/
+No test results until today... (sorry)
+
+## LSW DotNet-Reflection-Browser ##
+
+The interresting thing about this software is, that it (like facile) isn't written in a .Net language and does not rely at any point on the .Net reflection mechanism. According to their website it's written in SmallTalk.
+
+http://www.lesser-software.com/lswdnrb.htm
+
+## Spices .Net Decompiler ##
+
+http://www.9rays.net/Category/54-spicesnet-decompiler.aspx

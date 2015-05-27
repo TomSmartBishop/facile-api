@@ -1,0 +1,63 @@
+# Useful Code #
+
+I just pasted some useful code here in order to have a starting point. Please also use the extensive JavaDoc in the download section.
+
+## Inspect All Types of an Assembly ##
+```
+try {
+    //specify a path, where to find the assembly
+    String assemblyName = "mscorlib.dll";
+    String assemblyLocation = "../path/to/assembly/" + assemblyName;
+
+    //reflect and load the assembly using the Facile factory
+    Assembly assembly = Facile.loadAssembly(assemblyLocation);
+		
+    //perform your custom operations on the assembly...
+    System.out.println("All defined types in " + assemblyName + ":\n");
+    for(Type type : assembly.getAllTypes()) {
+        System.out.println(type);
+    }
+} catch (Exception e) {
+    e.printStackTrace();
+}
+
+```
+
+## Make use of the ILDasmRenderer ##
+```
+
+try {
+	//create a reflector object for later access (ILAsmRenderer)
+	FacileReflector facileReflector = 
+		Facile.load("../somewhere/myAssembly.exe", "../somewhere/myOptionalProgramDebugDatabase.pdb");
+	
+	//load the assembly
+	Assembly assembly = facileReflector.loadAssembly();
+	
+	if(assembly!=null) {
+		//output some useful information
+		System.out.println(assembly.toExtendedString());
+		
+		//generate output
+		ILAsmRenderer renderer = new ILAsmRenderer(facileReflector);
+		renderer.renderSourceFilesToDirectory(assembly, System.getProperty("user.dir"));
+		
+		//print out the location of the files
+		System.out.println("Generated decompiled files in: " + System.getProperty("user.dir"));
+	} else {
+		System.out.println("File maybe contains only resources...");
+	}
+	
+} catch (DotNetContentNotFoundException e) {
+	//maybe you selected a native executeable...
+	System.out.println("No .Net content found...");
+	e.printStackTrace();
+} catch (IOException e) {
+	//in case of missing file acces rights or similar problems
+	e.printStackTrace();
+} catch (Exception e) {
+	//everything else
+	e.printStackTrace();
+}
+
+```
