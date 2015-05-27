@@ -35,29 +35,29 @@
 <h2>
 <a id="support" class="anchor" href="#support" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support</h2>
 
-<p>Please make a donation if you like it:
-<img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=4XAU6DKYLW7VA"></p>
+<p>Please make a donation if you like it:</p>
+
+<p><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=4XAU6DKYLW7VA"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="Donate"></a></p>
 
 <h2>
 <a id="code-sample" class="anchor" href="#code-sample" aria-hidden="true"><span class="octicon octicon-link"></span></a>Code Sample</h2>
 
-<pre><code>try {
-    //specify a path, where to find the assembly
-    String assemblyName = "mscorlib.dll";
-    String assemblyLocation = "../path/to/assembly/" + assemblyName;
+<div class="highlight highlight-java"><pre><span class="pl-k">try</span> {
+    <span class="pl-c">//specify a path, where to find the assembly</span>
+    <span class="pl-smi">String</span> assemblyName <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>mscorlib.dll<span class="pl-pds">"</span></span>;
+    <span class="pl-smi">String</span> assemblyLocation <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>../path/to/assembly/<span class="pl-pds">"</span></span> <span class="pl-k">+</span> assemblyName;
 
-    //reflect and load the assembly using the Facile factory
-    Assembly assembly = Facile.loadAssembly(assemblyLocation);
+    <span class="pl-c">//reflect and load the assembly using the Facile factory</span>
+    <span class="pl-smi">Assembly</span> assembly <span class="pl-k">=</span> <span class="pl-smi">Facile</span><span class="pl-k">.</span>loadAssembly(assemblyLocation);
 
-    //perform your custom operations on the assembly...
-    System.out.println("All defined types in " + assemblyName + ":\n");
-    for(Type type : assembly.getAllTypes()) {
-        System.out.println(type);
+    <span class="pl-c">//perform your custom operations on the assembly...</span>
+    <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>All defined types in <span class="pl-pds">"</span></span> <span class="pl-k">+</span> assemblyName <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>:<span class="pl-cce">\n</span><span class="pl-pds">"</span></span>);
+    <span class="pl-k">for</span>(<span class="pl-smi">Type</span> type <span class="pl-k">:</span> assembly<span class="pl-k">.</span>getAllTypes()) {
+        <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(type);
     }
-} catch (Exception e) {
-    e.printStackTrace();
-}
-</code></pre>
+} <span class="pl-k">catch</span> (<span class="pl-smi">Exception</span> e) {
+    e<span class="pl-k">.</span>printStackTrace();
+}</pre></div>
 
 <h2>
 <a id="current-focus" class="anchor" href="#current-focus" aria-hidden="true"><span class="octicon octicon-link"></span></a>Current Focus</h2>
@@ -83,11 +83,17 @@
 <a id="downloads" class="anchor" href="#downloads" aria-hidden="true"><span class="octicon octicon-link"></span></a>Downloads</h2>
 
 <ul>
-<li><p>The most recent stable API version as Java archive 
-(even though the master/trunk can be always seen as stable):
-<a href="http://facile-api.googlecode.com/files/at.pollaknet.apps.facile.reader-1.0.3.jar">http://facile-api.googlecode.com/files/at.pollaknet.apps.facile.reader-1.0.3.jar</a></p></li>
-<li><p>Using the Facile API for a decompiler application - FacileReader (alpha):
-<a href="http://facile-api.googlecode.com/files/FacileReader.zip">http://facile-api.googlecode.com/files/FacileReader.zip</a></p></li>
+<li>
+<p>The most recent stable API version as Java archive 
+(even though the master/trunk can be always seen as stable):</p>
+
+<p><a href="https://github.com/TomSmartBishop/facile-api/blob/1.0.3/Facile/at.pollaknet.api.facile_1.0.3.jar">https://github.com/TomSmartBishop/facile-api/blob/1.0.3/Facile/at.pollaknet.api.facile_1.0.3.jar</a></p>
+</li>
+<li>
+<p>Using the Facile API for a decompiler application - FacileReader (alpha):</p>
+
+<p><a href="http://facile-api.googlecode.com/files/FacileReader.zip">http://facile-api.googlecode.com/files/FacileReader.zip</a></p>
+</li>
 </ul>
       </section>
     </div>
