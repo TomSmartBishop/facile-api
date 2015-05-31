@@ -1,18 +1,23 @@
 package at.pollaknet.api.facile.symtab;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import at.pollaknet.api.facile.header.cli.stream.BlobStream;
 import at.pollaknet.api.facile.metamodel.MetadataModel;
-import at.pollaknet.api.facile.metamodel.entries.*;
+import at.pollaknet.api.facile.metamodel.entries.AssemblyRefEntry;
+import at.pollaknet.api.facile.metamodel.entries.GenericParamEntry;
+import at.pollaknet.api.facile.metamodel.entries.StandAloneSigEntry;
+import at.pollaknet.api.facile.metamodel.entries.TypeDefEntry;
+import at.pollaknet.api.facile.metamodel.entries.TypeRefEntry;
+import at.pollaknet.api.facile.metamodel.entries.TypeSpecEntry;
 import at.pollaknet.api.facile.symtab.signature.Signature;
 import at.pollaknet.api.facile.symtab.symbols.Type;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.ResolutionScope;
 import at.pollaknet.api.facile.symtab.symbols.scopes.Assembly;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -461,11 +466,11 @@ public class BasicTypesDirectory {
 	}
 
 	/**
-	 * Returns the blob stream which is sometimes required to continue signature parsing.
-	 * @return The {@link at.pollaknet.api.facile.header.cli.stream.BlobStream} object of the assembly.
+	 * Returns a blob from the blob stream which is sometimes required to continue signature parsing.
+	 * @return The {@code byte []} object of the assembly.
 	 */
-	public BlobStream getBlobStream() {
-		return blobStream;
+	public byte [] getBlob(int index) {
+		return blobStream.getBlob(index);
 	}
 
 	public void registerEmbeddedTypeSpec(TypeSpecEntry embeddedTypeSpec) {

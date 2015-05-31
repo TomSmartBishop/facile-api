@@ -119,6 +119,7 @@ public class Facile {
 			else if(args[i].endsWith(".exe") ||
 				    args[i].endsWith(".dll") ||
 					args[i].endsWith(".netmodule") ||
+					args[i].endsWith(".winmd") ||
 					args[i].endsWith(".mcl") ) {
 				if(assemblyPath==null) {
 					assemblyPath = args[i];

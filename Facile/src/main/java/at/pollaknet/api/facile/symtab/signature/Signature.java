@@ -926,7 +926,7 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 		
 		while(currentIndex+requiredAdditionalLength>binarySignature.length) {
 			//expand
-			byte [] extensionblob = directory.getBlobStream().getBlob(backupBlobIndex+binarySignature.length+iteration);
+			byte [] extensionblob = directory.getBlob(backupBlobIndex+binarySignature.length+iteration);
 			assert(extensionblob!=null);
 			byte [] newSignature = new byte[binarySignature.length+extensionblob.length];
 			System.arraycopy(binarySignature, 0, newSignature, 0, binarySignature.length);
