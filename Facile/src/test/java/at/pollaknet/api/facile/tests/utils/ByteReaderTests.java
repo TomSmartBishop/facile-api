@@ -208,6 +208,9 @@ public class ByteReaderTests extends TestCase {
 			//build a string out of a byte array, which has an UTF16 encoding with the order low byte before high byte
 			assertEquals(new String(ByteReader.getUTF16PrepairedBytes(byteArray, 3, 10),"UTF16"),"*BSJB");
 			assertEquals(new String(ByteReader.getUTF16PrepairedBytes(byteArray, 25, 20),"UTF16"),"v2.0.50727");
+			
+			//test an invalid UTF16 length of 9 bytes (will succeed here since the missing byte is filled up with a zero)
+			assertEquals(new String(ByteReader.getUTF16PrepairedBytes(byteArray, 3, 9),"UTF16"),"*BSJB");
 		} catch (UnsupportedEncodingException e) {
 			fail(e.getMessage());
 		}

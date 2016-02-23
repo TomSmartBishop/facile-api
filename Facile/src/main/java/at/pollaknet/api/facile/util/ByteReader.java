@@ -235,13 +235,26 @@ public class ByteReader {
 			return null;
 		
 		byte [] buffer = ByteReader.getBytes(data, offset, length);
-		byte swapElement;
 
-		if(buffer==null)
+		if(buffer==null) //length is never 0 
 			return null;
 		
-		assert((buffer.length&1)==0);
+		//the supplied length is not valid for UTF16, so will append a byte to make it valid
+		if ((buffer.length&1)!=0)
+		{
+			byte [] extendedBuffer = new byte[buffer.length+1];
+			
+			for(int i=0; i<buffer.length-1; i+=2) {
+				extendedBuffer[i] = buffer[i+1];
+				extendedBuffer[i+1] = buffer[i];
+			}
+			extendedBuffer[buffer.length-1] = 0x00;
+			extendedBuffer[buffer.length] = buffer[buffer.length-1];
+			
+			return extendedBuffer;
+		}
 		
+		byte swapElement;
 		for(int i=0; i<buffer.length; i+=2) {
 			swapElement = buffer[i];
 			buffer[i] = buffer[i+1];

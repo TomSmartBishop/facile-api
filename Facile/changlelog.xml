@@ -2,6 +2,7 @@
 
 <changelog name="Facile API">
   <version major="1" minor="0" fix="4">
+  	<changed>Made ByteReader.getUTF16PrepairedBytes more flexible to cope with byte arrays of uneven length</changed>
     <fixed>Fixed issue 4 (Fix generic method parameter names), however there seems to be still an edge-case remaining which is not cover by the current generics test case</fixed>
     <changed>Refactored the ILAsmRender and introduced the ILAsmFlagsRenderer</changed>
     <added>Extended the FacileReflector class to allow external references (addReferenceAssembly, addReferneceEnum) in order to resolve external enum sizes</added>

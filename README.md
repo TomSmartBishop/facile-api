@@ -80,10 +80,9 @@ There is an Eclipse project and a jardesc file in the repository which you can u
 All required configurations can be found in the Eclipse 'Run' and 'External Tools' dialog.
 For 'External Tools' -> 'Run ILAsm' you need a binary of ILAsm (comes with Visual Studio)
 Run Configurations in Eclipse.
-This is my development setup, it should work for you too:
-* Windows7
-* JDK 1.6x (any newer should work)
-* Eclipse 3.7
+The following configurations have been tested (others are for sure possible):
+- Windows7, JDK 1.6x, Eclipse 3.7~4.5
+- MacOsX, JDK 1.6x, Eclipse 3.7
 
 * Dev Configurations
 
