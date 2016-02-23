@@ -53,7 +53,7 @@ public class ModuleTable extends AbstractTable {
 		
 		if(generation[row]!=0) {
 			Logger logger = Logger.getLogger(FacileReflector.LOGGER_NAME);
-		    logger.log(Level.WARNING, "Unknown value " + generation[row] + " in \"generation\" attribute of the moule table.");
+		    logger.log(Level.WARNING, "Unknown value " + generation[row] + " in \"generation\" attribute of the moule table (reserved, default 0).");
 		}
 		
 		offset += readStringIndex(data, offset, nameStringIndex, row);
@@ -64,8 +64,14 @@ public class ModuleTable extends AbstractTable {
 		offset += readGuidIndex(data, offset, encBaseIdGuidIndex, row);
 		
 		//reserved, shall be zero:
-		assert(encIdGuidIndex[row] == 0);
-		assert(encBaseIdGuidIndex[row] == 0);
+		if(encIdGuidIndex[row]!=0) {
+			Logger logger = Logger.getLogger(FacileReflector.LOGGER_NAME);
+		    logger.log(Level.WARNING, "Unknown value " + encIdGuidIndex[row] + " in \"encIdGuidIndex\" attribute of the moule table (reserved, default 0).");
+		}
+		if(encBaseIdGuidIndex[row]!=0) {
+			Logger logger = Logger.getLogger(FacileReflector.LOGGER_NAME);
+		    logger.log(Level.WARNING, "Unknown value " + encBaseIdGuidIndex[row] + " in \"encIdGuidIndex\" attribute of the moule table (reserved, default 0).");
+		}
 		
 		rowSize = offset - rowSize;
 		

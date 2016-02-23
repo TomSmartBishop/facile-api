@@ -588,15 +588,13 @@ public class SymbolTable {
 		}
 	}
 	
-	private void connectModule() {
-		
-		//TODO: Handle assemblies with an invalid number of modules (e.g. more than 1)		
+	private void connectModule() {	
 		if(metaModel.module.length>0) {
 			assembly.setModule(metaModel.module[0]);
 			
-			//log stupid assemblies
+			//log multi module assemblies
 			if(metaModel.module.length>1) {
-				Logger.getLogger(FacileReflector.LOGGER_NAME).log(metaModel.module.length<1?Level.INFO:Level.SEVERE,
+				Logger.getLogger(FacileReflector.LOGGER_NAME).log(Level.SEVERE,
 						String.format("Unexpected number of module entries %d (allowed: 0 and 1).", metaModel.module.length));
 			}
 		}
@@ -616,7 +614,7 @@ public class SymbolTable {
 		if(metaModel.assembly.length>1) {
 			//TODO: Handling of multi module - multi assembly files
 			Logger.getLogger(FacileReflector.LOGGER_NAME).log(Level.SEVERE,
-					String.format("Unexpected number of assembly entries %d.", metaModel.assembly.length));
+					String.format("Unexpected number of assembly entries %d, multi assembly files are not supported yet. ", metaModel.assembly.length));
 		}
 		
 		assembly.setAssemblyOs(metaModel.assemblyOs);

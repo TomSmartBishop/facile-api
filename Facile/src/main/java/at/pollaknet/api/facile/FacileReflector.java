@@ -178,6 +178,7 @@ public class FacileReflector {
 		addReferneceEnum("System.Windows.Visibility", 					(byte) 1);
 		addReferneceEnum("System.Diagnostics.Tracing.EventKeywords",  	(byte) 8);
 		addReferneceEnum("MonoTouch.ObjCRuntime.Platform",  			(byte) 8);
+		addReferneceEnum("Microsoft.Diagnostics.Tracing.EventKeywords", (byte) 8);
 		
 		
 	    logger.info(String.format("Created Instance 0x%x", this.hashCode()));
