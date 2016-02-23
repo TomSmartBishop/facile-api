@@ -14,7 +14,9 @@ This is just code to get an idea of the API. Please also use the available JavaD
 
 ```
 try {
-    //specify a path, where to find the assembly String assemblyName = "mscorlib.dll"; String assemblyLocation = "../path/to/assembly/" + assemblyName;
+    //specify a path, where to find the assembly
+    String assemblyName = "mscorlib.dll";
+    String assemblyLocation = "../path/to/assembly/" + assemblyName;
 
     //reflect and load the assembly using the Facile factory
     Assembly assembly = Facile.loadAssembly(assemblyLocation);
@@ -34,8 +36,10 @@ try {
 
 ```
 try {
-    //create a reflector object for later access (ILAsmRenderer)\
-    FacileReflector facileReflector = Facile.load("../somewhere/myAssembly.exe", "../somewhere/myOptionalProgramDebugDatabase.pdb");
+    //create a reflector object for later access (ILAsmRenderer)
+    FacileReflector facileReflector =
+            Facile.load("../somewhere/myAssembly.exe",
+                        "../somewhere/myOptionalProgramDebugDatabase.pdb");
 
     //load the assembly
     Assembly assembly = facileReflector.loadAssembly();
@@ -46,10 +50,13 @@ try {
 
         //generate output
         ILAsmRenderer renderer = new ILAsmRenderer(facileReflector);
-        renderer.renderSourceFilesToDirectory(assembly, System.getProperty("user.dir"));
+        renderer.renderSourceFilesToDirectory(
+                assembly,
+                System.getProperty("user.dir"));
 
         //print out the location of the files
-        System.out.println("Generated decompiled files in: " + System.getProperty("user.dir"));
+        System.out.println("Generated decompiled files in: " +
+                System.getProperty("user.dir"));
     } else {
         System.out.println("File maybe contains only resources...");
     }
