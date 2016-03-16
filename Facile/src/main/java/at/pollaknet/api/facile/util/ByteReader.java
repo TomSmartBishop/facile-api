@@ -230,7 +230,7 @@ public class ByteReader {
 		return offset + (correction!=2 ? correction : 0);
 	}
 	
-	public static byte[] getUTF16PrepairedBytes(byte[] data, int offset, int length) {
+	public static byte[] getUTF16PreparedBytes(byte[] data, int offset, int length) {
 		if(data==null)
 			return null;
 		

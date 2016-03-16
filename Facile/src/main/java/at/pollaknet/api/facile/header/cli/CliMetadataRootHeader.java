@@ -47,6 +47,7 @@ public class CliMetadataRootHeader implements IDataHeader  {
 		versionStringLength = ByteReader.getUInt32(data, offset);	offset +=4;
 		
 		assert(versionStringLength<ByteReader.INT32_MAX_VAL);
+		assert(versionStringLength>0);
 		
 		versionString = new String(ByteReader.getBytes(data, offset, (int) versionStringLength));
 		offset += versionStringLength;
@@ -133,7 +134,7 @@ public class CliMetadataRootHeader implements IDataHeader  {
 			}
 		}
 							 
-		buffer.append("\n\n  Unoptimized Assembly: ." + isUnoptimized);
+		buffer.append("\n\n  Unoptimized Assembly: .").append(isUnoptimized);
 		
 		return buffer.toString();
 	}

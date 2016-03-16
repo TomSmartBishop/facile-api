@@ -103,9 +103,7 @@ public class Switch extends CilInstruction {
 		Switch other = (Switch) obj;
 		if (numCases != other.numCases)
 			return false;
-		if (!Arrays.equals(jumpTargets, other.jumpTargets))
-			return false;
-		return true;
+		return Arrays.equals(jumpTargets, other.jumpTargets);
 	}
 	
 	@Override

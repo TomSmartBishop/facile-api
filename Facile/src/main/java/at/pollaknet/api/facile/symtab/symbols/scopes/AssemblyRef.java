@@ -6,7 +6,7 @@ import at.pollaknet.api.facile.symtab.symbols.meta.AttributableSymbol;
 public interface AssemblyRef extends AttributableSymbol, ResolutionScope {
 	
 	public final static long FLAGS_ASSEMBLY_HOLDS_FULL_PUBLIC_KEY			= 0x0001;
-	public final static long FLAGS_ASSEMBLY_IS_SIDE_BY_SIDE_COMPAREABLE		= 0x0000;
+	public final static long FLAGS_ASSEMBLY_IS_SIDE_BY_SIDE_COMPARABLE		= 0x0000;
 	public final static long FLAGS_RESERVED									= 0x0030;
 	public final static long FLAGS_ASSEMBLY_IS_RETARGETABLE					= 0x0100;
 	public final static long FLAGS_JIT_COMPILE_TRACKING_ENABLE				= 0x8000;
@@ -31,7 +31,7 @@ public interface AssemblyRef extends AttributableSymbol, ResolutionScope {
 	public abstract int getBuildNumber();
 
 	/**
-	 * Returns the revision number of the assembl referencey.
+	 * Returns the revision number of the assembly reference.
 	 * @return The revision number as {@code int}.
 	 */
 	public abstract int getRevisionNumber();

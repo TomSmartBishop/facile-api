@@ -55,9 +55,7 @@ public class LdlocS extends CilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((LdlocS)obj).index!=index)
-			return false;
-		return true;
+		return ((LdlocS) obj).index == index;
 	}
 
 	@Override

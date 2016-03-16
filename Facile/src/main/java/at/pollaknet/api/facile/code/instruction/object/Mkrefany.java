@@ -49,9 +49,7 @@ public class Mkrefany extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Mkrefany)obj).token!=token)
-			return false;
-		return true;
+		return ((Mkrefany) obj).token == token;
 	}
 
 	@Override

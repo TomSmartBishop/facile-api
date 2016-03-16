@@ -51,9 +51,7 @@ public class Jmp extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Jmp)obj).token!=token)
-			return false;
-		return true;
+		return ((Jmp) obj).token == token;
 	}
 
 	@Override

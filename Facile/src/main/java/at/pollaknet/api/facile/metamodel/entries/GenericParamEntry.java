@@ -25,7 +25,7 @@ public class GenericParamEntry extends AbstractAttributable
 	private ITypeOrMethodDef owner;
 	private String name;
 	
-	private List<ITypeDefOrRef> typeConstraints = new ArrayList<ITypeDefOrRef>();
+	private List<ITypeDefOrRef> typeConstraints = new ArrayList<>();
 	private ITypeOrMethodDef deprecatedMethodOrTypeConstraint = null;
 
 	public int getNumber() {
@@ -191,9 +191,7 @@ public class GenericParamEntry extends AbstractAttributable
 //			return false;
         if (typeConstraints.size() != other.typeConstraints.size())
             return false;
-		if (!typeConstraints.equals(other.typeConstraints))
-		    return false;
-		return true;
+		return typeConstraints.equals(other.typeConstraints);
 	}
 	
 	@Override

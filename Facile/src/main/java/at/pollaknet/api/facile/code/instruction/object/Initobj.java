@@ -49,9 +49,7 @@ public class Initobj extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Initobj)obj).token!=token)
-			return false;
-		return true;
+		return ((Initobj) obj).token == token;
 	}
 
 	@Override

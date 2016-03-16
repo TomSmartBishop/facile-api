@@ -203,7 +203,8 @@ public class SymbolTable {
 		connectSignatureEmbeddedTypes(metaModel.typeSpec);
 		
 		//get the type specs collected during signature parsing
-		TypeSpecEntry [] signatureEmbeddedTypeSpecs = directory.getEmbeddedTypeSpecs().toArray(new TypeSpecEntry [] {});
+		ArrayList<TypeSpecEntry> var = directory.getEmbeddedTypeSpecs();
+		TypeSpecEntry [] signatureEmbeddedTypeSpecs = var.toArray(new TypeSpecEntry[var.size()]);
 		
 		connectSignatureEmbeddedTypes(signatureEmbeddedTypeSpecs);
 		
@@ -698,7 +699,7 @@ public class SymbolTable {
 	}
 	
 	private void connectTypes() {
-		HashMap<String, ArrayList<Type>> namespaceTypMap = new HashMap<String, ArrayList<Type>>();
+		HashMap<String, ArrayList<Type>> namespaceTypMap = new HashMap<>();
 		ArrayList<Type> currentTypesInNamespace;
 		String namespace;		
 		
@@ -723,7 +724,7 @@ public class SymbolTable {
 						metaModel.typeDef[index].setNamespace("");
 					currentTypesInNamespace = namespaceTypMap.get(namespace);
 					if(currentTypesInNamespace==null) {
-						currentTypesInNamespace = new ArrayList<Type>();
+						currentTypesInNamespace = new ArrayList<>();
 						namespaceTypMap.put(namespace, currentTypesInNamespace);
 					}
 					currentTypesInNamespace.add(metaModel.typeDef[index]);
@@ -739,7 +740,7 @@ public class SymbolTable {
 		int index=0;
 		for(ArrayList<Type> typesInNamespace: namespaceTypMap.values()) {
 			String nameOfNamespace = typesInNamespace.get(0).getNamespace();
-			TypeRef [] types = typesInNamespace.toArray(new Type[0]);
+			TypeRef [] types = typesInNamespace.toArray(new Type[typesInNamespace.size()]);
 			Arrays.sort(types);
 			namespaces[index] = new NamespaceContainer(	nameOfNamespace, types);
 			index++;
@@ -750,7 +751,7 @@ public class SymbolTable {
 		metaModel.module[0].setNamespaces(namespaces);
 		
 		//collect the name spaces of the reference types 
-		HashMap<ResolutionScope, HashMap<String, ArrayList<TypeRef>>> scopeMap = new HashMap<ResolutionScope, HashMap<String, ArrayList<TypeRef>>>();
+		HashMap<ResolutionScope, HashMap<String, ArrayList<TypeRef>>> scopeMap = new HashMap<>();
 		HashMap<String, ArrayList<TypeRef>> namespaceTypeRefMap = null;
 		ResolutionScope currentScope = null;
 		ArrayList<TypeRef> currentTypeRefNamespace = null;
@@ -765,7 +766,7 @@ public class SymbolTable {
 			
 			namespaceTypeRefMap = scopeMap.get(currentScope);
 			if(namespaceTypeRefMap==null) {
-				namespaceTypeRefMap = new HashMap<String,ArrayList<TypeRef>>();
+				namespaceTypeRefMap = new HashMap<>();
 				scopeMap.put(currentScope, namespaceTypeRefMap);
 			}
 			
@@ -778,7 +779,7 @@ public class SymbolTable {
 			//collect the name space
 			currentTypeRefNamespace = namespaceTypeRefMap.get(namespace);
 			if(currentTypeRefNamespace==null) {
-				currentTypeRefNamespace = new ArrayList<TypeRef>();
+				currentTypeRefNamespace = new ArrayList<>();
 				namespaceTypeRefMap.put(namespace, currentTypeRefNamespace);
 			}
 			currentTypeRefNamespace.add(typeRef);
@@ -795,7 +796,7 @@ public class SymbolTable {
 				index=0;
 				for(ArrayList<TypeRef> typesRefsInNamespace: namespaceTypeRefMap.values()) {
 					String nameOfNamespace = typesRefsInNamespace.get(0).getNamespace();
-					TypeRef [] types = typesRefsInNamespace.toArray(new TypeRef[0]);
+					TypeRef [] types = typesRefsInNamespace.toArray(new TypeRef[typesRefsInNamespace.size()]);
 					Arrays.sort(types);
 					namespaces[index] = new NamespaceContainer(	nameOfNamespace, types);
 					index++;

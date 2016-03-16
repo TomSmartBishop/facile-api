@@ -73,9 +73,7 @@ public class AssemblyRefOsEntry implements RenderableCilElement, AssemblyOsRef {
 			return false;
 		if (osMinorVersion != other.osMinorVersion)
 			return false;
-		if (osPlatformId != other.osPlatformId)
-			return false;
-		return true;
+		return osPlatformId == other.osPlatformId;
 	}
 	
 	

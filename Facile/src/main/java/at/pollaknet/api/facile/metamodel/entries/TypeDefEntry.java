@@ -109,7 +109,7 @@ public class TypeDefEntry extends TypeRefEntry implements ITypeDefOrRef, IHasCus
 	}
 
 	public boolean addMethod(MethodDefEntry method) {
-		if(additionalMethods==null) additionalMethods = new ArrayList<MethodDefEntry>(4);
+		if(additionalMethods==null) additionalMethods = new ArrayList<>(4);
 		return additionalMethods.add(method);
 	}
 
@@ -235,7 +235,7 @@ public class TypeDefEntry extends TypeRefEntry implements ITypeDefOrRef, IHasCus
 	}
 
 	public boolean addInterface(TypeRef i) {
-		if(implementedInterfaces==null) implementedInterfaces = new ArrayList<TypeRef>(4);
+		if(implementedInterfaces==null) implementedInterfaces = new ArrayList<>(4);
 		return implementedInterfaces.add(i);
 	}
 	
@@ -252,7 +252,7 @@ public class TypeDefEntry extends TypeRefEntry implements ITypeDefOrRef, IHasCus
 	}
 	
 	public boolean addNestedClass(TypeDefEntry type) {
-		if(enclosingClasses==null) enclosingClasses = new ArrayList<Type>(4);
+		if(enclosingClasses==null) enclosingClasses = new ArrayList<>(4);
 		return enclosingClasses.add(type);
 	}
 	
@@ -278,7 +278,7 @@ public class TypeDefEntry extends TypeRefEntry implements ITypeDefOrRef, IHasCus
 	}
 
 	public boolean addGenericParam(GenericParamEntry p) {
-		if(genericParams==null) genericParams = new ArrayList<GenericParamEntry>(4);
+		if(genericParams==null) genericParams = new ArrayList<>(4);
 		return genericParams.add(p);
 	}
 	

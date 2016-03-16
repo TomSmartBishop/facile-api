@@ -56,9 +56,7 @@ public class Ldarga extends CilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Ldarga)obj).address!=address)
-			return false;
-		return true;
+		return ((Ldarga) obj).address == address;
 	}
 
 	@Override

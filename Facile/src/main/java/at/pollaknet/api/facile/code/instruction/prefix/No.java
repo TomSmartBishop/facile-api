@@ -61,9 +61,7 @@ public class No extends CilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((No)obj).checkType!=checkType)
-			return false;
-		return true;
+		return ((No) obj).checkType == checkType;
 	}
 
 	@Override

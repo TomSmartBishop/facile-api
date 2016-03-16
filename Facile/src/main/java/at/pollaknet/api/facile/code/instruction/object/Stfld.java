@@ -49,9 +49,7 @@ public class Stfld extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Stfld)obj).token!=token)
-			return false;
-		return true;
+		return ((Stfld) obj).token == token;
 	}
 
 	@Override

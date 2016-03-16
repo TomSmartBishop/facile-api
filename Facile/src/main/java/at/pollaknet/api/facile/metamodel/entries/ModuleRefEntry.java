@@ -155,9 +155,7 @@ public class ModuleRefEntry extends AbstractMethodRefSignature implements IHasCu
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (!Arrays.equals(namespaces, other.namespaces))
-			return false;
-		return true;
+		return Arrays.equals(namespaces, other.namespaces);
 	}
 
 	@Override

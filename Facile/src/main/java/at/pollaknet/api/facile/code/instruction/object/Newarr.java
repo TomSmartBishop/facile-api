@@ -49,9 +49,7 @@ public class Newarr extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Newarr)obj).token!=token)
-			return false;
-		return true;
+		return ((Newarr) obj).token == token;
 	}
 
 	@Override

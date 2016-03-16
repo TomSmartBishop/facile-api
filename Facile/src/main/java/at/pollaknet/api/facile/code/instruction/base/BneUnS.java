@@ -51,9 +51,7 @@ public class BneUnS extends TargetCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((BneUnS)obj).target!=target)
-			return false;
-		return true;
+		return ((BneUnS) obj).target == target;
 	}
 
 	@Override

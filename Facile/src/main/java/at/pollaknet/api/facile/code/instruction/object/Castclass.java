@@ -51,9 +51,7 @@ public class Castclass extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Castclass)obj).token!=token)
-			return false;
-		return true;
+		return ((Castclass) obj).token == token;
 	}
 
 	@Override

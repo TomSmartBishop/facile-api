@@ -226,9 +226,7 @@ public class ExceptionClause {
 			return false;
 		if (tryLength != other.tryLength)
 			return false;
-		if (tryOffset != other.tryOffset)
-			return false;
-		return true;
+		return tryOffset == other.tryOffset;
 	}
 
 }

@@ -51,9 +51,7 @@ public class BeqS extends TargetCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((BeqS)obj).target!=target)
-			return false;
-		return true;
+		return ((BeqS) obj).target == target;
 	}
 
 	@Override

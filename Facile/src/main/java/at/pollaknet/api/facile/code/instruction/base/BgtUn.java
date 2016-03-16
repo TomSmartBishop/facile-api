@@ -52,9 +52,7 @@ public class BgtUn extends TargetCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((BgtUn)obj).target!=target)
-			return false;
-		return true;
+		return ((BgtUn) obj).target == target;
 	}
 
 	@Override

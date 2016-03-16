@@ -56,9 +56,7 @@ public class Starg extends CilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Starg)obj).index!=index)
-			return false;
-		return true;
+		return ((Starg) obj).index == index;
 	}
 
 	@Override

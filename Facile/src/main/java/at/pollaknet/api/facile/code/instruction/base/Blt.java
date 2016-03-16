@@ -52,9 +52,7 @@ public class Blt extends TargetCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Blt)obj).target!=target)
-			return false;
-		return true;
+		return ((Blt) obj).target == target;
 	}
 
 	@Override

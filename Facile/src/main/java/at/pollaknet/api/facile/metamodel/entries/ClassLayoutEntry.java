@@ -60,10 +60,8 @@ public class ClassLayoutEntry implements RenderableCilElement, ClassLayout {
 		ClassLayoutEntry other = (ClassLayoutEntry) obj;
 		if (classSize != other.classSize)
 			return false;
-		if (packingSize != other.packingSize)
-			return false;
-		
-		return true;
+		return packingSize == other.packingSize;
+
 	}
 	
 	@Override

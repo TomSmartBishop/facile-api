@@ -1,7 +1,7 @@
 package at.pollaknet.api.facile.util;
 
 
-//TODO: Implemet generic methods
+//TODO: Implement generic methods
 public class ArrayUtils {
 
 	/**
@@ -21,7 +21,7 @@ public class ArrayUtils {
 	/**
 	 * Format the specified byte array in whitespace separated pairs of hex digits.
 	 * @param array The array to format (even null).
-	 * @return The propper string representation of the buffer.
+	 * @return The proper string representation of the buffer.
 	 */
 	public static String formatByteArray(byte[] array) {
 		if(array==null) return "null";
@@ -55,16 +55,14 @@ public class ArrayUtils {
 	
 	public static boolean arraysAreEqualN(byte[] a1, byte[] a2) {
 		if(a1==null) {
-			if(a2==null) {
-				return true;
-			}
-			return false;
+			return a2 == null;
 		} else if(a2==null) {
 			return false;
 		}
 		
-		if(a1.length!=a2.length)
+		if(a1.length!=a2.length) {
 			return false;
+		}
 		
 		for(int i=0;i<a1.length;i++){
 			if(a1[i]!=a2[i]) return false;
@@ -75,10 +73,7 @@ public class ArrayUtils {
 	
 	public static boolean stringsAreEqualN(String s1, String s2) {
 		if(s1==null) {
-			if(s2==null) {
-				return true;
-			}
-			return false;
+			return s2 == null;
 		}
 		
 		return s1.equals(s2);
@@ -156,7 +151,7 @@ public class ArrayUtils {
 		if((i&0x0f)!=0x0f){
 			byte [] buffer = new byte[(i&0x0f)+1];
 			System.arraycopy(byteBuffer,length-(i&0x0f)-1,buffer,0,(i&0x0f)+1);
-			stringBuffer.append(" " + new String(buffer).replaceAll("\\p{Cntrl}","."));
+			stringBuffer.append(" ").append(new String(buffer).replaceAll("\\p{Cntrl}", "."));
 		}
 				
 		return stringBuffer.toString();

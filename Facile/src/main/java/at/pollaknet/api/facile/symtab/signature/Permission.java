@@ -132,8 +132,7 @@ public class Permission implements FullQualifiableSymbol {
 		
 		//check the array of pairs
 		if(properties==null) {
-			if(other.properties==null) return true;
-			return false;
+			return other.properties == null;
 		} else if(other.properties==null) {
 			return false;
 		}

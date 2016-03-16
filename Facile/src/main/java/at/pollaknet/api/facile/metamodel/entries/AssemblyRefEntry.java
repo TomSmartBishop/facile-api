@@ -227,9 +227,7 @@ public class AssemblyRefEntry extends AbstractAttributable implements IHasCustom
 			return false;
 		if (!Arrays.equals(publicKey, other.publicKey))
 			return false;
-		if (revisionNumber != other.revisionNumber)
-			return false;
-		return true;
+		return revisionNumber == other.revisionNumber;
 	}
 
 }

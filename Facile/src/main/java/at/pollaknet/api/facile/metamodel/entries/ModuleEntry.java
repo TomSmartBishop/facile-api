@@ -234,9 +234,7 @@ public class ModuleEntry extends AbstractAttributable
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (!Arrays.equals(namespaces, other.namespaces))
-			return false;
-		return true;
+		return Arrays.equals(namespaces, other.namespaces);
 	}
 
 	@Override

@@ -302,7 +302,7 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 	}
 
 	public void addOptionalModifier(TypeSpec optionalOrReqType) {
-		if(optionalModifiers==null) optionalModifiers = new ArrayList<TypeSpec>(4);
+		if(optionalModifiers==null) optionalModifiers = new ArrayList<>(4);
 		optionalModifiers.add(optionalOrReqType);
 	}
 	
@@ -316,7 +316,7 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 	}
 
 	public void addRequiredModifier(TypeSpec modifier) {
-		if(requiredModifiers==null) requiredModifiers = new ArrayList<TypeSpec>(4);
+		if(requiredModifiers==null) requiredModifiers = new ArrayList<>(4);
 		requiredModifiers.add(modifier);
 	}
 	
@@ -644,10 +644,8 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 		if (!Arrays.equals(binarySignature, other.binarySignature))
 			return false;
 
-		if (flags != other.flags)
-			return false;
-		
-		return true;
+		return flags == other.flags;
+
 	}
 }
 

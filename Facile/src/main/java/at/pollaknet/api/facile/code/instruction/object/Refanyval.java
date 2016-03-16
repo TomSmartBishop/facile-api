@@ -49,9 +49,7 @@ public class Refanyval extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Refanyval)obj).token!=token)
-			return false;
-		return true;
+		return ((Refanyval) obj).token == token;
 	}
 
 	@Override

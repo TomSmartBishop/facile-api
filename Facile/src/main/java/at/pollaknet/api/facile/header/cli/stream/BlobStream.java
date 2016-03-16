@@ -16,7 +16,7 @@ public class BlobStream implements IDataHeader {
 	
 	public BlobStream(int size) {
 		byteSize=size;
-		blobHeap = new HashMap<Integer, byte []>();
+		blobHeap = new HashMap<>();
 	}
 	
 	@Override
@@ -32,15 +32,13 @@ public class BlobStream implements IDataHeader {
 		
 		//the blob heap starts with the empty blob, so start with the next byte
 		int index = offset + 1;
-		int length = 0;
-		int lengthInfo = 0;
-		
+
 		while(index<maxIndex) {
 
 			//See ECMA 335 revision 4 - Partition II, 24.2.4: #US and #Blob heaps
 			//http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-335.pdf#page=294&view=FitH
-			length = ByteReader.readHeapObjectSize(data, index);
-			lengthInfo = ByteReader.getSizeOfHeapLength(length);
+			int length = ByteReader.readHeapObjectSize(data, index);
+			int lengthInfo = ByteReader.getSizeOfHeapLength(length);
 			
 			if(length>=0 && index+length+lengthInfo<=maxIndex) {		
 				byte [] binarySignature = ByteReader.getBytes(data, index+lengthInfo, length);
@@ -59,7 +57,8 @@ public class BlobStream implements IDataHeader {
 		StringBuffer buffer = new StringBuffer("#Blob Stream (Blob Heap):");
 				
 		if(blobHeap.size()>0) {
-			Integer [] keySet = blobHeap.keySet().toArray(new Integer[0]);
+			java.util.Set<Integer> var = blobHeap.keySet();
+			Integer [] keySet = var.toArray(new Integer[var.size()]);
 			Arrays.sort(keySet);
 			
 			for(Integer key: keySet) {

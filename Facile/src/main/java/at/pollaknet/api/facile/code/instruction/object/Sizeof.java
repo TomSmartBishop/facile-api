@@ -52,9 +52,7 @@ public class Sizeof extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Sizeof)obj).token!=token)
-			return false;
-		return true;
+		return ((Sizeof) obj).token == token;
 	}
 
 	@Override

@@ -52,9 +52,7 @@ public class Bgt extends TargetCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Bgt)obj).target!=target)
-			return false;
-		return true;
+		return ((Bgt) obj).target == target;
 	}
 
 	@Override

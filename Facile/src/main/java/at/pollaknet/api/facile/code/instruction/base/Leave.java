@@ -51,9 +51,7 @@ public class Leave extends TargetCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Leave)obj).target!=target)
-			return false;
-		return true;
+		return ((Leave) obj).target == target;
 	}
 
 	@Override

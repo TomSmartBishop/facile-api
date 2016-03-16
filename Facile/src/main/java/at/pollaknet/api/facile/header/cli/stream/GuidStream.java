@@ -18,7 +18,7 @@ public class GuidStream implements IDataHeader {
 	
 	public GuidStream(int size) {
 		byteSize=size;
-		guidHeap = new ArrayList<byte []>();
+		guidHeap = new ArrayList<>();
 	}
 	
 	@Override

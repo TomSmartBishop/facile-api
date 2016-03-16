@@ -49,9 +49,7 @@ public class Ldobj extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Ldobj)obj).token!=token)
-			return false;
-		return true;
+		return ((Ldobj) obj).token == token;
 	}
 
 	@Override

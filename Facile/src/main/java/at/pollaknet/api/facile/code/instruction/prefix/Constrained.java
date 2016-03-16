@@ -52,9 +52,7 @@ public class Constrained extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Constrained)obj).token!=token)
-			return false;
-		return true;
+		return ((Constrained) obj).token == token;
 	}
 
 	@Override

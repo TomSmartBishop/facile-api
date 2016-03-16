@@ -51,9 +51,7 @@ public class BrS extends TargetCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((BrS)obj).target!=target)
-			return false;
-		return true;
+		return ((BrS) obj).target == target;
 	}
 
 	@Override

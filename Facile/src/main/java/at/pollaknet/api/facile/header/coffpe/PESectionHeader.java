@@ -163,22 +163,21 @@ public class PESectionHeader implements IDataHeader, Comparable<PESectionHeader>
 	}
 
 	public String toString() {
-		StringBuffer buffer = new StringBuffer(128);
-		buffer.append("PE Section Header");
-		buffer.append("\n  Section Name: ...............\"");
-		buffer.append(sectionName.replaceAll("\\p{Cntrl}","_"));
-		buffer.append("\"");
-		buffer.append(String.format("\n  Virtual Size: ...............%010d", virtualSize));
-		buffer.append(String.format("\n  Relative Virtual Address: ...0x%08x", relativeVirtualAddress));
-		buffer.append(String.format("\n  Size of Raw Data: ...........%010d", sizeOfRawData));
-		buffer.append(String.format("\n  Pointer to Raw Data: ........0x%08x", pointerToRawData));
-		buffer.append(String.format("\n  Pointer to Relocations: .....0x%08x", pointerToRelocations));
-		buffer.append(String.format("\n  Pointer to Line Numbers: ....0x%08x", pointerToLineNumbers));
-		buffer.append(String.format("\n  Number of Relocations: ......%010d", numberOfRelocations));
-		buffer.append(String.format("\n  Number of Line Numbers: .....%010d", numberOfLineNumbers));
-		buffer.append(String.format("\n  Characteristics: ............0x%08x", characteristics));
-		
-		return buffer.toString();
+		String buffer = "PE Section Header" +
+				"\n  Section Name: ...............\"" +
+				sectionName.replaceAll("\\p{Cntrl}", "_") +
+				"\"" +
+				String.format("\n  Virtual Size: ...............%010d", virtualSize) +
+				String.format("\n  Relative Virtual Address: ...0x%08x", relativeVirtualAddress) +
+				String.format("\n  Size of Raw Data: ...........%010d", sizeOfRawData) +
+				String.format("\n  Pointer to Raw Data: ........0x%08x", pointerToRawData) +
+				String.format("\n  Pointer to Relocations: .....0x%08x", pointerToRelocations) +
+				String.format("\n  Pointer to Line Numbers: ....0x%08x", pointerToLineNumbers) +
+				String.format("\n  Number of Relocations: ......%010d", numberOfRelocations) +
+				String.format("\n  Number of Line Numbers: .....%010d", numberOfLineNumbers) +
+				String.format("\n  Characteristics: ............0x%08x", characteristics);
+
+		return buffer;
 	}
 
 }

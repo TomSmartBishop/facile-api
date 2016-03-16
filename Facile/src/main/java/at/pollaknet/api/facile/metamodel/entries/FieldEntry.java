@@ -102,7 +102,7 @@ public class FieldEntry extends AbstractAttributable implements IHasCustomAttrib
 
 	@SuppressWarnings("cast")
 	public Constant getConstant() {
-		return (Constant) constantEntry;
+		return constantEntry;
 	}
 	
 	public void setFieldLayout(FieldLayoutEntry fieldLayoutEntry) {

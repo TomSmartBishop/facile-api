@@ -24,7 +24,7 @@ public class CliHeader implements IDataHeader {
 	private long flags;
 	private long entryPointToken;
 	private long addrOfResourcesDirectory;
-	private long sizeOfRecourcesDirectory;
+	private long sizeOfResourcesDirectory;
 	private long addrOfStrongNameSignature;
 	private long sizeOfStrongNameSignature;
 	private long addrOfCodeManagerTable;
@@ -56,7 +56,7 @@ public class CliHeader implements IDataHeader {
 		entryPointToken = ByteReader.getUInt32(data, offset);				offset +=4;
 		
 		addrOfResourcesDirectory = ByteReader.getUInt32(data, offset);		offset +=4;
-		sizeOfRecourcesDirectory = ByteReader.getUInt32(data, offset);		offset +=4;
+		sizeOfResourcesDirectory = ByteReader.getUInt32(data, offset);		offset +=4;
 		addrOfStrongNameSignature = ByteReader.getUInt32(data, offset);		offset +=4;
 		sizeOfStrongNameSignature = ByteReader.getUInt32(data, offset);		offset +=4;
 		addrOfCodeManagerTable = ByteReader.getUInt32(data, offset);		offset +=4;
@@ -105,37 +105,35 @@ public class CliHeader implements IDataHeader {
 	
 
 	public String toString() {
-		StringBuffer buffer = new StringBuffer(512);
-		
-		buffer.append("PE Data Directories:");
-		buffer.append(String.format("\n  Major Runtime Version: ...............%05d", majorRuntimeVersion));
-		buffer.append(String.format("\n  Minor Runtime Version: ...............%05d", minorRuntimeVersion));
-		buffer.append(String.format("\n  Address of Metadata Directory: .......0x%08x", addrOfMetadataDirectory));
-		buffer.append(String.format("\n  Size of Metadata Directory: ..........%010d", sizeOfMetadataDirectory));
-		buffer.append(String.format("\n  Flags: ...............................0x%08x", flags));
-		buffer.append(String.format("\n  Entry Point Token: ...................0x%08x", entryPointToken));
-		buffer.append(String.format("\n  Address of Resources Directory: ......0x%08x", addrOfResourcesDirectory));
-		buffer.append(String.format("\n  Size of Resources Directory: .........%010d", sizeOfRecourcesDirectory));
-		buffer.append(String.format("\n  Address of Strong Name Signature: ....0x%08x", addrOfStrongNameSignature));
-		buffer.append(String.format("\n  Size of Strong Name Signature: .......%010d", sizeOfStrongNameSignature));
-		buffer.append(String.format("\n  Address of Code Manager Table: .......0x%08x", addrOfCodeManagerTable));
-		buffer.append(String.format("\n  Size of Code Manager Table: ..........%010d", sizeOfCodeManagerTable));
-		buffer.append(String.format("\n  Address of VTable Fixup Directory: ...0x%08x", addrOfVTableFixupDirectory));
-		buffer.append(String.format("\n  Size of VTable Fixup Directory: ......%010d", sizeOfVTableFixupDirectory));
-		buffer.append(String.format("\n  Address of Strong Name Signature: ....0x%08x", addrOfExportAddressTable));
-		buffer.append(String.format("\n  Size of Strong Name Signature: .......%010d", sizeOfExportAddressTable));
-		buffer.append(String.format("\n  Address of Precompiled Header: .......0x%08x", addrOfPrecompiledHeader));
-		buffer.append(String.format("\n  Size of Precompiled Header: ..........%010d", sizeOfPrecompiledHeader));
-		
-		return buffer.toString();
+		String buffer = "PE Data Directories:" +
+				String.format("\n  Major Runtime Version: ...............%05d", majorRuntimeVersion) +
+				String.format("\n  Minor Runtime Version: ...............%05d", minorRuntimeVersion) +
+				String.format("\n  Address of Metadata Directory: .......0x%08x", addrOfMetadataDirectory) +
+				String.format("\n  Size of Metadata Directory: ..........%010d", sizeOfMetadataDirectory) +
+				String.format("\n  Flags: ...............................0x%08x", flags) +
+				String.format("\n  Entry Point Token: ...................0x%08x", entryPointToken) +
+				String.format("\n  Address of Resources Directory: ......0x%08x", addrOfResourcesDirectory) +
+				String.format("\n  Size of Resources Directory: .........%010d", sizeOfResourcesDirectory) +
+				String.format("\n  Address of Strong Name Signature: ....0x%08x", addrOfStrongNameSignature) +
+				String.format("\n  Size of Strong Name Signature: .......%010d", sizeOfStrongNameSignature) +
+				String.format("\n  Address of Code Manager Table: .......0x%08x", addrOfCodeManagerTable) +
+				String.format("\n  Size of Code Manager Table: ..........%010d", sizeOfCodeManagerTable) +
+				String.format("\n  Address of VTable Fixup Directory: ...0x%08x", addrOfVTableFixupDirectory) +
+				String.format("\n  Size of VTable Fixup Directory: ......%010d", sizeOfVTableFixupDirectory) +
+				String.format("\n  Address of Strong Name Signature: ....0x%08x", addrOfExportAddressTable) +
+				String.format("\n  Size of Strong Name Signature: .......%010d", sizeOfExportAddressTable) +
+				String.format("\n  Address of Precompiled Header: .......0x%08x", addrOfPrecompiledHeader) +
+				String.format("\n  Size of Precompiled Header: ..........%010d", sizeOfPrecompiledHeader);
+
+		return buffer;
 	}
 
 	public long getAddrOfResourcesDirectory() {
 		return addrOfResourcesDirectory;
 	}
 
-	public long getSizeOfRecourcesDirectory() {
-		return sizeOfRecourcesDirectory;
+	public long getSizeOfResourcesDirectory() {
+		return sizeOfResourcesDirectory;
 	}
 
 	public long getAddrOfStrongNameSignature() {

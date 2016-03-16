@@ -87,8 +87,9 @@ public class NativePdbReader implements PdbReader {
 		return false;
 	}
 	
-	protected void finalize() {
+	protected void finalize() throws Throwable {
 		close();
+		super.finalize();
 	}
 	
 	/**
@@ -103,7 +104,7 @@ public class NativePdbReader implements PdbReader {
     	//find out the architecture of the JVM
     	String archDataModel = System.getProperty("sun.arch.data.model");
     	
-    	if(archDataModel!="32" || archDataModel!="64")
+    	if(!archDataModel.equals("32") || !archDataModel.equals("64"))
     		archDataModel = System.getProperty("os.arch").endsWith("64") ? "64" : "32";
     	
     	String binaryName =
@@ -227,7 +228,7 @@ public class NativePdbReader implements PdbReader {
      * temporary data.
      */
 	private static String extractFromJar(String fileNameInArchive, String archivePath)
-			throws SecurityException, FileNotFoundException, IOException {
+			throws SecurityException, IOException {
 
 		//convert the path to an url
 		URL url = new URL(archivePath);
@@ -241,7 +242,7 @@ public class NativePdbReader implements PdbReader {
 		do {
 			if(entry!=null) zipStream.closeEntry();
 			entry = zipStream.getNextEntry();
-		} while(!entry.getName().endsWith(fileNameInArchive) && entry!=null);
+		} while(entry!=null && !entry.getName().endsWith(fileNameInArchive) );
 		
 		//check if the requested entry is available
 		if(entry==null) {
@@ -257,7 +258,9 @@ public class NativePdbReader implements PdbReader {
 		String directory = System.getProperty("user.home") +
 		System.getProperty("file.separator") + ".facileTemp";
 		
-		new File(directory).mkdirs();
+		File dir = new File(directory);
+		assert (dir!=null);
+		dir.mkdirs();
 		
 		//create a new dll file in the temporary directory
 		archivePath = directory + System.getProperty("file.separator") + CLASS_NAME + ".dll";

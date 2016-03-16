@@ -174,17 +174,16 @@ public class COFFPEHeader implements IDataHeader  {
 	}
 
 	public String toString() {
-		StringBuffer buffer = new StringBuffer(128);
-		buffer.append("COFF/PE Header");
-		buffer.append(String.format("\n  Signature: ..................0x%08x", signature));
-		buffer.append(String.format("\n  Target Machine Type: ........%010d", targetMachineType));
-		buffer.append(String.format("\n  Number of File Sections: ....%010d", numberOfSections));
-		buffer.append(String.format("\n  Time Date Stamp: ............0x%08x", timeDateStamp));
-		buffer.append(String.format("\n  Pointer to Symbol Table: ....0x%08x", pointerToSymbolTable));
-		buffer.append(String.format("\n  Number of Symbols: ..........%010d", numberOfSymbols));
-		buffer.append(String.format("\n  Size of Optional Header: ....%010d", sizeOfOptionalHeader));
-		buffer.append(String.format("\n  Characteristics: ............0x%08x", characteristics));
-		
-		return buffer.toString();
+		String buffer = "COFF/PE Header" +
+				String.format("\n  Signature: ..................0x%08x", signature) +
+				String.format("\n  Target Machine Type: ........%010d", targetMachineType) +
+				String.format("\n  Number of File Sections: ....%010d", numberOfSections) +
+				String.format("\n  Time Date Stamp: ............0x%08x", timeDateStamp) +
+				String.format("\n  Pointer to Symbol Table: ....0x%08x", pointerToSymbolTable) +
+				String.format("\n  Number of Symbols: ..........%010d", numberOfSymbols) +
+				String.format("\n  Size of Optional Header: ....%010d", sizeOfOptionalHeader) +
+				String.format("\n  Characteristics: ............0x%08x", characteristics);
+
+		return buffer;
 	}
 }

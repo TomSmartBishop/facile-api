@@ -51,9 +51,7 @@ public class Calli extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Calli)obj).token!=token)
-			return false;
-		return true;
+		return ((Calli) obj).token == token;
 	}
 
 	@Override

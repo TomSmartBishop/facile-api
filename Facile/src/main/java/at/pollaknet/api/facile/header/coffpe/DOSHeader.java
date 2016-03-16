@@ -248,29 +248,28 @@ public class DOSHeader implements IDataHeader {
 	}
 	
 	public String toString() {
-		StringBuffer buffer = new StringBuffer(512);
-		buffer.append("DOS Header");
-		buffer.append(String.format("\n  Magic Number: ...............................0x%08x", magicNumber));
-		buffer.append(String.format("\n  Bytes on Last Page: .........................%010d", bytesOnLastPage));
-		buffer.append(String.format("\n  Pages in File: ..............................%010d", pagesInFile));
-		buffer.append(String.format("\n  Relocations: ................................%010d", relocations));
-		buffer.append(String.format("\n  Size of Header: .............................%010d", sizeOfHeader));
-		buffer.append(String.format("\n  Min Extra Paragraphs: .......................0x%08x", minExtraParagraphs));
-		buffer.append(String.format("\n  Max Extra Paragraphs: .......................0x%08x", maxExtraParagraphs));
-		buffer.append(String.format("\n  Initial Relative Stack Segment (SS): ........0x%08x", initialRelativeSS));
-		buffer.append(String.format("\n  Initial Stack Pointer (SP): .................0x%08x", initialSP));
-		buffer.append(String.format("\n  Checksum (%s): ...........................0x%08x", fileAddrOfCOFFHeader==0?"CRC16":"CRC32", checksum));
-		buffer.append(String.format("\n  Initial Instruction Pointer (IP): ...........0x%08x", ininitalIP));
-		buffer.append(String.format("\n  Initial Relative Code Segment (CS): .........0x%08x", initialRelativeCS));
-		buffer.append(String.format("\n  File Address of Reloc Table: ................0x%08x", fileAddrOfRelocTable));
-		buffer.append(String.format("\n  Overlay Number: .............................%010d", overlayNumber));
-		buffer.append(String.format("\n  Reserved Space 1: ...........................%02d Bytes", reservedSpace1==null?0:reservedSpace1.length));
-		buffer.append(String.format("\n  OEM Identifier: .............................0x%08x", OEMIdentifier));
-		buffer.append(String.format("\n  OEM Info: ...................................0x%08x", OEMInfo));
-		buffer.append(String.format("\n  Reserved Space 2: ...........................%02d Bytes", reservedSpace2==null?0:reservedSpace2.length));
-		buffer.append(String.format("\n  File Address of COFF Header: ................0x%08x", fileAddrOfCOFFHeader));
+		String buffer = "DOS Header" +
+				String.format("\n  Magic Number: ...............................0x%08x", magicNumber) +
+				String.format("\n  Bytes on Last Page: .........................%010d", bytesOnLastPage) +
+				String.format("\n  Pages in File: ..............................%010d", pagesInFile) +
+				String.format("\n  Relocations: ................................%010d", relocations) +
+				String.format("\n  Size of Header: .............................%010d", sizeOfHeader) +
+				String.format("\n  Min Extra Paragraphs: .......................0x%08x", minExtraParagraphs) +
+				String.format("\n  Max Extra Paragraphs: .......................0x%08x", maxExtraParagraphs) +
+				String.format("\n  Initial Relative Stack Segment (SS): ........0x%08x", initialRelativeSS) +
+				String.format("\n  Initial Stack Pointer (SP): .................0x%08x", initialSP) +
+				String.format("\n  Checksum (%s): ...........................0x%08x", fileAddrOfCOFFHeader == 0 ? "CRC16" : "CRC32", checksum) +
+				String.format("\n  Initial Instruction Pointer (IP): ...........0x%08x", ininitalIP) +
+				String.format("\n  Initial Relative Code Segment (CS): .........0x%08x", initialRelativeCS) +
+				String.format("\n  File Address of Reloc Table: ................0x%08x", fileAddrOfRelocTable) +
+				String.format("\n  Overlay Number: .............................%010d", overlayNumber) +
+				String.format("\n  Reserved Space 1: ...........................%02d Bytes", reservedSpace1 == null ? 0 : reservedSpace1.length) +
+				String.format("\n  OEM Identifier: .............................0x%08x", OEMIdentifier) +
+				String.format("\n  OEM Info: ...................................0x%08x", OEMInfo) +
+				String.format("\n  Reserved Space 2: ...........................%02d Bytes", reservedSpace2 == null ? 0 : reservedSpace2.length) +
+				String.format("\n  File Address of COFF Header: ................0x%08x", fileAddrOfCOFFHeader);
 
-		return buffer.toString();
+		return buffer;
 	}
 
 }

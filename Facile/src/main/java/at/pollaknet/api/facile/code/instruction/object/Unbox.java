@@ -49,9 +49,7 @@ public class Unbox extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Unbox)obj).token!=token)
-			return false;
-		return true;
+		return ((Unbox) obj).token == token;
 	}
 
 	@Override

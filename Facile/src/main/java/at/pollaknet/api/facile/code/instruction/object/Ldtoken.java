@@ -49,9 +49,7 @@ public class Ldtoken extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Ldtoken)obj).token!=token)
-			return false;
-		return true;
+		return ((Ldtoken) obj).token == token;
 	}
 
 	@Override

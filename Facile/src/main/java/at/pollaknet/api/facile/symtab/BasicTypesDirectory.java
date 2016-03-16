@@ -43,14 +43,14 @@ public class BasicTypesDirectory {
 
 	//See ECMA 335 revision 4 - Partition II, 23.1.16 Element types used in signatures
 	//http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-335.pdf#page=276&view=FitH
-	private HashMap<Integer, TypeRefEntry> typeRefs = new HashMap<Integer, TypeRefEntry>();
+	private HashMap<Integer, TypeRefEntry> typeRefs = new HashMap<>();
 	
-	private ArrayList<TypeSpecEntry> signatureEmbeddedTypeSpecs = new ArrayList<TypeSpecEntry>();
+	private ArrayList<TypeSpecEntry> signatureEmbeddedTypeSpecs = new ArrayList<>();
 
 	private BlobStream blobStream = null;
 	
 	private List<Assembly> referenceAssemblies = null;
-	private Map<String, Byte> referneceEnums = null;
+	private Map<String, Byte> referenceEnums = null;
 
 	/**
 	 * Create a new basic data type directory. The basic types are
@@ -61,11 +61,11 @@ public class BasicTypesDirectory {
 	 * specifications.
 	 */
 	public BasicTypesDirectory(
-			MetadataModel metaModel, BlobStream blobStream, List<Assembly> referenceAssemblies, Map<String, Byte> referneceEnums) {
+			MetadataModel metaModel, BlobStream blobStream, List<Assembly> referenceAssemblies, Map<String, Byte> referenceEnums) {
 		this.metaModel = metaModel;
 		this.blobStream  = blobStream;
 		this.referenceAssemblies = referenceAssemblies;
-		this.referneceEnums  = referneceEnums;
+		this.referenceEnums = referenceEnums;
 		
 		//search for a reference to the core library
 		for(AssemblyRefEntry entry: metaModel.assemblyRef) {
@@ -82,8 +82,8 @@ public class BasicTypesDirectory {
 		return referenceAssemblies;
 	}
 
-	public Map<String, Byte> getReferneceEnums() {
-		return referneceEnums;
+	public Map<String, Byte> getReferenceEnums() {
+		return referenceEnums;
 	}
 	
 	/**
@@ -97,7 +97,7 @@ public class BasicTypesDirectory {
 	 */
 	public boolean register(TypeRefEntry typeDefOrRef) {
 
-		if(typeRefs.get(typeDefOrRef.getFullQualifiedName())!=null ||
+		if(typeRefs.values().contains(typeDefOrRef) ||
 				typeDefOrRef.getFullQualifiedName()==null )
 			return false;
 		

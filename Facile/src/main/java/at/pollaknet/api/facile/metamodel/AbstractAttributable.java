@@ -12,11 +12,11 @@ public abstract class AbstractAttributable {
 	public CustomAttributeEntry [] getCustomAttributes() {
 		if(customAttributes==null || customAttributes.size()==0) return new CustomAttributeEntry [0];
 		
-		return customAttributes.toArray(new CustomAttributeEntry [0]);
+		return customAttributes.toArray(new CustomAttributeEntry[customAttributes.size()]);
 	}
 
 	public boolean addCustomAttribute(CustomAttributeEntry customAttribute) {
-		if(customAttributes==null) customAttributes = new ArrayList<CustomAttributeEntry>(2); 
+		if(customAttributes==null) customAttributes = new ArrayList<>(2);
 		return customAttributes.add(customAttribute);
 	}
 

@@ -49,9 +49,7 @@ public class Stelem extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Stelem)obj).token!=token)
-			return false;
-		return true;
+		return ((Stelem) obj).token == token;
 	}
 
 	@Override

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import at.pollaknet.api.facile.code.MethodBody;
-import at.pollaknet.api.facile.metamodel.AbstractGenericInstanceConatiner;
+import at.pollaknet.api.facile.metamodel.AbstractGenericInstanceContainer;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.ICustomAttributeType;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasCustomAttribute;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasDeclSecurity;
@@ -30,7 +30,7 @@ import at.pollaknet.api.facile.symtab.symbols.scopes.ModuleRef;
 import at.pollaknet.api.facile.util.ArrayUtils;
 
 
-public class MethodDefEntry extends AbstractGenericInstanceConatiner
+public class MethodDefEntry extends AbstractGenericInstanceContainer
 		implements IHasCustomAttribute, IHasDeclSecurity, ITypeOrMethodDef,
 			MethodAndFieldParent, IMethodDefOrRef, IMemberForwarded, ICustomAttributeType, Method {
 
@@ -246,7 +246,7 @@ public class MethodDefEntry extends AbstractGenericInstanceConatiner
 	}
 
 	public boolean addGenericParam(GenericParamEntry p) {
-		if(genericParams==null) genericParams = new ArrayList<GenericParamEntry>(4);
+		if(genericParams==null) genericParams = new ArrayList<>(4);
 		return genericParams.add(p);
 	}
 	/*
@@ -287,10 +287,8 @@ public class MethodDefEntry extends AbstractGenericInstanceConatiner
 	public void setNumberOfParameters(int parameterCount) {
 		if(params!=null && params.length>parameterCount && parameterCount>=0) {
 			ParamEntry [] truncatedParams = new ParamEntry[parameterCount];
-			
-			for(int index=0;index<parameterCount;index++) {
-				truncatedParams[index] = params[index];
-			}
+
+			System.arraycopy(params, 0, truncatedParams, 0, parameterCount);
 			
 			params = truncatedParams;
 		}

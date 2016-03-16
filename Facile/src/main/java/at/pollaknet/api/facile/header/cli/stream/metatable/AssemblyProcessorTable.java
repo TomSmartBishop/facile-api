@@ -35,7 +35,7 @@ public class AssemblyProcessorTable extends AbstractTable {
 	
 	@Override
 	protected String createTableRepresentation() {
-		StringBuffer buffer = new StringBuffer(" AssemblyProcesscor Table (" + TABLE_INDEX + "):");
+		StringBuffer buffer = new StringBuffer(" AssemblyProcessor Table (" + TABLE_INDEX + "):");
 	
 		for(int i=0;i<rows;i++) {
 			buffer.append("\n  Processor: ");

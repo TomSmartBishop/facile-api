@@ -49,9 +49,7 @@ public class Newobj extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Newobj)obj).token!=token)
-			return false;
-		return true;
+		return ((Newobj) obj).token == token;
 	}
 
 	@Override

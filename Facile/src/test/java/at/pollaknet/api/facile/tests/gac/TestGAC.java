@@ -22,7 +22,7 @@ public class TestGAC extends TestCase {
 	
 	private static void initGACFileList() {
 		if(assemblies==null) {
-			assemblies = new ArrayList<String>(1024);
+			assemblies = new ArrayList<>(1024);
 			
 			filter = new FileFilter() {
 				public boolean accept(File file) {
@@ -31,9 +31,8 @@ public class TestGAC extends TestCase {
 					if(name.endsWith(".dll")) 		return true;
 					if(name.endsWith(".netmodule")) return true;
 					if(name.endsWith(".mcl")) 		return true;
-					if(file.isDirectory()) 			return true;
-					
-					return false;
+					return file.isDirectory();
+
 				}
 			};
 			
@@ -44,11 +43,13 @@ public class TestGAC extends TestCase {
 			} else if (operatingSystem.startsWith("mac")) {
 				
 				File currentDirectory = new File(GAC_OSX_PATH_PREFIX);
-				
-				//check all 'version' folders (eg. 3.10.0)
-				for(File file:currentDirectory.listFiles()) {
-					if(file.isDirectory()) {
-						addFiles(file.getAbsolutePath() + GAC_OSX_PATH_POSTFIX);
+				File [] directoryFiles = currentDirectory.listFiles();
+
+				if(directoryFiles!=null) { //check all 'version' folders (eg. 3.10.0)
+					for (File file : directoryFiles) {
+						if (file.isDirectory()) {
+							addFiles(file.getAbsolutePath() + GAC_OSX_PATH_POSTFIX);
+						}
 					}
 				}
 			} else {

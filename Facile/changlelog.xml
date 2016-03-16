@@ -2,10 +2,10 @@
 
 <changelog name="Facile API">
   <version major="1" minor="0" fix="4">
-  	<changed>Made ByteReader.getUTF16PrepairedBytes more flexible to cope with byte arrays of uneven length</changed>
+  	<changed>Made ByteReader.getUTF16PreparedBytes more flexible to cope with byte arrays of uneven length</changed>
     <fixed>Fixed issue 4 (Fix generic method parameter names), however there seems to be still an edge-case remaining which is not cover by the current generics test case</fixed>
     <changed>Refactored the ILAsmRender and introduced the ILAsmFlagsRenderer</changed>
-    <added>Extended the FacileReflector class to allow external references (addReferenceAssembly, addReferneceEnum) in order to resolve external enum sizes</added>
+    <added>Extended the FacileReflector class to allow external references (addReferenceAssembly, addReferenceEnum) in order to resolve external enum sizes</added>
     <changed>The static member DEBUG_AND_HALT_ON_ERRORS and PARTIAL_LOADING_SIZE of the FacileReflector class became a per instance member (getHaltOnErrors, getPartialLoadingSizeInBytes)</changed> 
     <changed>Moved dia package to pdb.dia and introduced a new interface PdbReader in order to abstract the PDB reading mechanism. The former PdbReader is now implemented in NativePdbReader</changed>
     <added>Added a LICENSE file</added>
@@ -26,7 +26,7 @@
     <fixed>Problem when testing flags for isInterface and isClass methods (and some internal methods)</fixed>
     <fixed>ILAsmRenderer output is basically ILAsm conform</fixed>
     <added>Methods for TypeSpecEntry: getMostInnerEnclosedTypeRef and getMostInnerEnclosedTypeSpec</added>
-    <added>Methods for generic argument handling: TypeSpecEntry::porpagateGenericArguments, ParamEntry::linkGenericNameToType and FieldEntry::linkGenericNameToType (all on trial)</added>
+    <added>Methods for generic argument handling: TypeSpecEntry::propagateGenericArguments, ParamEntry::linkGenericNameToType and FieldEntry::linkGenericNameToType (all on trial)</added>
     <changed>GenericParamEntry::setConstraint renamed to GenericParamEntry::addConstraint for better understanding</changed>
     <changed>ParamEntry now returns a valid owner (null before)</changed>
   </version>

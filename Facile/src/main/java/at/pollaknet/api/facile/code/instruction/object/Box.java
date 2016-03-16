@@ -51,9 +51,7 @@ public class Box extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Box)obj).token!=token)
-			return false;
-		return true;
+		return ((Box) obj).token == token;
 	}
 
 	@Override

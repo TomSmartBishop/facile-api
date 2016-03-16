@@ -49,9 +49,7 @@ public class Call extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Call)obj).token!=token)
-			return false;
-		return true;
+		return ((Call) obj).token == token;
 	}
 
 	@Override

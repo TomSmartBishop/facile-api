@@ -393,7 +393,7 @@ public class ParamOrFieldMarshalSignature extends Signature implements MarshalSi
 			case 0x2000: return variantToString(variant, ++index) + " []";
 			case 0x4000: return variantToString(variant, ++index) + " &";
 			
-			default: return String.format("unknown_variant_0x%x", variant);
+			default: return String.format("unknown_variant_0x%x", variant[index]);
 		}
 	}
 
@@ -448,9 +448,7 @@ public class ParamOrFieldMarshalSignature extends Signature implements MarshalSi
 			return false;
 		if (numberOfArrayElements != other.numberOfArrayElements)
 			return false;
-		if (sizeParameterNumber != other.sizeParameterNumber)
-			return false;
-		return true;
+		return sizeParameterNumber == other.sizeParameterNumber;
 	}
 	
 	

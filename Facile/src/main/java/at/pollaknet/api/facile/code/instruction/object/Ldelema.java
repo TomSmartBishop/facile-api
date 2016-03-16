@@ -51,9 +51,7 @@ public class Ldelema extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Ldelema)obj).token!=token)
-			return false;
-		return true;
+		return ((Ldelema) obj).token == token;
 	}
 
 	@Override

@@ -13,12 +13,12 @@ import at.pollaknet.api.facile.symtab.symbols.misc.AssemblyProcessorRef;
 
 public interface Assembly extends AttributableSymbol {
 
-	public final static long HASH_ALORITHM_ID_NONE 	= 0x0000;
-	public final static long HASH_ALORITHM_ID_MD5 	= 0x8003;
-	public final static long HASH_ALORITHM_ID_SHA1 	= 0x8004;
+	public final static long HASH_ALGORITHM_ID_NONE 						= 0x0000;
+	public final static long HASH_ALGORITHM_ID_MD5 							= 0x8003;
+	public final static long HASH_ALGORITHM_ID_SHA1 						= 0x8004;
 	
 	public final static long FLAGS_ASSEMBLY_HOLDS_FULL_PUBLIC_KEY			= 0x0001;
-	public final static long FLAGS_ASSEMBLY_IS_SIDE_BY_SIDE_COMPAREABLE		= 0x0000;
+	public final static long FLAGS_ASSEMBLY_IS_SIDE_BY_SIDE_COMPARABLE 		= 0x0000;
 	public final static long FLAGS_RESERVED									= 0x0030;
 	public final static long FLAGS_ASSEMBLY_IS_RETARGETABLE					= 0x0100;
 	public final static long FLAGS_JIT_COMPILE_TRACKING_ENABLE				= 0x8000;

@@ -25,7 +25,7 @@ public class TestGACFusion extends TestCase {
 	
 	private static void initGACFileList() {
 		if(assemblies==null) {
-			assemblies = new ArrayList<String>(1024);
+			assemblies = new ArrayList<>(1024);
 			
 			filter = new FileFilter() {
 				public boolean accept(File file) {
@@ -45,15 +45,18 @@ public class TestGACFusion extends TestCase {
 			if (operatingSystem.startsWith("win")) {
 				addFiles(GAC_WIN_ABOLUTE_PATH);
 			} else if (operatingSystem.startsWith("mac")) {
-				
+
 				File currentDirectory = new File(GAC_OSX_PATH_PREFIX);
-				
-				//check all 'version' folders (eg. 3.10.0)
-				for(File file:currentDirectory.listFiles()) {
-					if(file.isDirectory()) {
-						addFiles(file.getAbsolutePath() + ALL_OSX_PATH_POSTFIX);
+				File [] directoryFiles = currentDirectory.listFiles();
+
+				if(directoryFiles!=null) { //check all 'version' folders (eg. 3.10.0)
+					for (File file : directoryFiles) {
+						if (file.isDirectory()) {
+							addFiles(file.getAbsolutePath() + GAC_OSX_PATH_PREFIX);
+						}
 					}
 				}
+
 			} else {
 				assertTrue("Please define operating system first!", false);
 			}
@@ -74,8 +77,9 @@ public class TestGACFusion extends TestCase {
 						assertTrue(file.length()<=ByteReader.INT32_MAX_VAL);
 						
 						byte [] buffer = new byte[(int) file.length()];
-						stream.read(buffer);
-						
+						int bytesRead = stream.read(buffer);
+
+						assert(bytesRead==(int)file.length());
 						assert(stream.read()==-1); //we assume that we reached the end
 						stream.close();
 						

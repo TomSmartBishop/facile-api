@@ -51,9 +51,7 @@ public class BgeUnS extends TargetCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((BgeUnS)obj).target!=target)
-			return false;
-		return true;
+		return ((BgeUnS) obj).target == target;
 	}
 
 	@Override

@@ -49,9 +49,7 @@ public class Isinst extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Isinst)obj).token!=token)
-			return false;
-		return true;
+		return ((Isinst) obj).token == token;
 	}
 
 	@Override

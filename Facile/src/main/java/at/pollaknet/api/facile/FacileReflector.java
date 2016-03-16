@@ -95,7 +95,7 @@ public class FacileReflector {
 	
 	//portable executable required headers
 	private PEDataDirectories peDataDirectories;
-	PriorityQueue<PESectionHeader> peSectionHeaders = new PriorityQueue<PESectionHeader>();
+	PriorityQueue<PESectionHeader> peSectionHeaders = new PriorityQueue<>();
 
 	//number of section inside the PE files
 	private int numberOfSections;
@@ -114,8 +114,8 @@ public class FacileReflector {
 	private BlobStream blobStream;
 	
 	//remember unspecified streams
-	private List<UnknownStream> additionalStreams = new ArrayList<UnknownStream>();
-	private Map<String, Integer> additionalStreamsSetup = new HashMap<String, Integer>();
+	private List<UnknownStream> additionalStreams = new ArrayList<>();
+	private Map<String, Integer> additionalStreamsSetup = new HashMap<>();
 
 	//stream sizes
 	private int sizeOfMetadataStream;
@@ -161,8 +161,8 @@ public class FacileReflector {
 	private int partialLoadingSizeInBytes = DEFAULT_PARTIAL_LOADING_SIZE;
 	
 	//external references
-	private List<Assembly> referenceAssemblies = new ArrayList<Assembly>(4);
-	private Map<String, Byte> referneceEnums = new HashMap<String, Byte>(8);
+	private List<Assembly> referenceAssemblies = new ArrayList<>(4);
+	private Map<String, Byte> referneceEnums = new HashMap<>(8);
 	
 	static {
 		facileLogHandler = new FacileLogHandler();
@@ -186,8 +186,7 @@ public class FacileReflector {
 	
 	FacileReflector(String pathToAssembly)
 			throws	CoffPeDataNotFoundException,
-					DotNetContentNotFoundException,
-					UnexpectedHeaderDataException,
+			UnexpectedHeaderDataException,
 					SizeMismatchException, IOException {
 		this();
 		
@@ -201,8 +200,7 @@ public class FacileReflector {
 
 	FacileReflector(String pathToAssembly, String pathToPdb)
 			throws	CoffPeDataNotFoundException,
-					DotNetContentNotFoundException,
-					UnexpectedHeaderDataException,
+			UnexpectedHeaderDataException,
 					SizeMismatchException, IOException {
 		this();
 		
@@ -216,8 +214,7 @@ public class FacileReflector {
 
 	FacileReflector(byte[] buffer)
 			throws	CoffPeDataNotFoundException,
-					DotNetContentNotFoundException,
-					UnexpectedHeaderDataException,
+			UnexpectedHeaderDataException,
 					SizeMismatchException {
 		this();
 		try {
@@ -229,8 +226,7 @@ public class FacileReflector {
 	
 	private void processAssemblyTables(byte [] buffer)
 			throws 	CoffPeDataNotFoundException,
-					DotNetContentNotFoundException,
-					UnexpectedHeaderDataException,
+			UnexpectedHeaderDataException,
 					SizeMismatchException, IOException {
 		 
 	    if(pathToAssembly!=null && pathToPdb!=null) {
@@ -240,7 +236,7 @@ public class FacileReflector {
 	    	 logger.log(Level.INFO, "No file specified. Using a byte buffer as source!");
 	    	 
 	    	//ensure an assembly name
-			pathToAssembly = "<byte[]:" + buffer.hashCode() + ">";
+			pathToAssembly = "<byte[]:" + java.util.Arrays.hashCode(buffer) + ">";
 	    }
 	    logger.log(Level.INFO, "Starting COFF/PE processing.");
 	    
@@ -284,7 +280,7 @@ public class FacileReflector {
 			//}
 		}
 		
-		codeContainer.setPeFileSections(peSectionHeaders.toArray(new PESectionHeader [0]));
+		codeContainer.setPeFileSections(peSectionHeaders.toArray(new PESectionHeader[peSectionHeaders.size()]));
 		
 		//do not continue if there is no CLR data
 		if(fileSection == null)
@@ -380,13 +376,12 @@ public class FacileReflector {
 			sizeOfStringsStream = stringsStream.read(buffer, byteOffset);
 			
 			if(sizeOfStringsStream != streamHeader.getStreamSize()) {
-				StringBuffer msg = new StringBuffer("\nThe size of the #Strings stream content ");
-				msg.append("is not equal to the header information.\n(");
-				msg.append(sizeOfStringsStream);
-				msg.append(" instead of ");
-				msg.append(streamHeader.getStreamSize());
-				msg.append(")");
-				throw new SizeMismatchException(msg.toString());
+				String msg = "\nThe size of the #Strings stream content " + "is not equal to the header information.\n(" +
+						sizeOfStringsStream +
+						" instead of " +
+						streamHeader.getStreamSize() +
+						")";
+				throw new SizeMismatchException(msg);
 			}
 		}		
 		
@@ -402,14 +397,13 @@ public class FacileReflector {
 			byteOffset = (int) (cliMetadataRootHeaderPA + offsetToData);
 			
 			sizeOfUserStringStream = userStringStream.read(buffer, byteOffset);
-			if(sizeOfUserStringStream != streamHeader.getStreamSize()) {	
-				StringBuffer msg = new StringBuffer("\nThe size of the #US stream content ");
-				msg.append("is not equal to the header information.\n(");
-				msg.append(sizeOfUserStringStream);
-				msg.append(" instead of ");
-				msg.append(streamHeader.getStreamSize());
-				msg.append(")");
-				throw new SizeMismatchException(msg.toString());
+			if(sizeOfUserStringStream != streamHeader.getStreamSize()) {
+				String msg = "\nThe size of the #US stream content " + "is not equal to the header information.\n(" +
+						sizeOfUserStringStream +
+						" instead of " +
+						streamHeader.getStreamSize() +
+						")";
+				throw new SizeMismatchException(msg);
 			}
 		}
 		
@@ -426,13 +420,12 @@ public class FacileReflector {
 			
 			sizeOfGuidStream = guidStream.read(buffer, byteOffset);
 			if(sizeOfGuidStream != streamHeader.getStreamSize()) {
-				StringBuffer msg = new StringBuffer("\nThe size of the #GUID stream content ");
-				msg.append("is not equal to the header information.\n(");
-				msg.append(sizeOfGuidStream);
-				msg.append(" instead of ");
-				msg.append(streamHeader.getStreamSize());
-				msg.append(")");
-				throw new SizeMismatchException(msg.toString());
+				String msg = "\nThe size of the #GUID stream content " + "is not equal to the header information.\n(" +
+						sizeOfGuidStream +
+						" instead of " +
+						streamHeader.getStreamSize() +
+						")";
+				throw new SizeMismatchException(msg);
 			}
 		}
 		
@@ -449,13 +442,12 @@ public class FacileReflector {
 			
 			sizeOfBlobStream = blobStream.read(buffer, byteOffset);
 			if(sizeOfBlobStream != streamHeader.getStreamSize()) {
-				StringBuffer msg = new StringBuffer("\nThe size of the #Blob stream content ");
-				msg.append("is not equal to the header information.\n(");
-				msg.append(sizeOfBlobStream);
-				msg.append(" instead of ");
-				msg.append(streamHeader.getStreamSize());
-				msg.append(")");
-				throw new SizeMismatchException(msg.toString());
+				String msg = "\nThe size of the #Blob stream content " + "is not equal to the header information.\n(" +
+						sizeOfBlobStream +
+						" instead of " +
+						streamHeader.getStreamSize() +
+						")";
+				throw new SizeMismatchException(msg);
 			}
 			
 		}
@@ -533,21 +525,29 @@ public class FacileReflector {
 	private void getStreamIndices() throws DotNetContentNotFoundException {
 		for(int index=0;index<cliMetadataRootHeader.getStreamHeaders().length;index++) {
 			String name = cliMetadataRootHeader.getStreamHeaders()[index].getName();
-			
-			if(name.equals(STREAM_SIGNATURE_METADATA) || name.equals(STREAM_SIGNATURE_METADATA_ALTERNATIVE)) {
-				indexOfMetadataStream = index;
-			} else if(name.equals(STREAM_SIGNATURE_STRINGS)) {
-				indexOfStringsStream = index;
-			} else if(name.equals(STREAM_SIGNATURE_US)) {
-				indexOfUserStringStream = index;
-			} else if(name.equals(STREAM_SIGNATURE_GUID)) {
-				indexOfGuidStream = index;
-			} else if(name.equals(STREAM_SIGNATURE_BLOB)) {
-				indexOfBlobStream = index;
-			} else {
-				//remember the unknown streams
-				additionalStreamsSetup.put(name, index);
-				logger.severe("Unknown stream (" + name + ") detected!");
+
+			switch (name) {
+				case STREAM_SIGNATURE_METADATA:
+				case STREAM_SIGNATURE_METADATA_ALTERNATIVE:
+					indexOfMetadataStream = index;
+					break;
+				case STREAM_SIGNATURE_STRINGS:
+					indexOfStringsStream = index;
+					break;
+				case STREAM_SIGNATURE_US:
+					indexOfUserStringStream = index;
+					break;
+				case STREAM_SIGNATURE_GUID:
+					indexOfGuidStream = index;
+					break;
+				case STREAM_SIGNATURE_BLOB:
+					indexOfBlobStream = index;
+					break;
+				default:
+					//remember the unknown streams
+					additionalStreamsSetup.put(name, index);
+					logger.severe("Unknown stream (" + name + ") detected!");
+					break;
 			}
 		}
 		
@@ -560,7 +560,7 @@ public class FacileReflector {
 	}
 
 	private void processCoffPeData(byte[] buffer)
-			throws UnexpectedHeaderDataException, CoffPeDataNotFoundException, DotNetContentNotFoundException {
+			throws UnexpectedHeaderDataException, CoffPeDataNotFoundException {
 		
 		 int byteOffset = 0;
 		 
@@ -617,7 +617,7 @@ public class FacileReflector {
 	 * @throws SizeMismatchException If the file is large than 2GB ({@link Integer#MAX_VALUE}).
 	 */
 	private byte[] getFileBuffer(String pathToFile)
-			throws FileNotFoundException, IOException, SizeMismatchException {
+			throws IOException, SizeMismatchException {
 		//open a new file stream
 		RandomAccessFile file = new RandomAccessFile(pathToFile, "r");
 		long length = file.length();
@@ -1022,7 +1022,7 @@ public class FacileReflector {
 	 */
 	public PESectionHeader [] getPeSectionHeaders() {
 		if(peSectionHeaders==null || peSectionHeaders.size()==0) return new PESectionHeader [0];
-		return peSectionHeaders.toArray(new PESectionHeader [0]);
+		return peSectionHeaders.toArray(new PESectionHeader[peSectionHeaders.size()]);
 	}
 	
 	/**

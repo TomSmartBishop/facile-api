@@ -336,17 +336,15 @@ public abstract class Signature extends TypeKind {
 					}
 				} catch (NumberFormatException e) {
 					Logger logger = Logger.getLogger(FacileReflector.LOGGER_NAME);
-					StringBuffer buffer = new StringBuffer(128);
-					
-					buffer.append("Unable to convert element ");
-					buffer.append(indexInVersionString);
-					buffer.append(" of version string [");
-					buffer.append(version);
-					buffer.append("] of ");
-					buffer.append(fullQualifiedName);
-					buffer.append(".");
-					
-					logger.log(Level.WARNING, buffer.toString());
+					String buffer = "Unable to convert element " +
+							indexInVersionString +
+							" of version string [" +
+							version +
+							"] of " +
+							fullQualifiedName +
+							".";
+
+					logger.log(Level.WARNING, buffer);
 				}
 				indexInVersionString++;
 			}
@@ -689,7 +687,6 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 			paramEntry.setTypeRef(enclosingType);
 		} else {
 			type(enclosingType);
-			assert (enclosingType != null);
 			paramEntry.setTypeRef(enclosingType);
 			
 			//TODO:check if this is correct:
@@ -996,29 +993,30 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 		case Signature.UNNAMED_CSTM_ATRB_ENUM:
 			//take a shortcut in case the type is defined in the same assembly and the
 			//type information comes as type (not as type spec)
-			if(typeRef!=null && typeRef.getType()!=null) {
-				int estimatedSize = estimateEnumSizeFromTypeFields(backupBlobIndex, typeRef.getType());
-				if(estimatedSize!=0)
-					return readEnum(backupBlobIndex, index, estimatedSize);
-			} else {
-				//check if there is an enum reference
-				for(String fullQualifiedEnumName : directory.getReferneceEnums().keySet()) {
-					if(typeRef.getFullQualifiedName().equals(fullQualifiedEnumName))
-						return readEnum(backupBlobIndex, index, directory.getReferneceEnums().get(fullQualifiedEnumName));
-				}
-				
-				//check if there is an assembly reference
-				for(Assembly assembly : directory.getReferenceAssemblies()) {
-					for(Type type : assembly.getAllTypes()) {
-						if(type.getName()!=null && type.getFullQualifiedName().equals(typeRef.getFullQualifiedName())) {
-							int estimatedSize = estimateEnumSizeFromTypeFields(backupBlobIndex, type);
-							if(estimatedSize!=0)
-								return readEnum(backupBlobIndex, index, estimatedSize);
+			if(typeRef!=null) {
+				if (typeRef.getType() != null) {
+					int estimatedSize = estimateEnumSizeFromTypeFields(backupBlobIndex, typeRef.getType());
+					if (estimatedSize != 0)
+						return readEnum(backupBlobIndex, index, estimatedSize);
+				} else {
+					//check if there is an enum reference
+					for (String fullQualifiedEnumName : directory.getReferenceEnums().keySet()) {
+						if (typeRef.getFullQualifiedName().equals(fullQualifiedEnumName))
+							return readEnum(backupBlobIndex, index, directory.getReferenceEnums().get(fullQualifiedEnumName));
+					}
+
+					//check if there is an assembly reference
+					for (Assembly assembly : directory.getReferenceAssemblies()) {
+						for (Type type : assembly.getAllTypes()) {
+							if (type.getName() != null && type.getFullQualifiedName().equals(typeRef.getFullQualifiedName())) {
+								int estimatedSize = estimateEnumSizeFromTypeFields(backupBlobIndex, type);
+								if (estimatedSize != 0)
+									return readEnum(backupBlobIndex, index, estimatedSize);
+							}
 						}
-					}	
+					}
 				}
 			}
-
 			return readEnum(backupBlobIndex, index, 4);
 			
 		default:
@@ -1184,10 +1182,8 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 		if (getClass() != obj.getClass())
 			return false;
 		Signature other = (Signature) obj;
-		if (!Arrays.equals(binarySignature, other.binarySignature))
-			return false;
+		return Arrays.equals(binarySignature, other.binarySignature);
 
-		return true;
 	}
 	
 //	protected String FieldOrPropertyName() throws InvalidSignatureException, UnsupportedEncodingException {

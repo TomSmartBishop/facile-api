@@ -127,18 +127,9 @@ public class DeclSecurityEntry extends AbstractAttributable implements IHasCusto
 				return false;
 		} else if (!permissionSetXML.equals(other.permissionSetXML))
 			return false;
-		
-		if (!Arrays.equals(permissions, other.permissions)) {
-			//use this code debugging
-//			for(int i=0;i<permissions.length;i++) {
-//				if(!permissions[i].equals(other.permissions[i])) {
-//					permissions[i].equals(other.permissions[i]); //insert break point here
-//				}
-//			}
-			return false;
-		}
-		
-		return true;
+
+		return Arrays.equals(permissions, other.permissions);
+
 	}
 
 	@Override

@@ -51,9 +51,7 @@ public class LeaveS extends TargetCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((LeaveS)obj).target!=target)
-			return false;
-		return true;
+		return ((LeaveS) obj).target == target;
 	}
 
 	@Override

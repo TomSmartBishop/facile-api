@@ -45,9 +45,7 @@ public class AssemblyProcessorEntry implements RenderableCilElement, AssemblyPro
 		if (getClass() != obj.getClass())
 			return false;
 		AssemblyProcessorEntry other = (AssemblyProcessorEntry) obj;
-		if (processor != other.processor)
-			return false;
-		return true;
+		return processor == other.processor;
 	}
 	
 	

@@ -6,7 +6,7 @@ public class LineNumberInfo implements DebugInformation {
 
 	private String sourceFileName;
 	
-	private ArrayList<InstructionInfo> instructionList = new ArrayList<InstructionInfo>();
+	private ArrayList<InstructionInfo> instructionList = new ArrayList<>();
 	
 	public void addInstruction(long lineNumber, long colNumber, long colEndNumber, long programCounter) {
 		instructionList.add(new Instruction(lineNumber,colNumber,colEndNumber,programCounter));
@@ -28,7 +28,7 @@ public class LineNumberInfo implements DebugInformation {
 	 */
 	public InstructionInfo [] getInstructionInfos() {
 		if(instructionList==null || instructionList.size()==0) return new InstructionInfo[0];
-		return instructionList.toArray(new InstructionInfo[0]);
+		return instructionList.toArray(new InstructionInfo[instructionList.size()]);
 	}
 
 	public String toString() {

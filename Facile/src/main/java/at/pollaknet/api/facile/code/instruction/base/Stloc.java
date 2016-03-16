@@ -56,9 +56,7 @@ public class Stloc extends CilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Stloc)obj).index!=index)
-			return false;
-		return true;
+		return ((Stloc) obj).index == index;
 	}
 
 	@Override

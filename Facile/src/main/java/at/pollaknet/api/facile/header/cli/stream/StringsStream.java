@@ -17,7 +17,7 @@ public class StringsStream implements IDataHeader {
 	
 	public StringsStream(int size) {
 		byteSize=size;
-		stringHeap = new HashMap<Integer, byte []>();
+		stringHeap = new HashMap<>();
 	}
 	
 	@Override
@@ -121,8 +121,9 @@ public class StringsStream implements IDataHeader {
 	private void ensureSortedKeySet() {
 		//generate the sorted key set if necessary
 		if(sortedKeySet==null || sortedKeySet.length != stringHeap.size()) {
-		
-			sortedKeySet = stringHeap.keySet().toArray(new Integer[0]);
+
+			java.util.Set<Integer> var = stringHeap.keySet();
+			sortedKeySet = var.toArray(new Integer[var.size()]);
 			Arrays.sort(sortedKeySet);
 		}
 	}

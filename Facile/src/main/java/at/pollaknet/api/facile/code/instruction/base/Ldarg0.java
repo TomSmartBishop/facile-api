@@ -44,9 +44,7 @@ public class Ldarg0 extends CilInstruction {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (getClass() != obj.getClass())
-			return false;
-		return true;
+		return getClass() == obj.getClass();
 	}
 
 	@Override

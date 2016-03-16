@@ -381,45 +381,44 @@ public class PEDataDirectories implements IDataHeader  {
 
 	@Override
 	public String toString() {
-		StringBuffer buffer = new StringBuffer(1024);
-		buffer.append("PE Data Directories:");
-		buffer.append(String.format("\n  Import Directory RVA: ..............0x%08x", importDirectoryRVA));
-		buffer.append(String.format("\n  Import Directory Size: .............%010d", importDirectorySize));
-		buffer.append(String.format("\n  Export Directory RVA: ..............0x%08x", exportDirectoryRVA));
-		buffer.append(String.format("\n  Export Directory Size: .............%010d", exportDirectorySize));
-		buffer.append(String.format("\n  Resource Directory RVA: ............0x%08x", resourceDirectoryRVA));
-		buffer.append(String.format("\n  Resource Directory Size: ...........%010d", resourceDirectorySize));
-		buffer.append(String.format("\n  Exception Directory RVA: ...........0x%08x", exceptionDirectoryRVA));
-		buffer.append(String.format("\n  Exception Directory Size: ..........%010d", exceptionDirectorySize));
-		buffer.append("\n  ------------------------------------");
-		buffer.append(String.format("\n  Certificate Directory RVA: .........0x%08x", certificateDirectoryRVA));
-		buffer.append(String.format("\n  Certificate Directory Size: ........%010d", certificateDirectorySize));
-		buffer.append(String.format("\n  Base Relocation Directory RVA: .....0x%08x", baseRelocDirectoryRVA));
-		buffer.append(String.format("\n  Base Relocation Directory Size: ....%010d", baseRelocDirectorySize));
-		buffer.append(String.format("\n  Debug Directory RVA: ...............0x%08x", debugDirectoryRVA));
-		buffer.append(String.format("\n  Debug Directory Size: ..............%010d", debugDirectorySize));
-		buffer.append(String.format("\n  Copyright Directory RVA: ...........0x%08x", copyrightDirectoryRVA));
-		buffer.append(String.format("\n  Copyright Directory Size: ..........%010d", copyrightDirectorySize));
-		buffer.append("\n  ------------------------------------");
-		buffer.append(String.format("\n  Global Pointer Directory RVA: ......0x%08x", pointerDirectoryRVA));
-		buffer.append(String.format("\n  Global Pointer Directory Size: .....%010d", pointerDirectorySize));
-		buffer.append(String.format("\n  Thread Local Storage Dir. RVA: .....0x%08x", threadLocalStorageDirectoryRVA));
-		buffer.append(String.format("\n  Thread Local Storage Dir. Size: ....%010d", threadLocalStorageDirectorySize));
-		buffer.append(String.format("\n  Load Config Directory RVA: .........0x%08x", loadConfigDirectoryRVA));
-		buffer.append(String.format("\n  Load Config Directory Size: ........%010d", loadConfigDirectorySize));
-		buffer.append(String.format("\n  Bound Import Directory RVA: ........0x%08x", boundImportDirectoryRVA));
-		buffer.append(String.format("\n  Bound Import Directory Size: .......%010d", boundImportDirectorySize));
-		buffer.append("\n  ------------------------------------");
-		buffer.append(String.format("\n  Import Address Table RVA: ..........0x%08x", importAddrTabDirectoryRVA));
-		buffer.append(String.format("\n  Import Address Table Size: .........%010d", importAddrTabDirectorySize));
-		buffer.append(String.format("\n  Delay Load (Import) Dir. RVA: ......0x%08x", delayLoadDirectoryRVA));
-		buffer.append(String.format("\n  Delay Load (Import) Dir. Size: .....%010d", delayLoadDirectorySize));
-		buffer.append(String.format("\n  Common Language Runtime RVA: .......0x%08x", commonLanguageRuntimeHeaderRVA));
-		buffer.append(String.format("\n  Common Language Runtime Size: ......%010d", commonLanguageRuntimeHeaderSize));
-		buffer.append(String.format("\n  Reserved Directory RVA: ............0x%08x", reservedDirectoryRVA));
-		buffer.append(String.format("\n  Reserved Directory Size: ...........%010d", reservedDirectorySize));
-		
-		return  buffer.toString();
+		String buffer = "PE Data Directories:" +
+				String.format("\n  Import Directory RVA: ..............0x%08x", importDirectoryRVA) +
+				String.format("\n  Import Directory Size: .............%010d", importDirectorySize) +
+				String.format("\n  Export Directory RVA: ..............0x%08x", exportDirectoryRVA) +
+				String.format("\n  Export Directory Size: .............%010d", exportDirectorySize) +
+				String.format("\n  Resource Directory RVA: ............0x%08x", resourceDirectoryRVA) +
+				String.format("\n  Resource Directory Size: ...........%010d", resourceDirectorySize) +
+				String.format("\n  Exception Directory RVA: ...........0x%08x", exceptionDirectoryRVA) +
+				String.format("\n  Exception Directory Size: ..........%010d", exceptionDirectorySize) +
+				"\n  ------------------------------------" +
+				String.format("\n  Certificate Directory RVA: .........0x%08x", certificateDirectoryRVA) +
+				String.format("\n  Certificate Directory Size: ........%010d", certificateDirectorySize) +
+				String.format("\n  Base Relocation Directory RVA: .....0x%08x", baseRelocDirectoryRVA) +
+				String.format("\n  Base Relocation Directory Size: ....%010d", baseRelocDirectorySize) +
+				String.format("\n  Debug Directory RVA: ...............0x%08x", debugDirectoryRVA) +
+				String.format("\n  Debug Directory Size: ..............%010d", debugDirectorySize) +
+				String.format("\n  Copyright Directory RVA: ...........0x%08x", copyrightDirectoryRVA) +
+				String.format("\n  Copyright Directory Size: ..........%010d", copyrightDirectorySize) +
+				"\n  ------------------------------------" +
+				String.format("\n  Global Pointer Directory RVA: ......0x%08x", pointerDirectoryRVA) +
+				String.format("\n  Global Pointer Directory Size: .....%010d", pointerDirectorySize) +
+				String.format("\n  Thread Local Storage Dir. RVA: .....0x%08x", threadLocalStorageDirectoryRVA) +
+				String.format("\n  Thread Local Storage Dir. Size: ....%010d", threadLocalStorageDirectorySize) +
+				String.format("\n  Load Config Directory RVA: .........0x%08x", loadConfigDirectoryRVA) +
+				String.format("\n  Load Config Directory Size: ........%010d", loadConfigDirectorySize) +
+				String.format("\n  Bound Import Directory RVA: ........0x%08x", boundImportDirectoryRVA) +
+				String.format("\n  Bound Import Directory Size: .......%010d", boundImportDirectorySize) +
+				"\n  ------------------------------------" +
+				String.format("\n  Import Address Table RVA: ..........0x%08x", importAddrTabDirectoryRVA) +
+				String.format("\n  Import Address Table Size: .........%010d", importAddrTabDirectorySize) +
+				String.format("\n  Delay Load (Import) Dir. RVA: ......0x%08x", delayLoadDirectoryRVA) +
+				String.format("\n  Delay Load (Import) Dir. Size: .....%010d", delayLoadDirectorySize) +
+				String.format("\n  Common Language Runtime RVA: .......0x%08x", commonLanguageRuntimeHeaderRVA) +
+				String.format("\n  Common Language Runtime Size: ......%010d", commonLanguageRuntimeHeaderSize) +
+				String.format("\n  Reserved Directory RVA: ............0x%08x", reservedDirectoryRVA) +
+				String.format("\n  Reserved Directory Size: ...........%010d", reservedDirectorySize);
+
+		return buffer;
 	}
 	
 }

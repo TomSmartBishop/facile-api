@@ -49,9 +49,9 @@ public class AssemblyOsTable extends AbstractTable {
 		StringBuffer buffer = new StringBuffer(" AssemblyOS Table (" + TABLE_INDEX + "):");
 	
 		for(int i=0;i<rows;i++) {
-			buffer.append("\n  PlatformnID: ");
+			buffer.append("\n  Platform ID: ");
 			buffer.append(platformID[i]);
-			buffer.append("\tMajorVerison: ");
+			buffer.append("\tMajorVersion: ");
 			buffer.append(majorVersion[i]);
 			buffer.append("\tMinorVersion: ");
 			buffer.append(minorVersion[i]);

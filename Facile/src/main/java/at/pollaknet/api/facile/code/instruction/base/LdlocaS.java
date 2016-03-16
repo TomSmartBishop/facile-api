@@ -55,9 +55,7 @@ public class LdlocaS extends CilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((LdlocaS)obj).address!=address)
-			return false;
-		return true;
+		return ((LdlocaS) obj).address == address;
 	}
 
 	@Override

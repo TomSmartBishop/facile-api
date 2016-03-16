@@ -416,11 +416,11 @@ public class MetadataModel {
     public String toString() {
 
 		StringBuffer buffer = new StringBuffer("Metadata:");
-		
-		for(int tab=0; tab<table.length; tab++) {
-			if(table[tab]!=null) {
-				for(int i=0; i<table[tab].length; i++) {
-					buffer.append("\n" + table[tab][i].toString());
+
+		for (RenderableCilElement[] cilElements : table) {
+			if (cilElements != null) {
+				for (RenderableCilElement cilElement : cilElements) {
+					buffer.append("\n").append(cilElement.toString());
 				}
 			}
 		}

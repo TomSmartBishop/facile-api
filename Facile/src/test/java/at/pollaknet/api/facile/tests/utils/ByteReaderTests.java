@@ -198,19 +198,19 @@ public class ByteReaderTests extends TestCase {
 	}
 	
 	/*
-	 * Test method for 'facile.util.ByteReader.getUTF16PrepairedBytes(byte[], int, int)'
+	 * Test method for 'facile.util.ByteReader.getUTF16PreparedBytes(byte[], int, int)'
 	 */
-	public void testGetUTF16PrepairedBytes() {
+	public void testGetUTF16PreparedBytes() {
 		byte [] byteArray = {	(byte) 0xaa, 0x55, 0x0a, 0x2a, 0x00, 0x42, 0x00, 0x53, 0x00, 0x4a, 0x00, 0x42, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00,
  				0x00, 0x0c, 0x00, 0x00, 0x00, 0x76, 0x00, 0x32, 0x00, 0x2e, 0x00, 0x30, 0x00, 0x2e, 0x00, 0x35, 0x00, 0x30, 0x00, 0x37, 0x00, 0x32, 0x00, 0x37, 0x00, 0x00 };
 
 		try {
 			//build a string out of a byte array, which has an UTF16 encoding with the order low byte before high byte
-			assertEquals(new String(ByteReader.getUTF16PrepairedBytes(byteArray, 3, 10),"UTF16"),"*BSJB");
-			assertEquals(new String(ByteReader.getUTF16PrepairedBytes(byteArray, 25, 20),"UTF16"),"v2.0.50727");
+			assertEquals(new String(ByteReader.getUTF16PreparedBytes(byteArray, 3, 10),"UTF16"),"*BSJB");
+			assertEquals(new String(ByteReader.getUTF16PreparedBytes(byteArray, 25, 20),"UTF16"),"v2.0.50727");
 			
 			//test an invalid UTF16 length of 9 bytes (will succeed here since the missing byte is filled up with a zero)
-			assertEquals(new String(ByteReader.getUTF16PrepairedBytes(byteArray, 3, 9),"UTF16"),"*BSJB");
+			assertEquals(new String(ByteReader.getUTF16PreparedBytes(byteArray, 3, 9),"UTF16"),"*BSJB");
 		} catch (UnsupportedEncodingException e) {
 			fail(e.getMessage());
 		}

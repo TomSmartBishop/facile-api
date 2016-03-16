@@ -51,9 +51,7 @@ public class Callvirt extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Callvirt)obj).token!=token)
-			return false;
-		return true;
+		return ((Callvirt) obj).token == token;
 	}
 
 	@Override

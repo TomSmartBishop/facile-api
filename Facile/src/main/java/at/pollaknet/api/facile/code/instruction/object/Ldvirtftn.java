@@ -52,9 +52,7 @@ public class Ldvirtftn extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Ldvirtftn)obj).token!=token)
-			return false;
-		return true;
+		return ((Ldvirtftn) obj).token == token;
 	}
 
 	@Override

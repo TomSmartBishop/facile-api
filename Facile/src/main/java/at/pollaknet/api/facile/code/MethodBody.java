@@ -252,7 +252,7 @@ public class MethodBody {
 		int exceptionFlags;
 		int byteCounter = offset;
 		
-		ArrayList<ExceptionClause> clauses = new ArrayList<ExceptionClause>();
+		ArrayList<ExceptionClause> clauses = new ArrayList<>();
 		
 		while(moreSections) {
 			//continue with the method data section (starts 4 byte aligned)
@@ -317,7 +317,7 @@ public class MethodBody {
 			throws InvalidByteCodeException {
 		if(length<1) return new CilInstruction[0];
 		
-		List<CilInstruction> instructions = new ArrayList<CilInstruction>();
+		List<CilInstruction> instructions = new ArrayList<>();
 		
 		int index=offset;
 		CilInstruction currentInstruction = null;
@@ -573,7 +573,7 @@ public class MethodBody {
 			
 		}
 		
-		return instructions.toArray(new CilInstruction [0]);
+		return instructions.toArray(new CilInstruction[instructions.size()]);
 	}
 
 	/**
@@ -768,10 +768,10 @@ public class MethodBody {
 
 		if(cilInstructions!=null) {
 			if(other.cilInstructions!=null) {
-				
 				if(cilInstructions.length==other.cilInstructions.length) {
 					for(int i=0;i<cilInstructions.length;i++) {
-						cilInstructions[i].equals(other.cilInstructions[i]);
+						if(!cilInstructions[i].equals(other.cilInstructions[i]))
+							return false;
 					}
 				}
 			}

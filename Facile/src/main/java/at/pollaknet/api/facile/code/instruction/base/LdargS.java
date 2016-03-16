@@ -54,9 +54,7 @@ public class LdargS extends CilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((LdargS)obj).argumentNumber!=argumentNumber)
-			return false;
-		return true;
+		return ((LdargS) obj).argumentNumber == argumentNumber;
 	}
 
 	@Override

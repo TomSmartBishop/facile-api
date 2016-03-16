@@ -93,41 +93,40 @@ public class Facile {
 		String pdbPath = null;
 		
 		//parameter parsing
-		for(int i=0;i<args.length;i++) {
-			
-			if(args[i].equals("--il")) {
+		for (String arg : args) {
+
+			if (arg.equals("--il")) {
 				createIlOutput = true;
-			} else if(args[i].equals("--bca")) {
+			} else if (arg.equals("--bca")) {
 				binaryCustomAttributes = true;
-			} else if(args[i].equals("--info")) {
+			} else if (arg.equals("--info")) {
 				assemblyOverview = true;
-			} else if(args[i].equals("--verbose")) {
+			} else if (arg.equals("--verbose")) {
 				verbose = true;
-			} else if(args[i].equals("--log")) {
+			} else if (arg.equals("--log")) {
 				log = true;
-			} else if(args[i].equals("--#~")) {
+			} else if (arg.equals("--#~")) {
 				outputStringsStream = true;
-			} else if(args[i].equals("--#Strings")) {
+			} else if (arg.equals("--#Strings")) {
 				outputStringsStream = true;
-			} else if(args[i].equals("--#Blob")) {
+			} else if (arg.equals("--#Blob")) {
 				outputBlobStream = true;
-			} else if(args[i].equals("--#GUID")) {
+			} else if (arg.equals("--#GUID")) {
 				outputGuidStream = true;
-			} else if(args[i].equals("--#US")) {
+			} else if (arg.equals("--#US")) {
 				outputUserStringStream = true;
-			}
-			else if(args[i].endsWith(".exe") ||
-				    args[i].endsWith(".dll") ||
-					args[i].endsWith(".netmodule") ||
-					args[i].endsWith(".winmd") ||
-					args[i].endsWith(".mcl") ) {
-				if(assemblyPath==null) {
-					assemblyPath = args[i];
+			} else if (arg.endsWith(".exe") ||
+					arg.endsWith(".dll") ||
+					arg.endsWith(".netmodule") ||
+					arg.endsWith(".winmd") ||
+					arg.endsWith(".mcl")) {
+				if (assemblyPath == null) {
+					assemblyPath = arg;
 				} else {
-					pdbPath = args[i];
+					pdbPath = arg;
 				}
-			} else if( args[i].endsWith(".pdb") ) {
-				pdbPath = args[i];
+			} else if (arg.endsWith(".pdb")) {
+				pdbPath = arg;
 			}
 		}
 		
@@ -281,7 +280,7 @@ public class Facile {
 	 * an {@link IOException}.
 	 */
 	public static Assembly loadAssembly(String pathToAssembly, boolean loadByteCode)
-			throws CoffPeDataNotFoundException, DotNetContentNotFoundException, UnexpectedHeaderDataException,
+			throws CoffPeDataNotFoundException, UnexpectedHeaderDataException,
 				SizeMismatchException, IOException {
 		FacileReflector reflector = new FacileReflector(pathToAssembly);
 		Assembly assembly = reflector.loadAssembly(loadByteCode);
@@ -319,7 +318,7 @@ public class Facile {
      * an {@link IOException}.
      */
     public static Assembly loadAssembly(String pathToAssembly)
-            throws CoffPeDataNotFoundException, DotNetContentNotFoundException, UnexpectedHeaderDataException,
+            throws CoffPeDataNotFoundException, UnexpectedHeaderDataException,
                 SizeMismatchException, IOException {
         return loadAssembly(pathToAssembly, true);
     }
@@ -359,8 +358,8 @@ public class Facile {
 	 * @throws IOException if the reading process of the specified file throws
 	 */
 	public static Assembly loadAssembly(String pathToAssembly, String pathToPdb)
-			throws CoffPeDataNotFoundException, DotNetContentNotFoundException,
-				UnexpectedHeaderDataException, SizeMismatchException, IOException {
+			throws CoffPeDataNotFoundException,
+			UnexpectedHeaderDataException, SizeMismatchException, IOException {
 		FacileReflector reflector = new FacileReflector(pathToAssembly, pathToPdb);
 		Assembly assembly = reflector.loadAssembly();
 		return assembly;
@@ -396,8 +395,8 @@ public class Facile {
 	 * data does not match the real size in the {@code buffer}.
 	 */
 	public static Assembly loadAssembly(byte[] buffer)
-			throws CoffPeDataNotFoundException, DotNetContentNotFoundException, 
-				UnexpectedHeaderDataException, SizeMismatchException {
+			throws CoffPeDataNotFoundException,
+			UnexpectedHeaderDataException, SizeMismatchException {
 		FacileReflector reflector = new FacileReflector(buffer);
 		Assembly assembly = reflector.loadAssembly();
 		return assembly;
@@ -434,8 +433,8 @@ public class Facile {
 	 * an {@link IOException}.
 	 */
 	public static FacileReflector load(String pathToAssembly)
-			throws CoffPeDataNotFoundException, DotNetContentNotFoundException,
-				UnexpectedHeaderDataException, SizeMismatchException, IOException {
+			throws CoffPeDataNotFoundException,
+			UnexpectedHeaderDataException, SizeMismatchException, IOException {
 		FacileReflector reflector = new FacileReflector(pathToAssembly);
 		reflector.loadAssembly();
 		return reflector;
@@ -478,7 +477,7 @@ public class Facile {
 	 * an {@link IOException}.
 	 */
 	public static FacileReflector load(String pathToAssembly, String pathToPdb)
-			throws CoffPeDataNotFoundException, DotNetContentNotFoundException, 
+			throws CoffPeDataNotFoundException,
 			UnexpectedHeaderDataException, SizeMismatchException, IOException {
 		FacileReflector reflector = new FacileReflector(pathToAssembly, pathToPdb);
 		reflector.loadAssembly();
@@ -513,8 +512,8 @@ public class Facile {
 	 * data does not match the real size in the {@code buffer}.
 	 */
 	public static FacileReflector load(byte [] buffer)
-			throws CoffPeDataNotFoundException, DotNetContentNotFoundException,
-				UnexpectedHeaderDataException, SizeMismatchException {
+			throws CoffPeDataNotFoundException,
+			UnexpectedHeaderDataException, SizeMismatchException {
 		FacileReflector reflector = new FacileReflector(buffer);
 		reflector.loadAssembly();
 		return reflector;
@@ -559,8 +558,8 @@ public class Facile {
 	 * an {@link IOException}.
 	 */
 	public static FacileReflector reflect(String pathToAssembly)
-			throws CoffPeDataNotFoundException, DotNetContentNotFoundException,
-				UnexpectedHeaderDataException, SizeMismatchException, IOException {
+			throws CoffPeDataNotFoundException,
+			UnexpectedHeaderDataException, SizeMismatchException, IOException {
 		return new FacileReflector(pathToAssembly);
 	}
 	
@@ -610,8 +609,8 @@ public class Facile {
 	 * an {@link IOException}.
 	 */	
 	public static FacileReflector reflect(String pathToAssembly, String pathToPdb)
-			throws CoffPeDataNotFoundException, DotNetContentNotFoundException,
-				UnexpectedHeaderDataException, SizeMismatchException, IOException {
+			throws CoffPeDataNotFoundException,
+			UnexpectedHeaderDataException, SizeMismatchException, IOException {
 		return new FacileReflector(pathToAssembly, pathToPdb);
 	}
 	
@@ -652,8 +651,8 @@ public class Facile {
 	 * data does not match the real size in the {@code buffer}.
 	 */
 	public static FacileReflector reflect(byte[] buffer)
-			throws CoffPeDataNotFoundException, DotNetContentNotFoundException,
-				UnexpectedHeaderDataException, SizeMismatchException {
+			throws CoffPeDataNotFoundException,
+			UnexpectedHeaderDataException, SizeMismatchException {
 		return new FacileReflector(buffer);
 	}
 }

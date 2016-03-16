@@ -22,7 +22,7 @@ public class UserStringStream implements IDataHeader {
 	
 	public UserStringStream(int size) {
 		byteSize=size;
-		userStringHeap = new HashMap<Integer, String>();
+		userStringHeap = new HashMap<>();
 	}
 	
 	@Override
@@ -52,7 +52,7 @@ public class UserStringStream implements IDataHeader {
 			if(length>0 && index+length+lengthInfo<=maxIndex) {
 
 				try {
-					utf16String = ByteReader.getUTF16PrepairedBytes(data, index+lengthInfo, length-1);
+					utf16String = ByteReader.getUTF16PreparedBytes(data, index+lengthInfo, length-1);
 					if(utf16String!=null)
 						userStringHeap.put(index-offset,new String(utf16String, USER_STRING_DECODING_STANDARD));
 					else
@@ -97,8 +97,9 @@ public class UserStringStream implements IDataHeader {
 	private void ensureSortedKeySet() {
 		//generate the sorted key set if necessary
 		if(sortedKeySet==null || sortedKeySet.length != userStringHeap.size()) {
-		
-			sortedKeySet = userStringHeap.keySet().toArray(new Integer[0]);
+
+			java.util.Set<Integer> var = userStringHeap.keySet();
+			sortedKeySet = var.toArray(new Integer[var.size()]);
 			Arrays.sort(sortedKeySet);
 		}
 	}

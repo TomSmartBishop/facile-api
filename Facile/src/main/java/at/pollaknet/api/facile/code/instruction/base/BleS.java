@@ -51,9 +51,7 @@ public class BleS extends TargetCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((BleS)obj).target!=target)
-			return false;
-		return true;
+		return ((BleS) obj).target == target;
 	}
 
 	@Override

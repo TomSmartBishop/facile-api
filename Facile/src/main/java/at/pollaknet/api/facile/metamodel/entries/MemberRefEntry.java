@@ -1,6 +1,6 @@
 package at.pollaknet.api.facile.metamodel.entries;
 
-import at.pollaknet.api.facile.metamodel.AbstractGenericInstanceConatiner;
+import at.pollaknet.api.facile.metamodel.AbstractGenericInstanceContainer;
 import at.pollaknet.api.facile.metamodel.ITypeSpecInstances;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.ICustomAttributeType;
 import at.pollaknet.api.facile.metamodel.entries.aggregation.IHasCustomAttribute;
@@ -10,7 +10,7 @@ import at.pollaknet.api.facile.symtab.symbols.MemberRef;
 import at.pollaknet.api.facile.symtab.symbols.aggregation.MethodAndFieldParent;
 import at.pollaknet.api.facile.util.ArrayUtils;
 
-public class MemberRefEntry extends AbstractGenericInstanceConatiner
+public class MemberRefEntry extends AbstractGenericInstanceContainer
 		implements IHasCustomAttribute, IMethodDefOrRef, ICustomAttributeType,
 			MemberRef, ITypeSpecInstances {
 

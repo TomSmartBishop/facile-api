@@ -24,9 +24,9 @@ import at.pollaknet.api.facile.util.Pair;
 
 public class CustomAttributeValueSignature extends Signature {
 
-	private List<Instance> fixedArguments = new ArrayList<Instance>();
-	private List<Pair<String, Instance>> namedFields = new ArrayList<Pair<String, Instance>>();
-	private List<Pair<String, Instance>> namedProperties = new ArrayList<Pair<String, Instance>>();
+	private List<Instance> fixedArguments = new ArrayList<>();
+	private List<Pair<String, Instance>> namedFields = new ArrayList<>();
+	private List<Pair<String, Instance>> namedProperties = new ArrayList<>();
 	
 	public static CustomAttributeValueSignature decodeAndAttach(BasicTypesDirectory directory, MetadataModel metaModel, CustomAttributeEntry customAttribute)
 			throws InvalidSignatureException {

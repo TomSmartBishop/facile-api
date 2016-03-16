@@ -57,9 +57,7 @@ public class Unaligned extends CilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Unaligned)obj).alignment!=alignment)
-			return false;
-		return true;
+		return ((Unaligned) obj).alignment == alignment;
 	}
 
 	@Override

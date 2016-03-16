@@ -66,9 +66,7 @@ public class ConstantEntry extends Constant implements RenderableCilElement {
 
 		if (type != other.type)
 			return false;
-		if (!Arrays.equals(value, other.value))
-			return false;
-		return true;
+		return Arrays.equals(value, other.value);
 	}
 	
 	@Override

@@ -99,10 +99,8 @@ public class ManifestResourceEntry extends AbstractAttributable implements
 		//ignore the offset
 		//if (offset != other.offset)
 		//	return false;
-		
-		if (!Arrays.equals(resource, other.resource))
-			return false;
-		return true;
+
+		return Arrays.equals(resource, other.resource);
 	}
 	
 	@Override

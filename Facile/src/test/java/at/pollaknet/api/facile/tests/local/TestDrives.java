@@ -46,9 +46,8 @@ public class TestDrives extends TestCase {
 				if(name.endsWith(".dll")) 		return true;
 				if(name.endsWith(".netmodule")) return true;
 				if(name.endsWith(".mcl")) 		return true;
-				if(file.isDirectory()) 			return true;
-				
-				return false;
+				return file.isDirectory();
+
 			}
 		};
 		
@@ -79,21 +78,19 @@ public class TestDrives extends TestCase {
 		
 		File currentDirectory = new File(directoryPath);
 		
-		if(currentDirectory!=null) {
-			File [] filesInDirectory = currentDirectory.listFiles(filter);
-			
-			if(filesInDirectory!=null) {
-				for(File file:filesInDirectory) {
-					if(file.isDirectory()) {
-						addAndInvokeFiles(file.getAbsolutePath());
-					} else {
-						tryAssembly(file);
-						fileCount++;
-	
-						if(fileCount%100==0 && fileCount!=0) {
-							System.out.println(String.format("Passed %5d  files... (%5d Assemblies)", fileCount, loadedAssemblyCount));
-							System.gc();
-						}
+		File [] filesInDirectory = currentDirectory.listFiles(filter);
+
+		if(filesInDirectory!=null) {
+			for(File file:filesInDirectory) {
+				if(file.isDirectory()) {
+					addAndInvokeFiles(file.getAbsolutePath());
+				} else {
+					tryAssembly(file);
+					fileCount++;
+
+					if(fileCount%100==0 && fileCount!=0) {
+						System.out.println(String.format("Passed %5d  files... (%5d Assemblies)", fileCount, loadedAssemblyCount));
+						System.gc();
 					}
 				}
 			}
@@ -176,7 +173,7 @@ public class TestDrives extends TestCase {
 //			addToStats("CLI_HEADER;Size of Export Address Table", String.valueOf(reflector.getCliHeader().getSizeOfExportAddressTable()));
 //			//addToStats("CLI_HEADER;Size of Metadata Directory", String.valueOf(reflector.getCliHeader().getSizeOfMetadataDirectory()));
 //			addToStats("CLI_HEADER;Size of Precompiled Header", String.valueOf(reflector.getCliHeader().getSizeOfPrecompiledHeader()));
-//			//addToStats("CLI_HEADER;Size of Resource Directory", String.valueOf(reflector.getCliHeader().getSizeOfRecourcesDirectory()));
+//			//addToStats("CLI_HEADER;Size of Resource Directory", String.valueOf(reflector.getCliHeader().getSizeOfResourcesDirectory()));
 //			addToStats("CLI_HEADER;Size of Strong Name Signature", String.valueOf(reflector.getCliHeader().getSizeOfStrongNameSignature()));
 //			addToStats("CLI_HEADER;Size of VTable Fixup Directory", String.valueOf(reflector.getCliHeader().getSizeOfVTableFixupDirectory()));
 //			

@@ -55,9 +55,7 @@ public class LdcR4 extends CilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((LdcR4)obj).constant!=constant)
-			return false;
-		return true;
+		return ((LdcR4) obj).constant == constant;
 	}
 
 	@Override

@@ -52,18 +52,17 @@ public class UnknownStream implements IDataHeader {
 	public String toExtendedString() {
 		
 		if(!valid) return toString() + " (invalid)";
-		
-		StringBuffer buffer = new StringBuffer(size*4+32);
-		
+
+		String buffer = toString() +
+				" (Unknown Stream Type):\n" +
+				ArrayUtils.formatAsHexTable(offset, content, true);
+
 		//start with the name of the stream
-		buffer.append(toString());
-		buffer.append(" (Unknown Stream Type):\n");
-		
+
 		//format stream content
-		buffer.append(ArrayUtils.formatAsHexTable(offset, content, true));
-		
+
 		//return as string
-		return buffer.toString();
+		return buffer;
 	}
 	
 	public String getName() {

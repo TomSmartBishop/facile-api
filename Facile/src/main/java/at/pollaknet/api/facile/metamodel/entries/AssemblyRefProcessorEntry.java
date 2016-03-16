@@ -50,9 +50,7 @@ public class AssemblyRefProcessorEntry implements RenderableCilElement, Assembly
 		AssemblyRefProcessorEntry other = (AssemblyRefProcessorEntry) obj;
 		if (assemblyRef != other.assemblyRef)
 			return false;
-		if (processor != other.processor)
-			return false;
-		return true;
+		return processor == other.processor;
 	}
 	
 }

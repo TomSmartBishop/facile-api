@@ -522,10 +522,8 @@ public class AssemblyEntry extends AbstractAttributable implements
 				return false;
 		} else if (!module.equals(other.module))
 			return false;
-		if (!Arrays.equals(moduleRefs, other.moduleRefs))
-			return false;
+		return Arrays.equals(moduleRefs, other.moduleRefs);
 
-		return true;
 	}
 
 	public void setEmbeddedTypeSpecs(TypeSpecEntry[] signatureEmbeddedTypeSpecs) {

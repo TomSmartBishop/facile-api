@@ -103,8 +103,9 @@ public class NamespaceContainer implements Namespace {
 	@Override
 	public boolean isSubNamespace(String namespace) {
 		String [] superAddress = namespace.split("\\.");
-		
-		if(superAddress==null||superAddress.length==0)
+
+		//split returns a non-null array
+		if(superAddress.length==0)
 			return false;
 		
 		int supLength = superAddress.length;
@@ -137,8 +138,9 @@ public class NamespaceContainer implements Namespace {
 	@Override
 	public boolean isSuperNamespace(String namespace) {
 		String [] subAddress = namespace.split("\\.");
-		
-		if(subAddress==null||subAddress.length==0)
+
+		//split return a non-null array
+		if(subAddress.length==0)
 			return false;
 		
 		int subLength = subAddress.length;
@@ -225,18 +227,9 @@ public class NamespaceContainer implements Namespace {
 			if (other.fullQualifiedName != null)
 				return false;
 		} else if (!fullQualifiedName.equals(other.fullQualifiedName))
-			return false;		
-		
-		if (!Arrays.equals(typeRefs, other.typeRefs)){
-			//use this code for debugging
-//			for(int i=0;i<typeRefs.length;i++) {
-//				if(!typeRefs[i].equals(other.typeRefs[i])) {
-//					typeRefs[i].equals(other.typeRefs[i]); //insert break point here
-//				}
-//			}
 			return false;
-		}
-		return true;
+
+		return Arrays.equals(typeRefs, other.typeRefs);
 	}
 
 }

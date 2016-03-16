@@ -51,9 +51,7 @@ public class Cpobj extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Cpobj)obj).token!=token)
-			return false;
-		return true;
+		return ((Cpobj) obj).token == token;
 	}
 
 	@Override

@@ -49,9 +49,7 @@ public class Stobj extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Stobj)obj).token!=token)
-			return false;
-		return true;
+		return ((Stobj) obj).token == token;
 	}
 
 	@Override

@@ -49,9 +49,7 @@ public class Ldfld extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Ldfld)obj).token!=token)
-			return false;
-		return true;
+		return ((Ldfld) obj).token == token;
 	}
 
 	@Override

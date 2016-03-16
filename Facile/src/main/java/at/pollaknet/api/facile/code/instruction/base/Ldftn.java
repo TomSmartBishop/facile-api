@@ -8,7 +8,7 @@ import at.pollaknet.api.facile.util.ByteReader;
 
 public class Ldftn extends ReferenceCilInstruction {
 
-	public static final byte SECOND_TOKEN = 06;
+	public static final byte SECOND_TOKEN = 0x06;
 	public static final byte BYTE_SIZE = 0x06;
 	
 	@Override
@@ -52,9 +52,7 @@ public class Ldftn extends ReferenceCilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
-		if(((Ldftn)obj).token!=token)
-			return false;
-		return true;
+		return ((Ldftn) obj).token == token;
 	}
 
 	@Override

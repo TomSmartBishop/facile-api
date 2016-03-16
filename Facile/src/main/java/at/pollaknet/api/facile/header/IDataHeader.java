@@ -20,8 +20,7 @@ public interface IDataHeader {
 	 */
 	public abstract int read(byte[] data, int offset)
 			throws UnexpectedHeaderDataException,
-				DotNetContentNotFoundException,
-				CoffPeDataNotFoundException;
+			CoffPeDataNotFoundException;
 	
 	/**
 	 * Returns the size of the read bytes.

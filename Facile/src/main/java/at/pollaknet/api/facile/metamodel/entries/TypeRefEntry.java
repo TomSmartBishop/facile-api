@@ -253,7 +253,7 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 		
 		ModuleRef parentModule = typeRef.getResolutionScope().getModule();
 		
-		if(parentModule==null || parentModule.getFullQualifiedName()!=moduleRef.getFullQualifiedName() )
+		if(parentModule==null || !parentModule.getFullQualifiedName().equals(moduleRef.getFullQualifiedName()) )
 			return;
 		
 		//check all name spaces to determinate where to replace '.' with '/'
@@ -265,7 +265,7 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 			int longestMatch = -1;
 			for(int i=0;i<definedNamespaces.length;i++) {
 				//perfect match
-				if( definedNamespaces[i].getNamespace()==enclosedNamespace) {
+				if( definedNamespaces[i].getNamespace().equals(enclosedNamespace) ) {
 					return;
 				} else if( definedNamespaces[i].isSuperNamespace(enclosedNamespace) &&
 					( longestMatch<0 || definedNamespaces[longestMatch].getAddress().length<definedNamespaces[i].getAddress().length) ) {

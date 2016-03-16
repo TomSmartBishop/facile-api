@@ -258,10 +258,8 @@ public class CustomAttributeEntry implements RenderableCilElement, CustomAttribu
 			return false;
 		
 		//compare the binary instance of the custom attribute
-		if (!Arrays.equals(value, other.value))
-			return false;
-		
-		return true;
+		return Arrays.equals(value, other.value);
+
 	}
 
 	@Override

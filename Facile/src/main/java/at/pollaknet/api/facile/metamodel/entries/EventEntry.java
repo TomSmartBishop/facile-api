@@ -62,7 +62,7 @@ public class EventEntry extends AbstractAttributable
 	}
 	
 	public boolean addMethod(MethodDefEntry method) {
-		if(methods==null) methods = new ArrayList<MethodDefEntry>(4);
+		if(methods==null) methods = new ArrayList<>(4);
 		return methods.add(method);
 	}
 
@@ -71,7 +71,7 @@ public class EventEntry extends AbstractAttributable
 			return new MethodDefEntry[0]; 
 		}
 		
-		return methods.toArray(new MethodDefEntry[0]);
+		return methods.toArray(new MethodDefEntry[methods.size()]);
 	}
 
 	@Override
