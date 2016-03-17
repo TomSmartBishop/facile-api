@@ -73,9 +73,7 @@ public class UserStringStream implements IDataHeader {
 
 	public String toString() {
 		StringBuffer buffer = new StringBuffer("#US Stream (UserString Heap):");
-		
-		int index = 0;
-		
+
 		if(userStringHeap.size()>0) {
 			ensureSortedKeySet();
 			

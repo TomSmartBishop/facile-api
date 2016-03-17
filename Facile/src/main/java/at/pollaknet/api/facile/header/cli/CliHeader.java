@@ -39,7 +39,7 @@ public class CliHeader implements IDataHeader {
 	private int headerSize;
 	
 	/* (non-Javadoc)
-	 * @see facile.portableExecuteable.IFileHeader#read(byte[], int)
+	 * @see facile.portableExecutable.IFileHeader#read(byte[], int)
 	 */
 	public int read (byte [] data, int offset) throws UnexpectedHeaderDataException {
 			
@@ -105,7 +105,8 @@ public class CliHeader implements IDataHeader {
 	
 
 	public String toString() {
-		String buffer = "PE Data Directories:" +
+
+		return "PE Data Directories:" +
 				String.format("\n  Major Runtime Version: ...............%05d", majorRuntimeVersion) +
 				String.format("\n  Minor Runtime Version: ...............%05d", minorRuntimeVersion) +
 				String.format("\n  Address of Metadata Directory: .......0x%08x", addrOfMetadataDirectory) +
@@ -124,8 +125,6 @@ public class CliHeader implements IDataHeader {
 				String.format("\n  Size of Strong Name Signature: .......%010d", sizeOfExportAddressTable) +
 				String.format("\n  Address of Precompiled Header: .......0x%08x", addrOfPrecompiledHeader) +
 				String.format("\n  Size of Precompiled Header: ..........%010d", sizeOfPrecompiledHeader);
-
-		return buffer;
 	}
 
 	public long getAddrOfResourcesDirectory() {

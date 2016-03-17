@@ -37,7 +37,7 @@ public class ParamTable extends AbstractTable {
 
 		paramAttributeFlags[row] = ByteReader.getUInt16(data, offset);		offset +=2;
 		
-		//See EMCMA 335, Part.II 22.33 and 23.1.13
+		//See ECMA 335, Part.II 22.33 and 23.1.13
 		if(paramAttributeFlags[row]==0xcfe0 || (paramAttributeFlags[row]&0xcfec)!=0) {
 			Log(Level.WARNING, String.format("Param table: Found reserved param attribute flags 0x%x in row %d", paramAttributeFlags[row], row));
 		}

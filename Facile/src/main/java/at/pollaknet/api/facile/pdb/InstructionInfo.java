@@ -23,7 +23,7 @@ public interface InstructionInfo {
 	/**
 	 * The value of the program counter, where the symbol definition starts.
 	 * (The program counter value is equal to the number of bytes used by the
-	 * CIL isntructions)
+	 * CIL instructions)
 	 * @return The program counter value inside a method.
 	 */
 	public abstract long getProgramCounter();

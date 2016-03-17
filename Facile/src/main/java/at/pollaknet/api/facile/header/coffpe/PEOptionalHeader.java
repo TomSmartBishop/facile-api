@@ -368,7 +368,7 @@ public class PEOptionalHeader implements IDataHeader  {
 			return sizeOfStackReserve;
 		
 		if(sizeOfStackReserveHigh>ByteReader.INT32_MAX_VAL)
-			throw new SizeExceededException("Range of long exceeeded.");
+			throw new SizeExceededException("Range of long exceeded.");
 		
 		return (sizeOfStackReserveHigh<<32) | sizeOfStackReserve;
 	}
@@ -379,7 +379,7 @@ public class PEOptionalHeader implements IDataHeader  {
 			return sizeOfStackCommit;
 		
 		if(sizeOfStackCommitHigh>ByteReader.INT32_MAX_VAL)
-			throw new SizeExceededException("Range of long exceeeded.");
+			throw new SizeExceededException("Range of long exceeded.");
 		
 		return (sizeOfStackCommitHigh<<32) | sizeOfStackCommit;
 	}
@@ -390,7 +390,7 @@ public class PEOptionalHeader implements IDataHeader  {
 			return sizeOfHeapReserve;
 		
 		if(sizeOfHeapReserveHigh>ByteReader.INT32_MAX_VAL)
-			throw new SizeExceededException("Range of long exceeeded.");
+			throw new SizeExceededException("Range of long exceeded.");
 		
 		return (sizeOfHeapReserveHigh<<32) | sizeOfHeapReserve;
 	}
@@ -401,7 +401,7 @@ public class PEOptionalHeader implements IDataHeader  {
 			return sizeOfHeapCommit;
 		
 		if(sizeOfHeapCommitHigh>ByteReader.INT32_MAX_VAL)
-			throw new SizeExceededException("Range of long exceeeded.");
+			throw new SizeExceededException("Range of long exceeded.");
 		
 		return (sizeOfHeapCommitHigh<<32) | sizeOfHeapCommit;
 	}
@@ -433,8 +433,8 @@ public class PEOptionalHeader implements IDataHeader  {
 			buffer.append(" 64 bit");
 		}
 		buffer.append(String.format("\n  Magic Version Number: .............0x%08x", magicVersionNumber));
-		buffer.append(String.format("\n  Major Linker Verion: ..............%010d", majorLinkerVersion));
-		buffer.append(String.format("\n  Minor Linker Verion: ..............%010d", minorLinkerVersion));
+		buffer.append(String.format("\n  Major Linker Version: .............%010d", majorLinkerVersion));
+		buffer.append(String.format("\n  Minor Linker Version: .............%010d", minorLinkerVersion));
 		buffer.append(String.format("\n  Size of Code: .....................%010d", sizeOfCode));
 		buffer.append(String.format("\n  Size of Initialized Data: .........%010d", sizeOfInitializedData));
 		buffer.append(String.format("\n  Size of Uninitialized Data: .......%010d", sizeOfUninitializedData));

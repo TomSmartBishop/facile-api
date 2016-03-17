@@ -6,7 +6,7 @@ import at.pollaknet.api.facile.util.Pair;
 
 
 /**
- * <p/>The CustomSttribute class represents a custom attribute as specified in 
+ * <p/>The CustomAttribute class represents a custom attribute as specified in
  * See ECMA 335 revision 4 - Partition II, 23.3 Custom attributes
  * <a href="http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-335.pdf#page=288&view=FitH">
  * http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-335.pdf</a>.

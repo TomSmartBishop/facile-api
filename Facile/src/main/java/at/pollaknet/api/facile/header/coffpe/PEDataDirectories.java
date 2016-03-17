@@ -381,7 +381,8 @@ public class PEDataDirectories implements IDataHeader  {
 
 	@Override
 	public String toString() {
-		String buffer = "PE Data Directories:" +
+
+		return "PE Data Directories:" +
 				String.format("\n  Import Directory RVA: ..............0x%08x", importDirectoryRVA) +
 				String.format("\n  Import Directory Size: .............%010d", importDirectorySize) +
 				String.format("\n  Export Directory RVA: ..............0x%08x", exportDirectoryRVA) +
@@ -417,8 +418,6 @@ public class PEDataDirectories implements IDataHeader  {
 				String.format("\n  Common Language Runtime Size: ......%010d", commonLanguageRuntimeHeaderSize) +
 				String.format("\n  Reserved Directory RVA: ............0x%08x", reservedDirectoryRVA) +
 				String.format("\n  Reserved Directory Size: ...........%010d", reservedDirectorySize);
-
-		return buffer;
 	}
 	
 }

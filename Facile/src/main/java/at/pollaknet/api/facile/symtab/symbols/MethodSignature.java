@@ -47,7 +47,7 @@ public interface MethodSignature {
 	 * Returns the return parameter of the method which could result
 	 * in a {@code null} value (which means {@code void}) if not
 	 * specified by the assembly. The return parameter is always the
-	 * first element in the paremeter array returned by {@code getParameters()}
+	 * first element in the parameter array returned by {@code getParameters()}
 	 * @return The return parameter, or {@code null}.
 	 */
 	public abstract Parameter getReturnParameter();

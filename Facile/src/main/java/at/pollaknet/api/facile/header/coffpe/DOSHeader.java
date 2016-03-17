@@ -23,7 +23,7 @@ public class DOSHeader implements IDataHeader {
 	private int initialRelativeSS;
 	private int initialSP;
 	private int checksum;
-	private int ininitalIP;
+	private int initialIP;
 	private int initialRelativeCS;
 	private int fileAddrOfRelocTable;
 	private int overlayNumber;
@@ -37,7 +37,7 @@ public class DOSHeader implements IDataHeader {
 	private int headerSize;
 	
 	/* (non-Javadoc)
-	 * @see facile.portableExecuteable.IFileHeader#read(byte[], int)
+	 * @see facile.portableExecutable.IFileHeader#read(byte[], int)
 	 */
 	public int read (byte [] data, int offset) throws CoffPeDataNotFoundException {
 			
@@ -64,7 +64,7 @@ public class DOSHeader implements IDataHeader {
 		initialRelativeSS = ByteReader.getUInt16(data, offset);		offset +=2;
 		initialSP = ByteReader.getUInt16(data, offset);				offset +=2;
 		checksum = ByteReader.getUInt16(data, offset);				offset +=2;
-		ininitalIP = ByteReader.getUInt16(data, offset);			offset +=2;
+		initialIP = ByteReader.getUInt16(data, offset);			offset +=2;
 		initialRelativeCS = ByteReader.getUInt16(data, offset);		offset +=2;
 		fileAddrOfRelocTable = ByteReader.getUInt16(data, offset);	offset +=2;
 		overlayNumber = ByteReader.getUInt16(data, offset);			offset +=2;
@@ -185,8 +185,8 @@ public class DOSHeader implements IDataHeader {
 	 * Get the initial value of the instruction pointer.
 	 * @return The initial instruction pointer.
 	 */
-	public int getIninitalIP() {
-		return ininitalIP;
+	public int getInitialIP() {
+		return initialIP;
 	}
 
 	/**
@@ -248,7 +248,8 @@ public class DOSHeader implements IDataHeader {
 	}
 	
 	public String toString() {
-		String buffer = "DOS Header" +
+
+		return "DOS Header" +
 				String.format("\n  Magic Number: ...............................0x%08x", magicNumber) +
 				String.format("\n  Bytes on Last Page: .........................%010d", bytesOnLastPage) +
 				String.format("\n  Pages in File: ..............................%010d", pagesInFile) +
@@ -259,7 +260,7 @@ public class DOSHeader implements IDataHeader {
 				String.format("\n  Initial Relative Stack Segment (SS): ........0x%08x", initialRelativeSS) +
 				String.format("\n  Initial Stack Pointer (SP): .................0x%08x", initialSP) +
 				String.format("\n  Checksum (%s): ...........................0x%08x", fileAddrOfCOFFHeader == 0 ? "CRC16" : "CRC32", checksum) +
-				String.format("\n  Initial Instruction Pointer (IP): ...........0x%08x", ininitalIP) +
+				String.format("\n  Initial Instruction Pointer (IP): ...........0x%08x", initialIP) +
 				String.format("\n  Initial Relative Code Segment (CS): .........0x%08x", initialRelativeCS) +
 				String.format("\n  File Address of Reloc Table: ................0x%08x", fileAddrOfRelocTable) +
 				String.format("\n  Overlay Number: .............................%010d", overlayNumber) +
@@ -268,8 +269,6 @@ public class DOSHeader implements IDataHeader {
 				String.format("\n  OEM Info: ...................................0x%08x", OEMInfo) +
 				String.format("\n  Reserved Space 2: ...........................%02d Bytes", reservedSpace2 == null ? 0 : reservedSpace2.length) +
 				String.format("\n  File Address of COFF Header: ................0x%08x", fileAddrOfCOFFHeader);
-
-		return buffer;
 	}
 
 }

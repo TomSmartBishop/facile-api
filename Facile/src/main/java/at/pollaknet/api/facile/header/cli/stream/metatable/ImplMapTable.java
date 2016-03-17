@@ -62,7 +62,7 @@ public class ImplMapTable extends AbstractTable {
 	
 	@Override
 	protected String createTableRepresentation() {
-		StringBuffer buffer = new StringBuffer(" TmplMap Table (" + TABLE_INDEX + "):");
+		StringBuffer buffer = new StringBuffer(" ImplMap Table (" + TABLE_INDEX + "):");
 
 		for(int i=0;i<rows;i++) {
 			buffer.append("\n  PInvokeAttribute Flags: ");

@@ -2,6 +2,7 @@ package at.pollaknet.api.facile.tests.utils;
 
 import java.io.UnsupportedEncodingException;
 
+import at.pollaknet.api.facile.util.ArrayUtils;
 import at.pollaknet.api.facile.util.ByteReader;
 import junit.framework.TestCase;
 
@@ -144,8 +145,8 @@ public class ByteReaderTests extends TestCase {
 				 				0x00, 0x0c, 0x00, 0x00, 0x00, 0x76, 0x32, 0x2e, 0x30, 0x2e, 0x35, 0x30, 0x37, 0x32, 0x37, 0x00 };
 
 		//0-length
-		assertNull(ByteReader.getBytes(byteArray, 0, 0));
-		assertNull(ByteReader.getBytes(byteArray, 10, 0));
+		assertTrue(ByteReader.getBytes(byteArray, 0, 0).length==0);
+		assertTrue(ByteReader.getBytes(byteArray, 10, 0).length==0);
 		
 		//read the first two test bytes
 		int index = 0;

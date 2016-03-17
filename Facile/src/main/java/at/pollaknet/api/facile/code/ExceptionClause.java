@@ -22,7 +22,7 @@ public class ExceptionClause {
 	private long tryOffset;
 	private long tryLength;
 	private long handlerOffset;
-	private long handerLength;
+	private long handlerLength;
 	//private long classToken;
 	private long filterOffset;
 	private TypeRef exceptionClass;
@@ -90,7 +90,7 @@ public class ExceptionClause {
 			handlerOffset = ByteReader.getUInt32(data, byteCounter);
 			byteCounter += 4;
 			
-			handerLength = ByteReader.getUInt32(data, byteCounter);
+			handlerLength = ByteReader.getUInt32(data, byteCounter);
 			byteCounter += 4;
 			
 			filterOffset = ByteReader.getUInt32(data, byteCounter);
@@ -109,7 +109,7 @@ public class ExceptionClause {
 			handlerOffset = ByteReader.getUInt16(data, byteCounter);
 			byteCounter += 2;
 			
-			handerLength = ByteReader.getUInt8(data, byteCounter);
+			handlerLength = ByteReader.getUInt8(data, byteCounter);
 			byteCounter += 1;
 			
 			filterOffset = ByteReader.getUInt32(data, byteCounter);
@@ -168,15 +168,15 @@ public class ExceptionClause {
 	 * Length of the handler block.
 	 * @return The Length in bytes.
 	 */
-	public long getHanderLength() {
-		return handerLength;
+	public long getHandlerLength() {
+		return handlerLength;
 	}
 
 	/**
 	 * Get the exception class (if exception type matches).
 	 * @return A {@link at.pollaknet.api.facile.symtab.symbols.TypeRef} or {@code null}.
 	 */
-	public TypeRef getExcpetionType() {
+	public TypeRef getExceptionType() {
 		return exceptionClass;
 	}
 
@@ -191,8 +191,7 @@ public class ExceptionClause {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime + (int) (filterOffset ^ (filterOffset >>> 32));
+		int result = prime + (int) (filterOffset ^ (filterOffset >>> 32));
 		result = prime * result + (int) (handlerOffset ^ (handlerOffset >>> 32));
 		result = prime * result + (int) (tryOffset ^ (tryOffset >>> 32));
 		result = prime * result + (int) (flags ^ (flags >>> 32));
@@ -220,7 +219,7 @@ public class ExceptionClause {
 			return false;
 		if (flags != other.flags)
 			return false;
-		if (handerLength != other.handerLength)
+		if (handlerLength != other.handlerLength)
 			return false;
 		if (handlerOffset != other.handlerOffset)
 			return false;

@@ -347,10 +347,10 @@ public class ILAsmFlagsRenderer {
 		long flags = e.getFlags();
 		if(flags == ExceptionClause.FLAGS_CATCH_TYPE) {
 			buffer.append("catch ");
-			if(e.getExcpetionType()==null) {
+			if(e.getExceptionType()==null) {
 				buffer.append("[mscorlib]System.Exception");
 			} else {
-				buffer.append(r.renderAsReference(e.getExcpetionType()));
+				buffer.append(r.renderAsReference(e.getExceptionType()));
 			}
 			buffer.append(" handler ");
 		} else if(flags == ExceptionClause.FLAGS_FILTER_TYPE) {

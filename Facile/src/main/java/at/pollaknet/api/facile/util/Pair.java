@@ -7,7 +7,7 @@ package at.pollaknet.api.facile.util;
  * @author Thomas Pollak
  * <p/>Email: <i>http://code.google.com/p/facile-api/people/detail?u=103590059941737035763</i>
  *
- * @param <K> The type (CLASS) of the key implementing {@code compareable <CLASS>}.
+ * @param <K> The type (CLASS) of the key implementing {@code comparable <CLASS>}.
  * @param <V> The type (CLASS) of the value.
  */
 public class Pair<K extends Comparable<K>, V> implements Comparable<K>{

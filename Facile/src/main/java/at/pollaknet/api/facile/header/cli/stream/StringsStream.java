@@ -61,7 +61,7 @@ public class StringsStream implements IDataHeader {
 			
 			for(Integer key: sortedKeySet) {
 				String value = new String(stringHeap.get(key));
-				value = (value==null) ? "null" : value.replaceAll("\\p{Cntrl}",".");
+				value = value.replaceAll("\\p{Cntrl}",".");
 			
 				buffer.append(String.format("\n%10d:\t%s", key, value));
 			}

@@ -24,7 +24,7 @@ public class StreamHeader implements IDataHeader {
 
 
 	/* (non-Javadoc)
-	 * @see facile.portableExecuteable.IFileHeader#read(byte[], int)
+	 * @see facile.portableExecutable.IFileHeader#read(byte[], int)
 	 */
 	public int read (byte [] data, int offset) throws UnexpectedHeaderDataException {
 		
@@ -101,16 +101,16 @@ public class StreamHeader implements IDataHeader {
 	}
 
 //
-//	private static boolean isValidCandidateName(String nameCandiadate) {
-//		if(nameCandiadate==null) return false;
+//	private static boolean isValidCandidateName(String nameCandidate) {
+//		if(nameCandidate==null) return false;
 //		
-//		if(nameCandiadate.equals("#-")) return true;
-//		if(nameCandiadate.equals("#~")) return true;
-//		if(nameCandiadate.equals("#US")) return true;
-//		if(nameCandiadate.equals("#GUID")) return true;
-//		if(nameCandiadate.equals("#Strings")) return true;
-//		if(nameCandiadate.equals("#Blob")) return true;
-//		if(nameCandiadate.equals("#!")) return true;
+//		if(nameCandidate.equals("#-")) return true;
+//		if(nameCandidate.equals("#~")) return true;
+//		if(nameCandidate.equals("#US")) return true;
+//		if(nameCandidate.equals("#GUID")) return true;
+//		if(nameCandidate.equals("#Strings")) return true;
+//		if(nameCandidate.equals("#Blob")) return true;
+//		if(nameCandidate.equals("#!")) return true;
 //		
 //		return false;
 //	}

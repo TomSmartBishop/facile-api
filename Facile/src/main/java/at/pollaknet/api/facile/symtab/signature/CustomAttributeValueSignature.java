@@ -55,13 +55,13 @@ public class CustomAttributeValueSignature extends Signature {
 		fixedArgs(directory, customAttribute);
 		
 		if(hasNext()) {
-			int numNamedArguamtes = ByteReader.getUInt16(binarySignature, currentIndex);
+			int numNamedArguments = ByteReader.getUInt16(binarySignature, currentIndex);
 			nextToken();
 			nextToken();
 	
-			for(int i=0;i<numNamedArguamtes;i++) {
+			for(int i=0;i<numNamedArguments;i++) {
 				if(!namedArgument(metaModel, customAttribute)) {
-					i=numNamedArguamtes;
+					i=numNamedArguments;
 				}
 			}
 		}
@@ -116,7 +116,7 @@ public class CustomAttributeValueSignature extends Signature {
 			//this could be the case of "custom attribute type via string" but we have never seen that.
 			//Microsoft.VisualStudio.TestPlatform.Core.dll would be a candidate for that, but it has not
 			//the expected format "StrLenInt32 String"
-			Logger.getLogger(FacileReflector.LOGGER_NAME).log(Level.WARNING, "Custom attribute without type reference. BlobIndex=" + customAttribute.getBinaryBlobIndex() + ". Derrived from System.Attribute?");
+			Logger.getLogger(FacileReflector.LOGGER_NAME).log(Level.WARNING, "Custom attribute without type reference. BlobIndex=" + customAttribute.getBinaryBlobIndex() + ". Derived from System.Attribute?");
 			return;
 		}
 		

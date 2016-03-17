@@ -84,7 +84,7 @@ public class MetadataStream implements IDataHeader {
 	
 	private AbstractTable metadataTable [] = new AbstractTable [MAX_NUMBER_OF_TABLES];
 	
-	private int emtpyTablesIndices [] = new int [] { 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32,
+	private int emptyTablesIndices[] = new int [] { 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32,
 			0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e, 0x3f };
 	
 	private final static byte SIZE_OF_LARGE_INDEX = 4;
@@ -143,7 +143,7 @@ public class MetadataStream implements IDataHeader {
 	}
 	
 	/* (non-Javadoc)
-	 * @see facile.portableExecuteable.IFileHeader#read(byte[], int)
+	 * @see facile.portableExecutable.IFileHeader#read(byte[], int)
 	 */
 	public int read (byte [] data, int offset) throws UnexpectedHeaderDataException {
 		
@@ -195,7 +195,7 @@ public class MetadataStream implements IDataHeader {
 			}
 		}
 		
-		for(int index: emtpyTablesIndices) {
+		for(int index: emptyTablesIndices) {
 			if(numberOfRows[index]!=0) {
 				Logger logger = Logger.getLogger(FacileReflector.LOGGER_NAME);
 				String msg = String.format(
@@ -205,7 +205,7 @@ public class MetadataStream implements IDataHeader {
 			}
 		}
 		
-		offset = ByteReader.alingToDWord(offset);
+		offset = ByteReader.alignToDWord(offset);
 
 		byteSize = offset - byteSize;
 		
@@ -344,8 +344,8 @@ public class MetadataStream implements IDataHeader {
 		return byteSize;
 	}
 
-	public int[] getEmtpyTablesIndices() {
-		return emtpyTablesIndices;
+	public int[] getEmptyTablesIndices() {
+		return emptyTablesIndices;
 	}
 
 }

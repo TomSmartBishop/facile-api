@@ -21,7 +21,7 @@ public class Permission implements FullQualifiableSymbol {
 	/**
 	 * Create a new security permission with a given set (array) of security properties.
 	 * @param fullQualifiedName The full qualified name of the security permission.
-	 * @param properties The securty permissions as array of
+	 * @param properties The security permissions as array of
 	 * {@link at.pollaknet.api.facile.util.Pair}{@code <String, Instance>}.
 	 */
 	Permission(String fullQualifiedName, Pair<String, Instance>[] properties) {
@@ -94,7 +94,6 @@ public class Permission implements FullQualifiableSymbol {
 		boolean hasEntries = false;
 		
 		for(Pair <String, Instance> pair: properties) {			
-			Instance instance = pair.value;
 			if(hasEntries) buffer.append(", ");
 			
 			buffer.append(pair.key);

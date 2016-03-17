@@ -272,7 +272,7 @@ public class FieldEntry extends AbstractAttributable implements IHasCustomAttrib
 		TypeSpecEntry typeSpec = typeRef.getTypeSpec();
 		TypeDefEntry type = typeRef.getType();
 
-		//in case of a type defintion
+		//in case of a type definition
 		if(type!=null) {
 			for(GenericParamEntry param : parent.getGenericParameters()) {
 				for(GenericParamEntry innerParam : parent.getGenericParameters()) {

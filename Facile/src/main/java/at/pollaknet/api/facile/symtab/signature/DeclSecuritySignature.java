@@ -33,19 +33,19 @@ public class DeclSecuritySignature extends Signature {
 		//http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-335.pdf#page=238&view=FitH
 		
 		if(currentToken!=PREFIX_DECL_SECURITY) {
-			return; //if the first char is not a dot, the securty settings are stored as xml string
+			return; //if the first char is not a dot, the security settings are stored as xml string
 		}
 		nextToken();
 		
-		int numPermisssions = decodeIntegerInSignature();
-		Permission [] permissions = new Permission [numPermisssions]; 
+		int namPermissions = decodeIntegerInSignature();
+		Permission [] permissions = new Permission [namPermissions];
 		
 		//extract the stored permission settings
-		for(int i=0;i<numPermisssions;i++) {
+		for(int i=0;i<namPermissions;i++) {
 			//read the name of the permission
-			String fullyQuallifiedName = readSerString();
+			String fullyQualifiedName = readSerString();
 			//read the size of the binary data stream
-			int permissionBlobSize = decodeIntegerInSignature();
+			int permissionBlobSize = decodeIntegerInSignature(); //FIXME: Currently we don't use this at all
 			//read the number of properties for this permission
 			int numberOfProperties = decodeIntegerInSignature();
 			
@@ -67,12 +67,12 @@ public class DeclSecuritySignature extends Signature {
 				properties[property] = new Pair<String, Instance>(name, instance);
 			}
 			
-			permissions[i] = new Permission(fullyQuallifiedName, properties);
+			permissions[i] = new Permission(fullyQualifiedName, properties);
 	
 		}
 		
 		//check if there are some properties present
-		if(numPermisssions>0) {
+		if(namPermissions>0) {
 			security.setPermissions(permissions);
 		}
 	}

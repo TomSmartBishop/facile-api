@@ -66,7 +66,7 @@ public class GenericParamEntry extends AbstractAttributable
 		} else {
 			TypeSpecEntry typeSpec = constraint.getTypeSpec();
 			if(typeSpec!=null) {
-				TypeRefEntry [] typeRef = typeSpec.getGenericArguments(); //TODO: fix getGenericArguments that it returns never null, and fix all occurances
+				TypeRefEntry [] typeRef = typeSpec.getGenericArguments(); //TODO: fix getGenericArguments that it returns never null, and fix all occurrences
 				if(typeRef!=null && number<typeRef.length && typeRef[number].getName()==null) {
 					typeRef[number].setName(getName());
 				}

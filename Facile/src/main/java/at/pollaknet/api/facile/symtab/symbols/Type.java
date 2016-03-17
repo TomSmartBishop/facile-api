@@ -3,7 +3,7 @@ package at.pollaknet.api.facile.symtab.symbols;
 import at.pollaknet.api.facile.symtab.symbols.meta.DeclarativeSecurity;
 
 /**
- * A {@link at.pollaknet.api.facile.symtab.symbols.Type} object representa a type, which has
+ * A {@link at.pollaknet.api.facile.symtab.symbols.Type} object represents a type, which has
  * been defined in this .Net module. {@link at.pollaknet.api.facile.symtab.symbols.Type} is a
  * extension to the {@link at.pollaknet.api.facile.symtab.symbols.TypeRef} interface.
  * 

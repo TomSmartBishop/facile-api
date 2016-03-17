@@ -87,9 +87,9 @@ public class LocalVarSignature extends Signature {
 	}
 
 	private boolean customModifierAndConstraint(TypeSpecEntry typeSpec) throws InvalidSignatureException {
-		boolean hasModiferOrConstraint = false;
+		boolean hasModifierOrConstraint = false;
 		while(currentToken==ELEMENT_TYPE_CMOD_OPT||currentToken==ELEMENT_TYPE_CMOD_REQD||currentToken==ELEMENT_TYPE_PINNED) {
-			hasModiferOrConstraint = true;
+			hasModifierOrConstraint = true;
 			if(currentToken==ELEMENT_TYPE_PINNED){
 				nextToken();
 				typeSpec.setAsPinned(true);
@@ -105,7 +105,7 @@ public class LocalVarSignature extends Signature {
 				typeSpec.addRequiredModifier(requiredType);
 			}
 		}	
-		return hasModiferOrConstraint;
+		return hasModifierOrConstraint;
 	}
 
 }

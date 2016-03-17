@@ -143,8 +143,8 @@ public class Facile {
 		System.out.println();
 		
 		//output parameter setup
-		System.out.println("Running Facile with the followin parameter setup:");
-		System.out.println("=================================================");
+		System.out.println("Running Facile with the following parameter setup:");
+		System.out.println("==================================================");
 		if(verbose)						System.out.println("--verbose       : Verbose output");
 		if(log)							System.out.println("--log           : Print the log file at the end (all verbose messages)");
 		if(assemblyOverview)			System.out.println("--info          : Print assembly info (overview)");
@@ -233,7 +233,7 @@ public class Facile {
 		System.out.println();
 		System.out.println("OPTIONS:");
 		System.out.println("  --verbose   : More intermediate output");
-		System.out.println("  --log       : Print the wohle log file at the end");
+		System.out.println("  --log       : Print the whole log file at the end");
 		System.out.println("                (all messages from the verbose mode)");
 		System.out.println("  --info      : Print assembly info (summary)");
 		System.out.println("  --il        : Generate IL code in current working directory");
@@ -283,8 +283,7 @@ public class Facile {
 			throws CoffPeDataNotFoundException, UnexpectedHeaderDataException,
 				SizeMismatchException, IOException {
 		FacileReflector reflector = new FacileReflector(pathToAssembly);
-		Assembly assembly = reflector.loadAssembly(loadByteCode);
-		return assembly;
+		return reflector.loadAssembly(loadByteCode);
 	}
 
     /**
@@ -361,8 +360,7 @@ public class Facile {
 			throws CoffPeDataNotFoundException,
 			UnexpectedHeaderDataException, SizeMismatchException, IOException {
 		FacileReflector reflector = new FacileReflector(pathToAssembly, pathToPdb);
-		Assembly assembly = reflector.loadAssembly();
-		return assembly;
+		return reflector.loadAssembly();
 	}
 	
 	/**
@@ -398,8 +396,7 @@ public class Facile {
 			throws CoffPeDataNotFoundException,
 			UnexpectedHeaderDataException, SizeMismatchException {
 		FacileReflector reflector = new FacileReflector(buffer);
-		Assembly assembly = reflector.loadAssembly();
-		return assembly;
+		return reflector.loadAssembly();
 	}
 
 	/**

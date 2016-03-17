@@ -267,7 +267,7 @@ public class FacileReflector {
 		
 		//search for the correct file section
 		PESectionHeader fileSection = null;
-		PESectionHeader relocSection = null;		
+		//PESectionHeader relocSection = null;
 		long clrHeaderRVA = peDataDirectories.getClrHeaderRVA();
 		
 		//the collection is sorted by the virtual address (ascending)
@@ -690,10 +690,10 @@ public class FacileReflector {
 			//set an alternative name (required if there is no string stream)
 			String alternativeModuleName;
 			//get the systems separator
-			String seperator = System.getProperty("file.separator");
-			if(seperator==null) seperator = "/";
+			String separator = System.getProperty("file.separator");
+			if(separator==null) separator = "/";
 			
-			int slashPos = pathToAssembly.lastIndexOf(seperator)+1;
+			int slashPos = pathToAssembly.lastIndexOf(separator)+1;
 			if(slashPos>1) {
 				alternativeModuleName = pathToAssembly.substring(slashPos);
 			} else {

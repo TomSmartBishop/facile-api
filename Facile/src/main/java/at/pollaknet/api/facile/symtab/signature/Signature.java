@@ -710,15 +710,12 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 		TypeSpec spec = typeRef.getTypeSpec();
 		int backupIndex = customAttribute.getBinaryBlobIndex();
 
-		long arrayLength = 0;
-		TypeInstance arrayInstance = null;
-
 		// extract the enclosed type
 		if (spec != null) {
 
 			if (spec.isSingleDimensionalZeroBasedArray()) {
 
-				return typeInstnaceArray(customAttribute, spec, backupIndex);
+				return typeInstanceArray(customAttribute, spec, backupIndex);
 			} else if (spec.getEnclosedTypeRef() != null) {
 
 				if (spec.isBoxed()) {
@@ -780,7 +777,7 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 					}
 					assert (type != null);
 	
-					return typeInstnaceArray(customAttribute, type, backupIndex);
+					return typeInstanceArray(customAttribute, type, backupIndex);
 				}
 	
 				TypeRef boxedTypeRef = filedOrPropertyType();
@@ -826,8 +823,8 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 	 * @return A {at.pollaknet.api.facile.symtab.TypeInstance} object containing
 	 * an array of instances.
 	 */
-	private TypeInstance typeInstnaceArray(HasBackupBlobIndex customAttribute,
-			TypeRef typeRef, int backupIndex) {
+	private TypeInstance typeInstanceArray(HasBackupBlobIndex customAttribute,
+										   TypeRef typeRef, int backupIndex) {
 		long arrayLength;
 		TypeInstance arrayInstance;
 
@@ -892,7 +889,7 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 		try {
 			value = new String(binarySignature, currentIndex, length, "UTF8");
 		} catch (UnsupportedEncodingException e) {
-			value = "Undecoadeable UTF8 identifier in signature";
+			value = "Undecodeable UTF8 identifier in signature";
 		}
 		skipTokens(length);
 		return value;
@@ -1095,7 +1092,7 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 //		// byte 1: UNNAMED_CSTM_ATRB_FIELD or UNNAMED_CSTM_ATRB_PROPERTY
 //		// byte 2: a valid type token
 //		// byte 3: length of serString
-//		// byte 4: first (single) byte of serStering
+//		// byte 4: first (single) byte of serString
 //		if(estimatedEnumLength>4) {
 //			for(int i=1;i<estimatedEnumLength-1;i++) {
 //				byte previewToken = binarySignature[i+currentIndex];

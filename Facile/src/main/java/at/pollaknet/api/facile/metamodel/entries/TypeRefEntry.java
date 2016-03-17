@@ -31,7 +31,7 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 	protected String shortName = null;
 
 	private int kind;
-	protected char namespaceSeperator = '.';
+	protected char namespaceSeparator = '.';
 
 	private NamespaceContainer[] namespaces = new NamespaceContainer [0];
 
@@ -79,7 +79,7 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 	public String getFullQualifiedName() {
 		if(namespace==null || namespace.equals("")) return name;
 		
-		return namespace + namespaceSeperator + name;
+		return namespace + namespaceSeparator + name;
 	}
 
 	@Override
@@ -252,8 +252,12 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 			return;
 		
 		ModuleRef parentModule = typeRef.getResolutionScope().getModule();
-		
-		if(parentModule==null || !parentModule.getFullQualifiedName().equals(moduleRef.getFullQualifiedName()) )
+		if(parentModule==null)
+			return;
+
+		String parentModuleNamespace = parentModule.getFullQualifiedName();
+		String moduleRefNamespace = moduleRef.getFullQualifiedName();
+		if(parentModuleNamespace!=null && moduleRefNamespace!=null && parentModuleNamespace.equals(moduleRefNamespace) )
 			return;
 		
 		//check all name spaces to determinate where to replace '.' with '/'
@@ -264,8 +268,8 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 		if(enclosedNamespace!=null && definedNamespaces!=null && definedNamespaces.length>0) {
 			int longestMatch = -1;
 			for(int i=0;i<definedNamespaces.length;i++) {
-				//perfect match
-				if( definedNamespaces[i].getNamespace().equals(enclosedNamespace) ) {
+				//enclosedNamespace is not null
+				if( enclosedNamespace.equals(definedNamespaces[i].getNamespace()) ) {
 					return;
 				} else if( definedNamespaces[i].isSuperNamespace(enclosedNamespace) &&
 					( longestMatch<0 || definedNamespaces[longestMatch].getAddress().length<definedNamespaces[i].getAddress().length) ) {
@@ -291,7 +295,7 @@ public class TypeRefEntry extends AbstractMethodRefSignature
 					
 					typeRef.setNamespace(modifiedNamespace);
 				}
-				namespaceSeperator = '/';
+				namespaceSeparator = '/';
 				
 			}
 		}

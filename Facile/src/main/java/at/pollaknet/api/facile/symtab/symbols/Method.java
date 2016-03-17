@@ -176,7 +176,7 @@ public interface Method extends AttributableSymbol, Comparable<Method> {
 	 * the line numbers for the instructions of the method body.
 	 * @return An instance of {@link at.pollaknet.api.facile.pdb.DebugInformation}.
 	 */
-	public abstract DebugInformation getDebungInformation();
+	public abstract DebugInformation getDebugInformation();
 	
 	//draft method
 	//public abstract String toExtendedString();

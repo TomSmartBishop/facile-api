@@ -397,12 +397,12 @@ public class MetadataModel {
 	}
 	
 	/**
-	 * Tells you weather the metamodel contains deleted data (which maybe
+	 * Tells you weather the metamodel is free of deleted data (which maybe
 	 * references useless data or null-data) or not.
-	 * @return {@code true} if the metamodel contains deleted data, otherwise {@code false}.
+	 * @return {@code true} if the metamodel contains no deleted data, otherwise {@code false}.
 	 */
-	public boolean containsDeletedData() {
-		return containsDeletedData;
+	public boolean containsNoDeletedData() {
+		return !containsDeletedData;
 	}
 
     /**

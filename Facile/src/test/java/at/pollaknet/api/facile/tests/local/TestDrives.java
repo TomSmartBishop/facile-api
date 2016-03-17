@@ -157,7 +157,7 @@ public class TestDrives extends TestCase {
 //			addToStats("PE_DATA_DIRECTORY;Export Directory Size", String.valueOf(reflector.getPeDataDirectories().getExceptionDirectorySize()));
 //			addToStats("PE_DATA_DIRECTORY;Resource Directory Size", String.valueOf(reflector.getPeDataDirectories().getResourceDirectorySize()));
 //			addToStats("PE_DATA_DIRECTORY;Exception Directory Size", String.valueOf(reflector.getPeDataDirectories().getExceptionDirectorySize()));
-//			addToStats("PE_DATA_DIRECTORY;Certifacte Directory Size", String.valueOf(reflector.getPeDataDirectories().getCertificateDirectorySize()));
+//			addToStats("PE_DATA_DIRECTORY;Certificate Directory Size", String.valueOf(reflector.getPeDataDirectories().getCertificateDirectorySize()));
 //			addToStats("PE_DATA_DIRECTORY;Debug Directory Size", String.valueOf(reflector.getPeDataDirectories().getDebugDirectorySize()));
 //			addToStats("PE_DATA_DIRECTORY;Architecture Directory Size", String.valueOf(reflector.getPeDataDirectories().getCopyrightDirectorySize()));
 //			addToStats("PE_DATA_DIRECTORY;Global Pointer Directory Size", String.valueOf(reflector.getPeDataDirectories().getPointerDirectorySize()));
@@ -186,7 +186,7 @@ public class TestDrives extends TestCase {
 //			addToStats("CLI_METADATA_GUID_STREAM;Size", String.valueOf(reflector.getGuidStream().getSize()));
 //			
 //			if(reflector.getMetadataStream().isUnoptimized()) {
-//				System.out.println("This assemly is unoptimized:" + path);
+//				System.out.println("This assembly is unoptimized:" + path);
 //			}
 //			
 //			if(reflector.getGuidStream().getSize()>16) {

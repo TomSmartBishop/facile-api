@@ -55,6 +55,9 @@ public class LdcR8 extends CilInstruction {
 			return true;
 		if (getClass() != obj.getClass())
 			return false;
+		if(Double.isNaN(((LdcR8) obj).constant))
+			return Double.isNaN(constant);
+
 		return ((LdcR8) obj).constant == constant;
 	}
 

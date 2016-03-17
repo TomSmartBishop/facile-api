@@ -163,7 +163,8 @@ public class PESectionHeader implements IDataHeader, Comparable<PESectionHeader>
 	}
 
 	public String toString() {
-		String buffer = "PE Section Header" +
+
+		return "PE Section Header" +
 				"\n  Section Name: ...............\"" +
 				sectionName.replaceAll("\\p{Cntrl}", "_") +
 				"\"" +
@@ -176,8 +177,6 @@ public class PESectionHeader implements IDataHeader, Comparable<PESectionHeader>
 				String.format("\n  Number of Relocations: ......%010d", numberOfRelocations) +
 				String.format("\n  Number of Line Numbers: .....%010d", numberOfLineNumbers) +
 				String.format("\n  Characteristics: ............0x%08x", characteristics);
-
-		return buffer;
 	}
 
 }

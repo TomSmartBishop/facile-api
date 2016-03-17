@@ -105,7 +105,7 @@ public class TypeSpecEntry extends TypeRefEntry implements ITypeDefOrRef,
 		String namespace = getNamespace();
 		if(namespace==null || namespace.length() == 0)
 			return getName();
-		return getNamespace() + namespaceSeperator + getName();
+		return getNamespace() + namespaceSeparator + getName();
 	}
 
 	public void adjustNamespace(ModuleRef moduleRef) {

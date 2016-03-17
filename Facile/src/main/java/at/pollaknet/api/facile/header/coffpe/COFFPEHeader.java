@@ -174,7 +174,8 @@ public class COFFPEHeader implements IDataHeader  {
 	}
 
 	public String toString() {
-		String buffer = "COFF/PE Header" +
+
+		return "COFF/PE Header" +
 				String.format("\n  Signature: ..................0x%08x", signature) +
 				String.format("\n  Target Machine Type: ........%010d", targetMachineType) +
 				String.format("\n  Number of File Sections: ....%010d", numberOfSections) +
@@ -183,7 +184,5 @@ public class COFFPEHeader implements IDataHeader  {
 				String.format("\n  Number of Symbols: ..........%010d", numberOfSymbols) +
 				String.format("\n  Size of Optional Header: ....%010d", sizeOfOptionalHeader) +
 				String.format("\n  Characteristics: ............0x%08x", characteristics);
-
-		return buffer;
 	}
 }

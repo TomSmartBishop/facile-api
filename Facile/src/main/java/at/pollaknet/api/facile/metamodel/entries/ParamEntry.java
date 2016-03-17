@@ -188,7 +188,8 @@ public class ParamEntry extends AbstractAttributable implements IHasCustomAttrib
 		} else {
 			String typeName = type.getFullQualifiedName();
 			String otherTypeName = other.type.getFullQualifiedName();
-			if(!typeName.equals(otherTypeName))
+			//first check also works if both strings are null
+			if(typeName!=otherTypeName && typeName!=null && !typeName.equals(otherTypeName))
 				return false;
 		}
 		

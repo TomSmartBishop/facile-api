@@ -59,7 +59,7 @@ public interface AssemblyRef extends AttributableSymbol, ResolutionScope {
 	public abstract String getCulture();
 
 	/**
-	 * Returns the hash value of the assmbly's prime module.
+	 * Returns the hash value of the aessmbly's prime module.
 	 * @return The hash value as {@code byte []}.
 	 */
 	public abstract byte [] getHashValue();

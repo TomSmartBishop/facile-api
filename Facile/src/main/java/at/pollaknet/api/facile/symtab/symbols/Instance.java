@@ -49,7 +49,7 @@ public interface Instance {
 	/**
 	 * Check if this type of this instance could be a value type.
 	 * A real proof can only be done by loading the assembly of the reference!
-	 * @return {@code true} if the type of the instance looks lika a value type, otherwise {@code false}.
+	 * @return {@code true} if the type of the instance looks like a value type, otherwise {@code false}.
 	 */
 	public abstract boolean isPotentialValueType();
 

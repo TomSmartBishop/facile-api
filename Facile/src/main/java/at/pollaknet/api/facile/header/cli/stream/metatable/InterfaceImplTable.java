@@ -58,7 +58,7 @@ public class InterfaceImplTable extends AbstractTable {
 		for(int i=0;i<rows;i++) {
 			buffer.append("\n  Class Index: ");
 			buffer.append(classTypeDefIndex[i]);
-			buffer.append(";\tInterrface CodedIndex: ");
+			buffer.append(";\tInterface CodedIndex: ");
 			buffer.append(interfaceCodedIndex[i]);
 			buffer.append(";");
 		}

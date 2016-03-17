@@ -267,12 +267,12 @@ public class MethodDefEntry extends AbstractGenericInstanceContainer
 	}
 	*/
 	
-	public void setDebungInformation(DebugInformation lineNumberInfo) {
+	public void setDebugInformation(DebugInformation lineNumberInfo) {
 		this.debugInformation = lineNumberInfo;
 	}
 	
 	@Override
-	public DebugInformation getDebungInformation() {
+	public DebugInformation getDebugInformation() {
 		return debugInformation;
 	}
 	

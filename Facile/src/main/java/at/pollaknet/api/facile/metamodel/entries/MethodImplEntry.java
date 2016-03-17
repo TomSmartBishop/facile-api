@@ -31,7 +31,7 @@ public class MethodImplEntry implements RenderableCilElement {
 	
 	@Override
 	public String toString() {
-		return String.format("MethodImpl: %s Body: %s Decleration: %s",
+		return String.format("MethodImpl: %s Body: %s Declaration: %s",
 				ownerClass==null?"[DELETED]":ownerClass.getFullQualifiedName(),
 				methodImplementationBody==null?"[not set]":methodImplementationBody.getName(),
 				methodDeclaration==null?"[not set]":methodDeclaration.getName());

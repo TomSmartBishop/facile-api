@@ -179,7 +179,7 @@ public class ByteReader {
 	 * @return A partially copy of the source buffer with the specifies length.
 	 */
 	public static byte[] getBytes(byte[] data, int offset, int length) {
-		if(length==0) return null;
+		//if(length==0) return null;
 		
 		byte [] buffer = new byte [length];
 		
@@ -204,7 +204,7 @@ public class ByteReader {
 	 * @param offset The current offset value, which has to be aligned.
 	 * @return The DWORD aligned offset.
 	 */
-	public static int alingToDWord(int offset) {
+	public static int alignToDWord(int offset) {
 		int correction = (4-offset%4);
 		return offset + (correction!=4 ? correction : 0);
 	}
@@ -215,7 +215,7 @@ public class ByteReader {
 	 * @param offset The current offset value, which has to be aligned.
 	 * @return The WORD aligned offset.
 	 */
-	public static int alingToNextWord(int offset) {
+	public static int alignToNextWord(int offset) {
 		return offset + (2-offset%2);
 	}
 	
@@ -225,7 +225,7 @@ public class ByteReader {
 	 * @param offset The current offset value, which has to be aligned.
 	 * @return The WORD aligned offset.
 	 */
-	public static int alingToWord(int offset) {
+	public static int alignToWord(int offset) {
 		int correction = (2-offset%2);
 		return offset + (correction!=2 ? correction : 0);
 	}
@@ -321,9 +321,8 @@ public class ByteReader {
 	 * @return A {@code float} value.
 	 */
 	public static float getFloat(byte [] data, int offset) {
-		Float value = Float.intBitsToFloat(ByteReader.getInt32(data, offset));
-		
-		return value;
+
+		return Float.intBitsToFloat(ByteReader.getInt32(data, offset));
 	}
 
 	/**
@@ -333,9 +332,8 @@ public class ByteReader {
 	 * @return A {@code double} value.
 	 */
 	public static double getDouble(byte [] data, int offset) {
-		Double value = Double.longBitsToDouble(ByteReader.getInt64(data, offset));
-		
-		return value;
+
+		return Double.longBitsToDouble(ByteReader.getInt64(data, offset));
 	}
 	
 	/**
@@ -420,9 +418,12 @@ public class ByteReader {
 	 * @return The result flags of the operation.
 	 */
 	public static long setFlags(long flags, long flagsToSet, boolean set) {
-		if(set) return flags |= flagsToSet;
-		
-		return flags &= ~flagsToSet;
+		if(set)
+			flags |= flagsToSet;
+		else
+			flags &= ~flagsToSet;
+
+		return flags;
 	}
 	
 	/**
@@ -433,15 +434,20 @@ public class ByteReader {
 	 * @return The result flags of the operation.
 	 */
 	public static int setFlags(int flags, int flagsToSet, boolean set) {
-		if(set) return flags |= flagsToSet;
-		
-		return flags &= ~flagsToSet;
+		if(set)
+			flags |= flagsToSet;
+		else
+			flags &= ~flagsToSet;
+		return flags;
 	}
 	
 	public static byte setFlags(byte flags, byte flagsToSet, boolean set) {
-		if(set) return flags |= flagsToSet;
-		
-		return flags &= ~flagsToSet;
+		if(set)
+			flags |= flagsToSet;
+		else
+			flags &= ~flagsToSet;
+
+		return flags;
 	}
 
 }

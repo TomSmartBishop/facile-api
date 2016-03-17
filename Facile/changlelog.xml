@@ -1,7 +1,12 @@
 <?xml version="1.0" ?><!DOCTYPE changelog SYSTEM "changelog.dtd">
 
 <changelog name="Facile API">
-  <version major="1" minor="0" fix="4">
+  <fixed major="1" minor="0" fix="4">
+    <fixed>Fixed a couple of comparisons (equals was not used in some needed cases)</fixed>
+    <fixed>Fixed problem in LdcR4, LdcR8 when comparing NANs (should be treated as equal here since we want to figure out if the assemblies are equal)</fixed>
+    <changed>Removed a couple of unnecessary string buffers</changed>
+    <changed>Changed ByteReader::getBytes so that it returns an empty array instead of null (if supplied length is null)</changed>
+    <fixed>A wide range of typos (also in signatures)</fixed>
   	<changed>Made ByteReader.getUTF16PreparedBytes more flexible to cope with byte arrays of uneven length</changed>
     <fixed>Fixed issue 4 (Fix generic method parameter names), however there seems to be still an edge-case remaining which is not cover by the current generics test case</fixed>
     <changed>Refactored the ILAsmRender and introduced the ILAsmFlagsRenderer</changed>

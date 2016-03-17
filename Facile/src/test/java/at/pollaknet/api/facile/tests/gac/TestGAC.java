@@ -12,9 +12,9 @@ import junit.framework.TestCase;
 
 public class TestGAC extends TestCase {
 
-	private final static String GAC_WIN_ABOLUTE_PATH ="C:/WINDOWS/Microsoft.NET";
-	private final static String GAC_OSX_PATH_PREFIX ="/Library/Frameworks/Mono.framework/Versions";
-	private final static String GAC_OSX_PATH_POSTFIX ="/lib/mono/gac";
+	private final static String GAC_WIN_ABSOLUTE_PATH 	= "C:/WINDOWS/Microsoft.NET";
+	private final static String GAC_OSX_PATH_PREFIX 	= "/Library/Frameworks/Mono.framework/Versions";
+	private final static String GAC_OSX_PATH_POSTFIX 	= "/lib/mono/gac";
 	
 	private static ArrayList<String> assemblies = null;
 
@@ -39,7 +39,7 @@ public class TestGAC extends TestCase {
 			String operatingSystem = System.getProperty("os.name").toLowerCase();
 			
 			if (operatingSystem.startsWith("win")) {
-				addFiles(GAC_WIN_ABOLUTE_PATH);
+				addFiles(GAC_WIN_ABSOLUTE_PATH);
 			} else if (operatingSystem.startsWith("mac")) {
 				
 				File currentDirectory = new File(GAC_OSX_PATH_PREFIX);
@@ -104,7 +104,7 @@ public class TestGAC extends TestCase {
 		}
 		
 		System.out.println("\nProcessed "+ fileCount + " .net assemblies.");
-		System.out.println("("+ missingCount + " files are missing; " + (assemblies.size()-fileCount-missingCount) + " faild to reflect/load)\n");
+		System.out.println("("+ missingCount + " files are missing; " + (assemblies.size()-fileCount-missingCount) + " failed to reflect/load)\n");
 		
 		if(fileCount+missingCount!=assemblies.size()) {
 			fail(currentFile);

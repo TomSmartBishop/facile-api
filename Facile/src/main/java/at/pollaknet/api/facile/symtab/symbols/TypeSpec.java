@@ -27,15 +27,15 @@ public interface TypeSpec extends TypeRef, ResolutionScope {
 	
 	/**
 	 * Returns the most inner enclosed type reference of this type specification
-	 * (If there is no eclosed type reference it will return this).
+	 * (If there is no enclosed type reference it will return this).
 	 * @return The enclosed type reference or {@code this}.
 	 */
 	public abstract TypeRef getMostInnerEnclosedTypeRef();
 	
 	/**
 	 * Returns the most inner enclosed type specification of this type specification
-	 * (If there is no eclosed type specification it will return this).
-	 * @return The enclosed type specififcation or {@code this}.
+	 * (If there is no enclosed type specification it will return this).
+	 * @return The enclosed type specification or {@code this}.
 	 */
 	public abstract TypeSpec getMostInnerEnclosedTypeSpec();
 	

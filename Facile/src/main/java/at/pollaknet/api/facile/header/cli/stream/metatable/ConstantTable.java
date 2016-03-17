@@ -14,7 +14,7 @@ import at.pollaknet.api.facile.metamodel.util.EntryDecoder;
 import at.pollaknet.api.facile.util.ByteReader;
 
 /*
- * Checked against 5th edition (December 2010), requires additional warnin ouput.
+ * Checked against 5th edition (December 2010), requires additional warning output.
  */
 public class ConstantTable extends AbstractTable{
 

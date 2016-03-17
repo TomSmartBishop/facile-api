@@ -190,7 +190,8 @@ public class ILAsmRenderer implements LanguageRenderer {
 	
 	public static String renderAssemblyVersionInfo(int majorVersion, int minorVersion, int revisionNumber, int buildNumber) {
 		//append version string
-		String buffer = "  .ver " +
+
+		return "  .ver " +
 				majorVersion +
 				":" +
 				minorVersion +
@@ -198,8 +199,6 @@ public class ILAsmRenderer implements LanguageRenderer {
 				revisionNumber +
 				":" +
 				buildNumber;
-
-		return buffer;
 	}
 
 	@Override
@@ -242,10 +241,8 @@ public class ILAsmRenderer implements LanguageRenderer {
 	public String render(ModuleRef moduleRef) {
 		if(moduleRef==null) return "";
 
-		String buffer = ".module extern " +
+		return ".module extern " +
 				moduleRef.getName();
-
-		return buffer;
 	}
 
 	@Override
@@ -909,7 +906,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		
 		buffer.append(newLine);
 		buffer.append("  ");
-		buffer.append(addTab(render(method.getMethodBody(), method.getDebungInformation())));
+		buffer.append(addTab(render(method.getMethodBody(), method.getDebugInformation())));
 		
 		buffer.append(newLine);
 		buffer.append("}");
@@ -1011,7 +1008,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		for(ExceptionClause e: methodBody.getExceptionClauses()) {
 			buffer.append(String.format("%s.try IL_%04x to IL_%04x ", newLine, e.getTryOffset(), e.getTryOffset() + e.getTryLength()) );
 			buffer.append(ILAsmFlagsRenderer.renderExceptionClauseFlags(this, e));
-			buffer.append(String.format("IL_%04x to IL_%04x", e.getHandlerOffset(), e.getHandlerOffset() + e.getHanderLength()) );
+			buffer.append(String.format("IL_%04x to IL_%04x", e.getHandlerOffset(), e.getHandlerOffset() + e.getHandlerLength()) );
 		}
 		
 		return buffer.toString();
@@ -1212,14 +1209,12 @@ public class ILAsmRenderer implements LanguageRenderer {
 	public String render(ClassLayout classLayout) {
 		if(classLayout==null) return "";
 
-		String buffer = newLine +
+		return newLine +
 				"  .size " +
 				classLayout.getClassSize() +
 				newLine +
 				"  .pack " +
 				classLayout.getPackingSize();
-
-		return buffer;
 		
 	}
 
@@ -1438,26 +1433,23 @@ public class ILAsmRenderer implements LanguageRenderer {
 	
 	public String renderAsReference(FileRef fileRef) {
 		if(fileRef==null) return "";
-		String buffer = ".file " +
-				fileRef.getFullQualifiedName();
 
-		return buffer;
+		return ".file " +
+				fileRef.getFullQualifiedName();
 	}
 	
 	public String renderAsReference(AssemblyRef assemblyRef) {
 		if(assemblyRef==null) return "";
-		String buffer = ".assembly extern " +
-				assemblyRef.getFullQualifiedName();
 
-		return buffer;
+		return ".assembly extern " +
+				assemblyRef.getFullQualifiedName();
 	}
 	
 	public String renderAsReference(ExportedType exportedType) {
 		if(exportedType==null) return "";
-		String buffer = ".class extern " +
-				exportedType.getFullQualifiedName();
 
-		return buffer;
+		return ".class extern " +
+				exportedType.getFullQualifiedName();
 	}
 
 	public String renderRelativeAsLabel(int target) {

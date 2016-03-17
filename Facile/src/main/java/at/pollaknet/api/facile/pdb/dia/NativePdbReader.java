@@ -73,11 +73,11 @@ public class NativePdbReader implements PdbReader {
 				case ERROR_FIELD_NOT_FOUND:
 					throw new NativeImplementationException("The field \"long nativeHandle\" inside the PdbReader class is missing.");
 				default:
-					throw new NativeImplementationException("An unknown error occured!");
+					throw new NativeImplementationException("An unknown error occurred!");
 			}
 		}
 	}
-	
+
 	public boolean close() {
 		if(nativeHandle!=0) {
 			closePdb(); //here nativeHandle should be set to zero
@@ -259,8 +259,7 @@ public class NativePdbReader implements PdbReader {
 		System.getProperty("file.separator") + ".facileTemp";
 		
 		File dir = new File(directory);
-		assert (dir!=null);
-		dir.mkdirs();
+		dir.mkdirs(); //do we need this??
 		
 		//create a new dll file in the temporary directory
 		archivePath = directory + System.getProperty("file.separator") + CLASS_NAME + ".dll";

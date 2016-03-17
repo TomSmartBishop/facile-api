@@ -256,7 +256,7 @@ public class MethodBody {
 		
 		while(moreSections) {
 			//continue with the method data section (starts 4 byte aligned)
-			byteCounter = ByteReader.alingToDWord(byteCounter);
+			byteCounter = ByteReader.alignToDWord(byteCounter);
 			
 			exceptionFlags = ByteReader.getUInt8(data, byteCounter);
 			byteCounter++;
@@ -291,7 +291,7 @@ public class MethodBody {
 				//skip the section if there is no exception data
 				byteCounter += sectionSize-SIZE_OF_EXTRA_DATA_HEADER;
 			} else {
-				byteCounter = ByteReader.alingToDWord(byteCounter);
+				byteCounter = ByteReader.alignToDWord(byteCounter);
 				
 				//add the following clauses
 				for(int i=0;i<numberOfClauses;i++) {

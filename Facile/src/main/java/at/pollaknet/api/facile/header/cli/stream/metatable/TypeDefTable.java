@@ -63,7 +63,7 @@ public class TypeDefTable extends AbstractTable{
 
 		typeAttributeFlags[row] = ByteReader.getUInt32(data, offset);		offset +=4;
 		
-		//See EMCMA 335, Part.II 22.37 and 23.1.15
+		//See ECMA 335, Part.II 22.37 and 23.1.15
 		//assert((typeAttributeFlags[row]&0xff28ca40L)==0);
 		
 		offset += readStringIndex(data, offset, typeNameStringIndex, row);

@@ -32,7 +32,7 @@ public class MethodSemanticsEntry implements RenderableCilElement {
 	
 	@Override
 	public String toString() {
-		return String.format("MethodSemantics: %s (Sematnics: 0x%x) Association: %s",
+		return String.format("MethodSemantics: %s (Semantics: 0x%x) Association: %s",
 				method.getName(), semantics,
 				association==null?"[not set]":association.getName());
 	}

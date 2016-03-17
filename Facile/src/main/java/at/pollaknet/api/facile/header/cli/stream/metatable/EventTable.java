@@ -44,7 +44,7 @@ public class EventTable extends AbstractTable{
 		eventAttributesFlags[row] = ByteReader.getUInt16(data, offset);	
 		offset +=2;
 
-		//See EMCMA 335, Part.II 22.13 and 23.1.4
+		//See ECMA 335, Part.II 22.13 and 23.1.4
 		assert((eventAttributesFlags[row]&0xf9ff)==0);
 		
 		offset += readStringIndex(data, offset, nameStringIndex, row);

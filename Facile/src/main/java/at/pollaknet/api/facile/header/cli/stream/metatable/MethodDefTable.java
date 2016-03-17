@@ -46,10 +46,6 @@ public class MethodDefTable extends AbstractTable {
 	@Override
 	protected int readRow(byte[] data, int offset, int row) {
 		int rowSize = offset;
-
-		if(ByteReader.getUInt32(data, offset)>=1718304) {
-			int x = 0;
-		}
 		
 		relativeVirtualAddress[row] = ByteReader.getUInt32(data, offset);				offset +=4;
 		methodImplAttributeFlags[row] = ByteReader.getUInt16(data, offset);		offset +=2;

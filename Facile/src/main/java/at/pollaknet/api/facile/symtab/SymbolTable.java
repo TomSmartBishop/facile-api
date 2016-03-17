@@ -82,7 +82,7 @@ public class SymbolTable {
 	private boolean haltOnErrors;
 	private boolean haltOnJniErrors;
 	
-	public SymbolTable(CliHeader cliHeader, MetadataModel metaModel, BlobStream blobStream, CilContainer codeContainer, PdbReader pdbReader, String pathToAssemby) {
+	public SymbolTable(CliHeader cliHeader, MetadataModel metaModel, BlobStream blobStream, CilContainer codeContainer, PdbReader pdbReader, String pathToAssembly) {
 		assert(metaModel!=null);
 		assert(codeContainer!=null);
 		assert(cliHeader!=null);
@@ -95,11 +95,11 @@ public class SymbolTable {
 		
 		assert(metaModel.assembly!=null);
 		assert(metaModel.assembly[0]!=null);
-		int pos = pathToAssemby.lastIndexOf(System.getProperty("file.separator")) + 1;
-		if(pos>0&&pos<pathToAssemby.length()) {
-			metaModel.assembly[0].setFileName(pathToAssemby.substring(pos));
+		int pos = pathToAssembly.lastIndexOf(System.getProperty("file.separator")) + 1;
+		if(pos>0&&pos<pathToAssembly.length()) {
+			metaModel.assembly[0].setFileName(pathToAssembly.substring(pos));
 		} else {
-			metaModel.assembly[0].setFileName(pathToAssemby);
+			metaModel.assembly[0].setFileName(pathToAssembly);
 		}
 	}
 	
@@ -150,7 +150,7 @@ public class SymbolTable {
 		
         connectTypes();
 
-        connectGenericParamterAndConstraints();
+        connectGenericParameterAndConstraints();
 
 		connectManifestResource();
 		
@@ -286,7 +286,7 @@ public class SymbolTable {
 			Method method = m.getImplementationBody().getMethod();
 			if(m.getOwnerClass()!=null) {
 				m.getOwnerClass().addMethod((MethodDefEntry)method);
-			} else if (!metaModel.containsDeletedData()) {
+			} else if (metaModel.containsNoDeletedData()) {
 				if(haltOnErrors)
 					throw new NullPointerException("The owner of a method is null: " + m.toString());
 				Logger.getLogger(FacileReflector.LOGGER_NAME).log(
@@ -394,14 +394,14 @@ public class SymbolTable {
 		assembly.setModuleRefs(metaModel.moduleRef);
 	}
 
-	private void connectGenericParamterAndConstraints() {
+	private void connectGenericParameterAndConstraints() {
 		
 		//set constraints for generic parameter
 		for(GenericParamConstraintEntry constraint: metaModel.genericParamConstraint) {
 			if(constraint.getOwner()!=null) {
 				constraint.getOwner().addConstraint(constraint.getConstraint());
 				//param.getOwner().setName(param.getName());
-			} else if (!metaModel.containsDeletedData()) {
+			} else if (metaModel.containsNoDeletedData()) {
 				throw new NullPointerException("The owner of a generic parameter constraint is null!");
 			}
 		}
@@ -410,7 +410,7 @@ public class SymbolTable {
 		for(GenericParamEntry param: metaModel.genericParam) {
 			if(param.getOwner()!=null) {
 				param.getOwner().addGenericParam(param);
-			} else if (!metaModel.containsDeletedData()) {
+			} else if (metaModel.containsNoDeletedData()) {
 				throw new NullPointerException("The owner of a generic parameter is null!");
 			}
 		}
@@ -469,7 +469,7 @@ public class SymbolTable {
 		//virtual address calculation
 		long nativeCodeRVA = 0;
 		long methodRVA = 0;
-		int containerSize = codeContainer.getCodeBuffer().length;
+		int containerSize = codeContainer.getCodeBuffer().length; //FIXME: We don#t use this value
 	
 		//counter in order to assign metadata tokens to the methods		
 		int tokenCounter=1;
@@ -549,7 +549,7 @@ public class SymbolTable {
 				//set the related debug information (if available)
 				if(pdbReader!=null) {
 					try {
-						method.setDebungInformation(pdbReader.getLineNumbersByRVA(nativeCodeRVA));
+						method.setDebugInformation(pdbReader.getLineNumbersByRVA(nativeCodeRVA));
 					} catch(Error e) {
 						if(haltOnJniErrors) throw e;
 						Logger.getLogger(FacileReflector.LOGGER_NAME).log(
@@ -838,7 +838,7 @@ public class SymbolTable {
 		for(CustomAttributeEntry customAttribute: metaModel.customAttribute) {
 			if(customAttribute.getOwner()!=null) {
 				customAttribute.getOwner().addCustomAttribute(customAttribute);
-			} else if (!metaModel.containsDeletedData()) {
+			} else if (metaModel.containsNoDeletedData()) {
 				if(haltOnErrors)
 					throw new NullPointerException(
 							"The owner of a custom attribute is null: " + customAttribute.toString());

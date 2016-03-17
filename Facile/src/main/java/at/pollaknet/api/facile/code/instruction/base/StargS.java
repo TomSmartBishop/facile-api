@@ -21,7 +21,7 @@ public class StargS extends CilInstruction {
 	@Override
 	public int parseInstruction(byte[] buffer, int index, MetadataModel metaModel) throws InvalidByteCodeException {
 		ensure(buffer, index, FIRST_TOKEN);
-		index = ByteReader.getUInt8(buffer, index+1);
+		this.index = ByteReader.getUInt8(buffer, index+1);
 		return BYTE_SIZE;
 	}
 	

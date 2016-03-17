@@ -181,7 +181,7 @@ public interface Assembly extends AttributableSymbol {
 	public abstract AssemblyProcessorRef[] getAssemblyProcessorRefs();
 	
 	/**
-	 * Returns an array of all referenced assebmlies as
+	 * Returns an array of all referenced assemblies as
 	 * {@link at.pollaknet.api.facile.symtab.symbols.scopes.AssemblyRef} objects.
 	 * @return The referenced assemblies.
 	 */
