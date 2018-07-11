@@ -4,13 +4,13 @@ The Facile API is capable of reading (decompiling) .Net assemblies. Covering the
 
 (Previously hosted on https://code.google.com/p/facile-api/)
 
-#Background
+# Background
 Initially the Facile API has been written to perform analysis of .Net assemblies, independet of the authoring .Net language.
 
-#Usage Sample
+# Usage Sample
 This is just code to get an idea of the API. Please also use the available JavaDoc.
 
-##Inspect All Types of an Assembly
+## Inspect All Types of an Assembly
 
 ```
 try {
@@ -32,7 +32,7 @@ try {
 }
 ```
 
-##Make use of the ILDasmRenderer
+## Make use of the ILDasmRenderer
 
 ```
 try {
@@ -73,10 +73,10 @@ try {
 }
 ```
 
-#Build Instructions
+# Build Instructions
 There is an Eclipse project and a jardesc file in the repository which you can use to build the jar file.
 
-#Development And Unit Test Environment
+# Development And Unit Test Environment
 All required configurations can be found in the Eclipse 'Run' and 'External Tools' dialog.
 For 'External Tools' -> 'Run ILAsm' you need a binary of ILAsm (comes with Visual Studio)
 Run Configurations in Eclipse.
@@ -114,8 +114,8 @@ Run ILAsm to test if the decompiled output of facile can be compiled again (roun
 
 * Additional: Sometimes a program like Total Commader http://www.totalcmd.net/ is useful to copy assemblies from the GAC to a desired location!
 
-#Binary
+# Binary
 There is an older binary available here: http://tomsmartbishop.github.io/facile-api/
 
-#Commercial Use
+# Commercial Use
 The Facile API is commercially used by the Sonargraph Explorer: http://www.hello2morrow.com
