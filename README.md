@@ -12,7 +12,7 @@ This is just code to get an idea of the API. Please also use the available JavaD
 
 ## Inspect All Types of an Assembly
 
-```
+```java
 try {
     //specify a path, where to find the assembly
     String assemblyName = "mscorlib.dll";
@@ -34,7 +34,7 @@ try {
 
 ## Make use of the ILDasmRenderer
 
-```
+```java
 try {
     //create a reflector object for later access (ILAsmRenderer)
     FacileReflector facileReflector =
