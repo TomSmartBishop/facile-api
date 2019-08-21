@@ -65,6 +65,8 @@ import at.pollaknet.api.facile.code.instruction.prefix.Volatile;
 import at.pollaknet.api.facile.exception.InvalidByteCodeException;
 import at.pollaknet.api.facile.exception.InvalidMethodBodyException;
 import at.pollaknet.api.facile.metamodel.MetadataModel;
+import at.pollaknet.api.facile.renderer.ILAsmRenderer;
+import at.pollaknet.api.facile.renderer.LanguageRenderer;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.util.ByteReader;
 
@@ -663,6 +665,8 @@ public class MethodBody {
 	public String toString() {
 		StringBuffer buffer = new StringBuffer(256);
 		
+		LanguageRenderer lr = new ILAsmRenderer(null);
+
 		buffer.append("Method Body:");
 		buffer.append(String.format("\n\t Flags: 0x%04x", flags));
 		buffer.append("\tHeaderSize: ");
@@ -692,7 +696,7 @@ public class MethodBody {
 		int programCounter=0;
 	
 		for(CilInstruction i: getCilInstructions()) {
-			buffer.append(String.format("\nIL_%04x: %s", programCounter, i.render(null)));
+			buffer.append(String.format("\nIL_%04x: %s", programCounter, i.render(lr)));
 			programCounter += i.getByteSize();
 		}
 

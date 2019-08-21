@@ -932,13 +932,17 @@ public class ILAsmRenderer implements LanguageRenderer {
 		buffer.append(methodBody.getCodeSize());
 		buffer.append(" byte");
 		
-		if(	methodBody.getMethodToken() == reflector.getCliHeader().getEntryPointToken() &&
-			!ByteReader.testFlags(	reflector.getCliHeader().getFlags(),
-									CliHeader.FLAGS_NATIVE_ENTRY_POINT		)				) {
-			buffer.append(newLine);
-			buffer.append(".entrypoint ");
+
+		if(reflector != null){
+			if(	methodBody.getMethodToken() == reflector.getCliHeader().getEntryPointToken() &&
+				!ByteReader.testFlags(	reflector.getCliHeader().getFlags(),
+										CliHeader.FLAGS_NATIVE_ENTRY_POINT		)				) {
+				buffer.append(newLine);
+				buffer.append(".entrypoint ");
+			}
 		}
 
+		
 		buffer.append(newLine);
 		buffer.append(".maxstack ");
 		buffer.append(methodBody.getMaxStack());

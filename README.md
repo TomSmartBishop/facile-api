@@ -117,5 +117,8 @@ Run ILAsm to test if the decompiled output of facile can be compiled again (roun
 # Binary
 There is an older binary available here: http://tomsmartbishop.github.io/facile-api/
 
+# Known issues
+1. `String render(MethodBody methodBody, DebugInformation debugInformation)` cannot print if the method is an entrypoint, s when the reflector passed to its constructor is `null`
+
 # Commercial Use
 The Facile API is commercially used by the Sonargraph Explorer: http://www.hello2morrow.com
