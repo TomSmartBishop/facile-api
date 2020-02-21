@@ -918,7 +918,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		return renderMethodDefSig(method, asReference);
 	}
 
-	private String render(MethodBody methodBody, DebugInformation debugInformation) {
+	public String render(MethodBody methodBody, DebugInformation debugInformation) {
 		//byte [] body = methodBody.getBody();
 		if(methodBody==null) return "";
 		
@@ -1016,6 +1016,11 @@ public class ILAsmRenderer implements LanguageRenderer {
 		}
 		
 		return buffer.toString();
+	}
+
+	@Override
+	public String render(MethodBody methodBody) {
+		return render(methodBody, null);
 	}
 
 	@Override
