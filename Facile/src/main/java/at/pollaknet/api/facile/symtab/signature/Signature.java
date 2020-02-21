@@ -253,7 +253,7 @@ public abstract class Signature extends TypeKind {
 			}
 				
 			default:
-				throw new InvalidSignatureException(currentToken);
+				throw new InvalidSignatureException(binarySignature, currentIndex, currentToken, malformedSignature);
 		}
 	}
 
@@ -379,7 +379,8 @@ public abstract class Signature extends TypeKind {
 		int value = ByteReader.decodeSignatureElement(binarySignature, currentIndex);
 		int length = ByteReader.getSizeOfSignatureElement(value);
 		//null entry is invalid in this case
-		if(length<0) throw new InvalidSignatureException(currentToken);
+		if(length<0)
+			throw new InvalidSignatureException(binarySignature, currentIndex, currentToken, malformedSignature, "length>=0");
 		//skip already processed number  
 		skipTokens(length);
 		return value;
@@ -429,7 +430,7 @@ public abstract class Signature extends TypeKind {
 				break;
 			
 			default:
-				throw new InvalidSignatureException(currentToken);
+				throw new InvalidSignatureException(binarySignature, currentIndex, currentToken, malformedSignature, "CODED_TDOR_*_TOKEN_ID 0x00~0x02");
 		}
 	}
 
@@ -569,7 +570,7 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 				else if(currentToken==ELEMENT_TYPE_VALUETYPE)
 					enclosingType.setAsValueType(true);
 				else
-					throw new InvalidSignatureException(currentToken);
+					throw new InvalidSignatureException(binarySignature, currentIndex, currentToken, malformedSignature, "ELEMENT_TYPE_VALUETYPE 0x11 or ELEMENT_TYPE_CLASS 0x12");
 				
 				nextToken();
 				typeDefOrRefEncoded(enclosingType);
@@ -583,7 +584,7 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 			}
 				
 			default:
-				throw new InvalidSignatureException(currentToken);
+				throw new InvalidSignatureException(binarySignature, currentIndex, currentToken, malformedSignature);
 		}
 	}
 
@@ -773,14 +774,14 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 						type = directory.getType(ELEMENT_TYPE_OBJECT);
 						nextToken();
 					} else {
-						type = filedOrPropertyType();
+						type = fieldOrPropertyType();
 					}
 					assert (type != null);
 	
 					return typeInstanceArray(customAttribute, type, backupIndex);
 				}
 	
-				TypeRef boxedTypeRef = filedOrPropertyType();
+				TypeRef boxedTypeRef = fieldOrPropertyType();
 				return new TypeInstance(typeRef, fixedArgument(customAttribute, boxedTypeRef));
 				// return readBoxedValue(typeRef, backupIndex, boxedTypeRef);
 	
@@ -883,7 +884,8 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 	 * @return The restored string.
 	 * @throws InvalidSignatureException if the signature length has been exceeded.
 	 */
-	protected String readString(int backupBlobIndex, int length) {
+	protected String readString(int backupBlobIndex, int length)
+			throws InvalidSignatureException {
 		String value;
 		if (length >= 0) ensureSignatureLength(backupBlobIndex, length);
 		try {
@@ -913,15 +915,16 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 	 * @param backupBlobIndex An index to the resource's blob heap location.
 	 * @param requiredAdditionalLength The length which is required to process the demanded binary object.
 	 */
-	protected void ensureSignatureLength(int backupBlobIndex,
-			int requiredAdditionalLength) {
+	protected void ensureSignatureLength(int backupBlobIndex, int requiredAdditionalLength)
+			throws InvalidSignatureException {
 		int iteration = 1;
 
 		
 		while(currentIndex+requiredAdditionalLength>binarySignature.length) {
 			//expand
 			byte [] extensionblob = directory.getBlob(backupBlobIndex+binarySignature.length+iteration);
-			assert(extensionblob!=null);
+			if(extensionblob==null)
+				throw new InvalidSignatureException(binarySignature, currentIndex, currentToken, malformedSignature);
 			byte [] newSignature = new byte[binarySignature.length+extensionblob.length];
 			System.arraycopy(binarySignature, 0, newSignature, 0, binarySignature.length);
 			System.arraycopy(extensionblob, 0, newSignature, binarySignature.length, extensionblob.length);
@@ -1029,9 +1032,11 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 	 * @return The number of bytes used by the enum type or 0 if a size indicator couldn't be found.
 	 */
 	protected int estimateEnumSizeFromTypeFields(int backupBlobIndex, Type type) {
-		if(type==null || type.getFields()==null)
+		Logger logger = Logger.getLogger(FacileReflector.LOGGER_NAME);
+		if(type==null || type.getFields()==null) {
+			logger.warning("Estimating 0 size for type " + type.toString());
 			return 0;
-		
+		}
 		Field [] fields = type.getFields();
 		
 		//the size of the enum is defined by the value entries in the constant table
@@ -1039,11 +1044,14 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 			if(f.getConstant()!=null && f.getConstant().getValue()!=null) {
 				int estimatedSize = f.getConstant().getValue().length;
 				
-				if(estimatedEnumSizeIsValid(estimatedSize))
+				if(estimatedEnumSizeIsValid(estimatedSize)) {
+					logger.warning("Estimating " + estimatedSize + " bytes for type " + type.toString());
 					return estimatedSize;
+				}
 			}
 		}
 		
+		logger.warning("Estimating 0 size for type " + type.toString());
 		return 0;
 	}
 
@@ -1148,7 +1156,7 @@ protected void typeSpecBlob(TypeSpecEntry enclosingType) throws InvalidSignature
 //		return estimatedEnumLength==3 ? 2 : estimatedEnumLength;
 //	}
 
-	protected TypeRefEntry filedOrPropertyType()
+	protected TypeRefEntry fieldOrPropertyType()
 			throws InvalidSignatureException {
 		TypeRefEntry plainType = plainType();
 

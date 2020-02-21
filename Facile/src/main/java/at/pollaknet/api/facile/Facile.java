@@ -208,6 +208,8 @@ public class Facile {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
+		} catch (Exception e) {
+			e.printStackTrace(); //continue to print log
 		}
 		
 		if(log) {

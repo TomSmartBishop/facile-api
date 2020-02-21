@@ -31,21 +31,52 @@ public class EntryDecoder extends IndexDecoder {
 		int decodedIndex = decodeIndex(CodedIndex.CustomAttributeType, index);
 		
 		switch(decodedIndex) {
-			case 0: return model.typeRef[decodedIndexContent];
-			case 1: return model.typeDef[decodedIndexContent];
-			case 2: return model.methodDef[decodedIndexContent];
+			case 0:
+				if(decodedIndexContent>=model.typeRef.length) {
+					String msg = String.format("Decoded CustomAttributeTypeEntry entry %d [%d] is out of range (%d), using 0",
+							decodedIndex, decodedIndexContent, model.typeRef.length);
+					Logger.getLogger(FacileReflector.LOGGER_NAME).log(Level.WARNING, msg);
+					return model.typeRef[0];
+				}
+				return model.typeRef[decodedIndexContent];
+
+			case 1:
+				if(decodedIndexContent>=model.typeDef.length) {
+					String msg = String.format("Decoded CustomAttributeTypeEntry entry %d [%d] is out of range (%d), using 0",
+							decodedIndex, decodedIndexContent, model.typeDef.length);
+					Logger.getLogger(FacileReflector.LOGGER_NAME).log(Level.WARNING, msg);
+					return model.typeDef[0];
+				}
+				return model.typeDef[decodedIndexContent];
+
+			case 2:
+				if(decodedIndexContent>=model.methodDef.length) {
+					String msg = String.format("Decoded CustomAttributeTypeEntry entry %d [%d] is out of range (%d), using 0",
+							decodedIndex, decodedIndexContent, model.methodDef.length);
+					Logger.getLogger(FacileReflector.LOGGER_NAME).log(Level.WARNING, msg);
+					return model.methodDef[0];
+				}
+				return model.methodDef[decodedIndexContent];
+
+				//Case 4 is a nasty bug because it is reserved for strings and has to be
+				//handled before calling this method. In reality case 4 is used for member
+				//references (as well as case 3!).
+			case 4:
+				Logger.getLogger(FacileReflector.LOGGER_NAME).log(Level.WARNING, "EntryDecoder: Decoded index to string");
 			case 3:
-			case 4: return model.memberRef[decodedIndexContent];
-			
-			//Case 4 is a nasty bug because it is reserved for strings and has to be
-			//handled before calling this method. In reality case 4 is used for member
-			//references (as well as case 3!).
-			
-			default:break;
+				if(decodedIndexContent>=model.memberRef.length) {
+					String msg = String.format("Decoded CustomAttributeTypeEntry entry %d [%d] is out of range (%d), using 0",
+							decodedIndex, decodedIndexContent, model.memberRef.length);
+					Logger.getLogger(FacileReflector.LOGGER_NAME).log(Level.WARNING, msg);
+					return model.memberRef[0];
+				}	
+				return model.memberRef[decodedIndexContent];
+
+			default:
+				String msg = "Decoded entry " + decodedIndex + " is not valid in CustomAttributeTypeEntry.";
+				Logger.getLogger(FacileReflector.LOGGER_NAME).log(Level.WARNING, msg);
+				break;
 		}
-		
-		String msg = "Decoded entry " + decodedIndex + " is not valid in CustomAttributeTypeEntry.";
-		Logger.getLogger(FacileReflector.LOGGER_NAME).log(Level.WARNING, msg);
 	
 		return null;
 	}

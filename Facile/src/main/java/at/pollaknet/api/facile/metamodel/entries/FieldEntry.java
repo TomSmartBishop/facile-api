@@ -100,7 +100,6 @@ public class FieldEntry extends AbstractAttributable implements IHasCustomAttrib
 		this.constantEntry = constantEntry;
 	}
 
-	@SuppressWarnings("cast")
 	public Constant getConstant() {
 		return constantEntry;
 	}

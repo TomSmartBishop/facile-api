@@ -179,7 +179,8 @@ public class FacileReflector {
 		addReferneceEnum("System.Diagnostics.Tracing.EventKeywords",  	(byte) 8);
 		addReferneceEnum("MonoTouch.ObjCRuntime.Platform",  			(byte) 8);
 		addReferneceEnum("Microsoft.Diagnostics.Tracing.EventKeywords", (byte) 8);
-		
+		addReferneceEnum("Microsoft.Diagnostics.Tracing.EventLevel", 	(byte) 1);
+		addReferneceEnum("Given.Rapid.Data.Audit.DomainModel.EAuditEventType", (byte) 1);
 		
 	    logger.info(String.format("Created Instance 0x%x", this.hashCode()));
 	}

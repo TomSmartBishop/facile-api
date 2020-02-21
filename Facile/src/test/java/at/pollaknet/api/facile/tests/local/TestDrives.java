@@ -3,8 +3,10 @@ package at.pollaknet.api.facile.tests.local;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import at.pollaknet.api.facile.Facile;
+import at.pollaknet.api.facile.FacileLogHandler;
 import at.pollaknet.api.facile.FacileReflector;
 import at.pollaknet.api.facile.exception.CoffPeDataNotFoundException;
 import at.pollaknet.api.facile.symtab.symbols.scopes.Assembly;
@@ -25,6 +27,16 @@ public class TestDrives extends TestCase {
 //	private long startTime;
 //	
 //	private static final double ME_BI_1024x1024 = 1048576;
+	
+	private static Logger logger;
+	private static FacileLogHandler facileLogHandler;
+	
+	static {
+		facileLogHandler = new FacileLogHandler();
+	    logger = Logger.getLogger("at.pollaknet.api.facile");
+	    logger.addHandler(facileLogHandler);
+	    logger.setUseParentHandlers(false);
+	}
 	
 	public TestDrives() {
 	}
@@ -197,7 +209,7 @@ public class TestDrives extends TestCase {
 //					+ reflector.getMetadataStream().getMajorVersion() + "." +  reflector.getMetadataStream().getMajorVersion() + "/ root " + reflector.getCliMetadataRootHeader().getMajorVersion() + "." + reflector.getCliMetadataRootHeader().getMinorVersion() +
 //					"-" + (reflector.getMetaModel().genericParam!=null && reflector.getMetaModel().genericParam.length>0));
 
-			
+			facileLogHandler.flush();
 		} catch (Error e) {
 			System.out.println("Unable to open: " + path + ":");
 			e.printStackTrace();
@@ -208,10 +220,12 @@ public class TestDrives extends TestCase {
 		} catch (RuntimeException e) {
 			System.out.println("Exception in: " + path);
 			e.printStackTrace();
+			System.out.println("Log:\n" + facileLogHandler.toString());
 			failedCount++;
 		} catch (Exception e) {
 			System.out.println("Exception in: " + path);
 			e.printStackTrace();
+			System.out.println("Log:\n" + facileLogHandler.toString());
 			failedCount++;
 		}
 	}

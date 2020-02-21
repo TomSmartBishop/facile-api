@@ -12,7 +12,6 @@ import at.pollaknet.api.facile.symtab.symbols.MethodSignature;
 import at.pollaknet.api.facile.symtab.symbols.PropertySignature;
 import at.pollaknet.api.facile.symtab.symbols.TypeRef;
 import at.pollaknet.api.facile.util.ByteReader;
-//import facile.metamodel.entries.MethodDefEntry;
 
 public class PropertyEntrySignature extends Signature implements PropertySignature {
 
@@ -37,7 +36,7 @@ public class PropertyEntrySignature extends Signature implements PropertySignatu
 		hasThis = ByteReader.testFlags(currentToken, MethodSignature.CALL_HAS_THIS);
 		
 		if(!ByteReader.testFlags(currentToken, PREFIX_PROPERTY))
-			throw new InvalidSignatureException(currentToken);
+			throw new InvalidSignatureException(binarySignature, currentIndex, currentToken, malformedSignature, "MarshalSignature.NATIVE_*");
 		
 		nextToken();
 		

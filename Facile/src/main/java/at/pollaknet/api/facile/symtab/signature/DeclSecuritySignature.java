@@ -54,11 +54,11 @@ public class DeclSecuritySignature extends Signature {
 			//read each property
 			for(int property=0;property<numberOfProperties;property++) {
 				if(currentToken!=SERIALIZATION_TYPE_PROPERTY) {
-					throw new InvalidSignatureException(currentToken, SERIALIZATION_TYPE_PROPERTY);
+					throw new InvalidSignatureException(binarySignature, currentIndex, currentToken, malformedSignature, "SERIALIZATION_TYPE_PROPERTY 0x54");
 				}
 				nextToken();
 				
-				TypeRefEntry fieldOrPropertyTypeRef = filedOrPropertyType();
+				TypeRefEntry fieldOrPropertyTypeRef = fieldOrPropertyType();
 			
 				String name = readSerString();//FieldOrPropertyName();
 				

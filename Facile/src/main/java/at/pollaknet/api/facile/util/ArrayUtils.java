@@ -35,6 +35,12 @@ public class ArrayUtils {
 		
 		return buffer.toString();
 	}
+	
+	public static String formatByteArrayAsAscii(byte[] array) {
+		if(array==null) return "null";
+			
+		return new String(array).replaceAll("\\p{Cntrl}",".").replaceAll("\\B|\\b", "  ").substring(2);
+	}
 
 	/**
 	 * Check if two specified arrays are equal.

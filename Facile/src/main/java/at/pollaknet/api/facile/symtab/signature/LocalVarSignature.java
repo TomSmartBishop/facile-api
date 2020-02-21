@@ -38,7 +38,7 @@ public class LocalVarSignature extends Signature {
 		nextToken();
 		
 		if(currentToken!=PREFIX_LOCAL_VAR) {
-			throw new InvalidSignatureException(currentToken, PREFIX_LOCAL_VAR);
+			throw new InvalidSignatureException(binarySignature, currentIndex, currentToken, malformedSignature, "PREFIX_LOCAL_VAR 0x07");
 		}
 		nextToken();
 		

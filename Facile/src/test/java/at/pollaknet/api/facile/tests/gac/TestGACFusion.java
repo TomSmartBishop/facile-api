@@ -6,8 +6,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import at.pollaknet.api.facile.Facile;
+import at.pollaknet.api.facile.FacileLogHandler;
 import at.pollaknet.api.facile.exception.CoffPeDataNotFoundException;
 import at.pollaknet.api.facile.symtab.symbols.scopes.Assembly;
 import at.pollaknet.api.facile.util.ByteReader;
@@ -21,24 +23,33 @@ public class TestGACFusion extends TestCase {
 	
 	private static ArrayList<String> assemblies = null;
 
-	static FileFilter filter;
+	private static FileFilter filter;
+	private static Logger logger;
+	private static FacileLogHandler facileLogHandler;
+	
+	static {
+		filter = new FileFilter() {
+			public boolean accept(File file) {
+				String name = file.getName();
+				if(name.endsWith(".exe")) 		return true;
+				if(name.endsWith(".dll")) 		return true;
+				if(name.endsWith(".netmodule")) return true;
+				if(name.endsWith(".mcl")) 		return true;
+				if(file.isDirectory())			return true;
+				
+				return name.equals("__AssemblyInfo__.ini");
+			}
+		};
+		
+		facileLogHandler = new FacileLogHandler();
+	    logger = Logger.getLogger("at.pollaknet.api.facile");
+	    logger.addHandler(facileLogHandler);
+	    logger.setUseParentHandlers(false);
+	}
 	
 	private static void initGACFileList() {
 		if(assemblies==null) {
 			assemblies = new ArrayList<>(1024);
-			
-			filter = new FileFilter() {
-				public boolean accept(File file) {
-					String name = file.getName();
-					if(name.endsWith(".exe")) 		return true;
-					if(name.endsWith(".dll")) 		return true;
-					if(name.endsWith(".netmodule")) return true;
-					if(name.endsWith(".mcl")) 		return true;
-					if(file.isDirectory())			return true;
-					
-					return name.equals("__AssemblyInfo__.ini");
-				}
-			};
 			
 			String operatingSystem = System.getProperty("os.name").toLowerCase();
 			
@@ -125,6 +136,7 @@ public class TestGACFusion extends TestCase {
 			try {
 				Assembly assembly = Facile.loadAssembly(path);
 				fileCount++;
+				facileLogHandler.flush();
 			} catch (Error e) {
 				System.out.println("Error occurred: " + path);
 				missingCount++;
@@ -138,10 +150,12 @@ public class TestGACFusion extends TestCase {
 				currentFile = path;
 				System.out.println("Exception in: " + path);
 				e.printStackTrace();
+				System.out.println("Log:\n" + facileLogHandler.toString());
 			} catch (Exception e) {
 				currentFile = path;	
 				System.out.println("Exception in: " + path);
 				e.printStackTrace();
+				System.out.println("Log:\n" + facileLogHandler.toString());
 			}
 		}
 		

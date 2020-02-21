@@ -22,7 +22,7 @@ public class MethodSpecSignature extends Signature {
 		nextToken();
 		
 		if(currentToken!=PREFIX_GENERIC_INSTANCE)
-			throw new InvalidSignatureException(currentToken, PREFIX_GENERIC_INSTANCE);
+			throw new InvalidSignatureException(binarySignature, currentIndex, currentToken, malformedSignature, "PREFIX_GENERIC_INSTANCE 0x0a");
 		
 		nextToken();
 		

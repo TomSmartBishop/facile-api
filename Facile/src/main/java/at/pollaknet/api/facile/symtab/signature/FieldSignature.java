@@ -25,7 +25,7 @@ public class FieldSignature extends Signature {
 	
 	private TypeRefEntry field() throws InvalidSignatureException {
 		if(currentToken!=PREFIX_FIELD) {
-			throw new InvalidSignatureException(currentToken, PREFIX_FIELD);
+			throw new InvalidSignatureException(binarySignature, currentIndex, currentToken, malformedSignature, "PREFIX_FIELD 0x06");
 		}
 		nextToken();
 		

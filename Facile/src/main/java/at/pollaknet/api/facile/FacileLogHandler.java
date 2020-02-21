@@ -15,7 +15,7 @@ import java.util.logging.LogRecord;
  */
 public class FacileLogHandler extends Handler {
 
-	private static final int CAPACITY = 1024;
+	private static final int CAPACITY = 1024*1024;
 	private StringBuffer logBuffer;
 	private boolean intermediate = false;
 	private boolean isClosed = false;

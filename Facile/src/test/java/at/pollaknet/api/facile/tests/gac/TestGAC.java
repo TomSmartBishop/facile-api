@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import at.pollaknet.api.facile.Facile;
+import at.pollaknet.api.facile.FacileLogHandler;
 import at.pollaknet.api.facile.exception.DotNetContentNotFoundException;
 import at.pollaknet.api.facile.symtab.symbols.scopes.Assembly;
 import junit.framework.TestCase;
@@ -18,7 +20,16 @@ public class TestGAC extends TestCase {
 	
 	private static ArrayList<String> assemblies = null;
 
-	static FileFilter filter;
+	private static FileFilter filter;
+	private static Logger logger;
+	private static FacileLogHandler facileLogHandler;
+	
+	static {
+		facileLogHandler = new FacileLogHandler();
+	    logger = Logger.getLogger("at.pollaknet.api.facile");
+	    logger.addHandler(facileLogHandler);
+	    logger.setUseParentHandlers(false);
+	}
 	
 	private static void initGACFileList() {
 		if(assemblies==null) {
@@ -86,20 +97,27 @@ public class TestGAC extends TestCase {
 			try {
 				Assembly assembly = Facile.loadAssembly(path);
 				fileCount++;
+				facileLogHandler.flush();
+			} catch (Error e) {
+				System.out.println("Error occurred: " + path);
+				missingCount++;
 			} catch (DotNetContentNotFoundException e) {
 				System.out.println("No .net content found: " + path);
 				missingCount++;
-			}catch (IOException e) {
+			} catch (IOException e) {
 				System.out.println("Unable to read: " + path);
 				missingCount++;
+				System.out.println("Log:\n" + facileLogHandler.toString());
 			} catch (RuntimeException e) {
 				currentFile = path;
 				System.out.println("Exception in: " + path);
 				e.printStackTrace();
+				System.out.println("Log:\n" + facileLogHandler.toString());
 			} catch (Exception e) {
 				currentFile = path;	
 				System.out.println("Exception in: " + path);
 				e.printStackTrace();
+				System.out.println("Log:\n" + facileLogHandler.toString());
 			}
 		}
 		

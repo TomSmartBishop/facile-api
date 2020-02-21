@@ -28,6 +28,8 @@ public class CustomAttributeValueSignature extends Signature {
 	private List<Pair<String, Instance>> namedFields = new ArrayList<>();
 	private List<Pair<String, Instance>> namedProperties = new ArrayList<>();
 	
+	private String lastNamedArgument = null; //for debugging only
+	
 	public static CustomAttributeValueSignature decodeAndAttach(BasicTypesDirectory directory, MetadataModel metaModel, CustomAttributeEntry customAttribute)
 			throws InvalidSignatureException {
 		return new CustomAttributeValueSignature(directory, metaModel, customAttribute);
@@ -60,7 +62,7 @@ public class CustomAttributeValueSignature extends Signature {
 			nextToken();
 	
 			for(int i=0;i<numNamedArguments;i++) {
-				if(!namedArgument(metaModel, customAttribute)) {
+				if(!namedArgument(metaModel, customAttribute, numNamedArguments, i)) {
 					i=numNamedArguments;
 				}
 			}
@@ -79,24 +81,17 @@ public class CustomAttributeValueSignature extends Signature {
 			Pair<String, Instance> [] namedInstances = new Pair[namedProperties.size()];
 			namedProperties.toArray(namedInstances);
 			customAttribute.setNamedProperties(namedInstances);
-		}
-
-//		for(int i=currentIndex;i<binarySignature.length;i++) {
-//			if(binarySignature[i]!=0) {
-//				throw new InvalidSignatureException("Unconsumed Tokens detected.");
-//			}
-//		}
-		
+		}		
 	}
 
 	private void prolog() {
 		//ensure that the signature contains the custom attribute prolog
 		if(currentToken!=PREFIX_CUSTOM_ATTRIBUTE) {
-			throw new InvalidSignatureException(currentToken, PREFIX_CUSTOM_ATTRIBUTE);
+			throw new InvalidSignatureException(binarySignature, currentIndex, currentToken, malformedSignature, "PREFIX_CUSTOM_ATTRIBUTE(1) 0x01");
 		}
 		nextToken();
 		if(currentToken!=0) {
-			throw new InvalidSignatureException(currentToken, 0);
+			throw new InvalidSignatureException(binarySignature, currentIndex, currentToken, malformedSignature, "PREFIX_CUSTOM_ATTRIBUTE(2) 0x00");
 		}
 		nextToken();
 	}
@@ -162,7 +157,7 @@ public class CustomAttributeValueSignature extends Signature {
 		}
 	}
 
-	private boolean namedArgument(MetadataModel metaModel, CustomAttributeEntry customAttribute) throws InvalidSignatureException {
+	private boolean namedArgument(MetadataModel metaModel, CustomAttributeEntry customAttribute, int numNamedArguments, int argumentIndex) throws InvalidSignatureException {
 		List<Pair<String, Instance>> targetList;
 
 		//a named argument has a defined start signature - check this
@@ -176,7 +171,8 @@ public class CustomAttributeValueSignature extends Signature {
 				return false;
 			}
 			
-			throw new InvalidSignatureException(currentToken);
+			throw new InvalidSignatureException(binarySignature, currentIndex, currentToken, malformedSignature,
+					String.format("named argument %d of %d should be UNNAMED_CSTM_ATRB_* 0x53 or 0x54 - most likely happens because of an UNNAMED_CSTM_ATRB_ENUM with unkown size <maybe in log file>%s", argumentIndex+1, numNamedArguments, lastNamedArgument==null?"": " - try to add size info for '" + lastNamedArgument + "' with FacileReflector.addReferneceEnum"));
 		}
 		nextToken();
 		
@@ -190,11 +186,12 @@ public class CustomAttributeValueSignature extends Signature {
 			fieldOrPropertyTypeRef = directory.getType(UNNAMED_SYSTEM_TYPE);
 			nextToken();
 		} else {
-			fieldOrPropertyTypeRef = filedOrPropertyType();
+			fieldOrPropertyTypeRef = fieldOrPropertyType();
 		}
 		
 		//read the name of the argument
 		String name = readSerString();
+		lastNamedArgument = fieldOrPropertyTypeRef.getFullQualifiedName() + " " + name;
 		
 		TypeInstance instance = fixedArgument(customAttribute, fieldOrPropertyTypeRef);
 		targetList.add(new Pair<String, Instance>(name, instance));

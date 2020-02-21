@@ -51,7 +51,7 @@ public class ParamOrFieldMarshalSignature extends Signature implements MarshalSi
 		nextToken();
 		
 		if(!nativeType())
-			throw new InvalidSignatureException(currentToken);
+			throw new InvalidSignatureException(signature, currentIndex, currentToken, malformedSignature);
 		
 	}
 

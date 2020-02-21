@@ -2,7 +2,6 @@ package at.pollaknet.api.facile.tests.utils;
 
 import java.io.UnsupportedEncodingException;
 
-import at.pollaknet.api.facile.util.ArrayUtils;
 import at.pollaknet.api.facile.util.ByteReader;
 import junit.framework.TestCase;
 
