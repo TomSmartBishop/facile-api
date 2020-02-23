@@ -2,7 +2,9 @@ package at.pollaknet.api.facile.renderer;
 
 import java.io.IOException;
 
+import at.pollaknet.api.facile.code.MethodBody;
 import at.pollaknet.api.facile.metamodel.entries.StandAloneSigEntry;
+import at.pollaknet.api.facile.pdb.DebugInformation;
 import at.pollaknet.api.facile.symtab.symbols.ClassLayout;
 import at.pollaknet.api.facile.symtab.symbols.Constant;
 import at.pollaknet.api.facile.symtab.symbols.Event;
@@ -53,6 +55,8 @@ public interface LanguageRenderer {
 	public abstract String render(NativeImplementation nativeImplementation);
 	public abstract String render(MethodSignature methodSignature);
 	public abstract String render(Method method);
+	public abstract String render(MethodBody methodBody, DebugInformation debugInformation);
+	public abstract String render(MethodBody methodBody);
 	public abstract String render(MemberRef memberRef);
 	public abstract String render(MarshalSignature marshalSignature);
 	public abstract String render(Instance instance);

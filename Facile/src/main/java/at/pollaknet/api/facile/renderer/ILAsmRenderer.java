@@ -918,7 +918,7 @@ public class ILAsmRenderer implements LanguageRenderer {
 		return renderMethodDefSig(method, asReference);
 	}
 
-	private String render(MethodBody methodBody, DebugInformation debugInformation) {
+	public String render(MethodBody methodBody, DebugInformation debugInformation) {
 		//byte [] body = methodBody.getBody();
 		if(methodBody==null) return "";
 		
@@ -932,13 +932,17 @@ public class ILAsmRenderer implements LanguageRenderer {
 		buffer.append(methodBody.getCodeSize());
 		buffer.append(" byte");
 		
-		if(	methodBody.getMethodToken() == reflector.getCliHeader().getEntryPointToken() &&
-			!ByteReader.testFlags(	reflector.getCliHeader().getFlags(),
-									CliHeader.FLAGS_NATIVE_ENTRY_POINT		)				) {
-			buffer.append(newLine);
-			buffer.append(".entrypoint ");
+
+		if(reflector != null){
+			if(	methodBody.getMethodToken() == reflector.getCliHeader().getEntryPointToken() &&
+				!ByteReader.testFlags(	reflector.getCliHeader().getFlags(),
+										CliHeader.FLAGS_NATIVE_ENTRY_POINT		)				) {
+				buffer.append(newLine);
+				buffer.append(".entrypoint ");
+			}
 		}
 
+		
 		buffer.append(newLine);
 		buffer.append(".maxstack ");
 		buffer.append(methodBody.getMaxStack());
@@ -1012,6 +1016,11 @@ public class ILAsmRenderer implements LanguageRenderer {
 		}
 		
 		return buffer.toString();
+	}
+
+	@Override
+	public String render(MethodBody methodBody) {
+		return render(methodBody, null);
 	}
 
 	@Override

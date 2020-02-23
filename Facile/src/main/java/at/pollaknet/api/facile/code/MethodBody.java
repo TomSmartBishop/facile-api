@@ -662,7 +662,7 @@ public class MethodBody {
 	
 	public String toString() {
 		StringBuffer buffer = new StringBuffer(256);
-		
+
 		buffer.append("Method Body:");
 		buffer.append(String.format("\n\t Flags: 0x%04x", flags));
 		buffer.append("\tHeaderSize: ");
@@ -692,7 +692,7 @@ public class MethodBody {
 		int programCounter=0;
 	
 		for(CilInstruction i: getCilInstructions()) {
-			buffer.append(String.format("\nIL_%04x: %s", programCounter, i.render(null)));
+			buffer.append(String.format("\nIL_%04x: %s", programCounter, i.toString()));
 			programCounter += i.getByteSize();
 		}
 
